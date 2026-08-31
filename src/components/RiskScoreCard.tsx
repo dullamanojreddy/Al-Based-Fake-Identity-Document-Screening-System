@@ -6,12 +6,10 @@ import {
   FileText, 
   CheckCircle2, 
   AlertTriangle, 
-  ChevronRight, 
   Lock, 
-  UserCheck, 
   FileWarning
 } from 'lucide-react';
-import { CompositeRiskAssessment, RiskTier } from '../types';
+import { CompositeRiskAssessment, ReviewPriority } from '../types';
 
 interface RiskScoreCardProps {
   risk: CompositeRiskAssessment;
@@ -28,22 +26,20 @@ export const RiskScoreCard: React.FC<RiskScoreCardProps> = ({
   onDetainSubject,
   onOpenReportModal,
 }) => {
-  const { overallRiskScore, riskTier, breakdown, keyRiskFactors, positiveFactors, recommendedAction } = risk;
+  const { overallRiskScore, reviewPriority, breakdown, keyRiskFactors, recommendedAction, findings = [] } = risk;
 
-  // Determine colors based on tier
-  const isClear = riskTier === 'CLEAR';
-  const isSecondary = riskTier === 'SECONDARY_REVIEW';
-  const isDetain = riskTier === 'DETAIN_ALERT';
+  const isLow = reviewPriority === 'LOW REVIEW PRIORITY';
+  const isMedium = reviewPriority === 'REVIEW RECOMMENDED';
+  const isHigh = reviewPriority === 'ENHANCED REVIEW RECOMMENDED';
 
-  const tierBg = isClear 
+  const tierBg = isLow 
     ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
-    : isSecondary 
+    : isMedium 
     ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' 
     : 'bg-red-500/10 border-red-500/30 text-red-400';
 
-  const strokeColor = isClear ? '#10b981' : isSecondary ? '#f59e0b' : '#ef4444';
+  const strokeColor = isLow ? '#10b981' : isMedium ? '#f59e0b' : '#ef4444';
 
-  // SVG Gauge calculations (radius = 58, perimeter = 2 * PI * 58 = 364.4)
   const radius = 58;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (overallRiskScore / 100) * circumference;
@@ -54,15 +50,15 @@ export const RiskScoreCard: React.FC<RiskScoreCardProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
           <div className="flex items-center gap-2">
-            {isClear ? (
+            {isLow ? (
               <ShieldCheck className="w-5 h-5 text-emerald-400" />
-            ) : isSecondary ? (
+            ) : isMedium ? (
               <ShieldAlert className="w-5 h-5 text-amber-400" />
             ) : (
               <AlertOctagon className="w-5 h-5 text-red-400 animate-pulse" />
             )}
             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-200">
-              AI Composite Risk Assessment
+              Explainable Screening Risk Indicator
             </h3>
           </div>
           <span className="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
@@ -112,13 +108,11 @@ export const RiskScoreCard: React.FC<RiskScoreCardProps> = ({
           <div className="sm:col-span-7 flex flex-col gap-2">
             <div className={`p-3 rounded-xl border ${tierBg} flex flex-col gap-1`}>
               <span className="text-[10px] font-bold tracking-widest uppercase opacity-80">
-                Checkpoint Decision Tier:
+                Review Priority Category:
               </span>
               <div className="flex items-center gap-2">
-                <span className="text-base font-black tracking-wide">
-                  {isClear && '🟢 LOW RISK — CLEAR PASSENGER'}
-                  {isSecondary && '🟡 MEDIUM RISK — SECONDARY REVIEW'}
-                  {isDetain && '🔴 HIGH RISK — DETAIN & ALERT'}
+                <span className="text-sm sm:text-base font-black tracking-wide">
+                  {reviewPriority}
                 </span>
               </div>
             </div>
@@ -133,13 +127,13 @@ export const RiskScoreCard: React.FC<RiskScoreCardProps> = ({
         {/* Breakdown Progress Bars */}
         <div className="space-y-2.5 bg-slate-950/80 rounded-xl p-3.5 border border-slate-800/80 mb-4">
           <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
-            Module Risk Vector Breakdown:
+            Multi-Vector Evidence Breakdown:
           </span>
 
           {/* OCR Extraction */}
           <div>
             <div className="flex justify-between text-xs font-mono mb-1">
-              <span className="text-slate-300">OCR Data Integrity</span>
+              <span className="text-slate-300">OCR Field Integrity</span>
               <span className="text-emerald-400 font-bold">{breakdown.ocrExtractionScore}%</span>
             </div>
             <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
@@ -153,7 +147,7 @@ export const RiskScoreCard: React.FC<RiskScoreCardProps> = ({
           {/* MRZ Compliance */}
           <div>
             <div className="flex justify-between text-xs font-mono mb-1">
-              <span className="text-slate-300">ICAO 9303 MRZ Validation</span>
+              <span className="text-slate-300">ICAO 9303 MRZ Engine</span>
               <span className={`font-bold ${breakdown.mrzValidationScore >= 80 ? 'text-emerald-400' : 'text-red-400'}`}>
                 {breakdown.mrzValidationScore}%
               </span>
@@ -189,7 +183,7 @@ export const RiskScoreCard: React.FC<RiskScoreCardProps> = ({
           {/* Biometrics */}
           <div>
             <div className="flex justify-between text-xs font-mono mb-1">
-              <span className="text-slate-300">Biometric Facial Match</span>
+              <span className="text-slate-300">1:1 Biometric Facial Match</span>
               <span className={`font-bold ${breakdown.biometricMatchScore >= 80 ? 'text-emerald-400' : 'text-amber-400'}`}>
                 {breakdown.biometricMatchScore}% Match
               </span>
@@ -207,7 +201,7 @@ export const RiskScoreCard: React.FC<RiskScoreCardProps> = ({
           {/* Watchlist Threat */}
           <div>
             <div className="flex justify-between text-xs font-mono mb-1">
-              <span className="text-slate-300">Interpol / SSB Watchlist Hit</span>
+              <span className="text-slate-300">Interpol / SSB Watchlist</span>
               <span className={`font-bold ${breakdown.watchlistThreatScore > 0 ? 'text-red-400' : 'text-emerald-400'}`}>
                 {breakdown.watchlistThreatScore > 0 ? 'ACTIVE MATCH' : 'CLEARED (0%)'}
               </span>
@@ -223,12 +217,12 @@ export const RiskScoreCard: React.FC<RiskScoreCardProps> = ({
           </div>
         </div>
 
-        {/* Risk & Positive Factors */}
+        {/* Key Risk Factors */}
         {keyRiskFactors.length > 0 && (
           <div className="mb-4 bg-red-950/40 border border-red-900/60 rounded-xl p-3">
             <span className="text-[11px] font-bold text-red-400 uppercase tracking-wider flex items-center gap-1.5 mb-2">
               <AlertTriangle className="w-3.5 h-3.5" />
-              Critical Risk Triggers ({keyRiskFactors.length}):
+              Flagged Evidence Signals ({keyRiskFactors.length}):
             </span>
             <ul className="space-y-1 text-xs text-red-200">
               {keyRiskFactors.map((factor, idx) => (
@@ -264,7 +258,7 @@ export const RiskScoreCard: React.FC<RiskScoreCardProps> = ({
             className="px-3 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-lg shadow-red-950"
           >
             <Lock className="w-3.5 h-3.5" />
-            Detain &amp; Alert
+            Detain Subject
           </button>
         </div>
 
@@ -273,7 +267,7 @@ export const RiskScoreCard: React.FC<RiskScoreCardProps> = ({
           className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 mt-1"
         >
           <FileText className="w-4 h-4 text-cyan-400" />
-          Generate Official MHA Forensic Dossier (PDF)
+          Generate Official MHA Screening Dossier (PDF/JSON)
         </button>
       </div>
     </div>

@@ -270,7 +270,7 @@ export const ForensicImageViewer: React.FC<ForensicImageViewerProps> = ({
             {(activeLayer === 'original' || activeLayer === 'ela') &&
               tamperBoxes.map((box) => {
                 const isSelected = selectedBox?.id === box.id;
-                const isHigh = box.severity === 'high';
+                const isHigh = box.severity === 'HIGH' || box.severity === 'CRITICAL';
                 return (
                   <div
                     key={box.id}

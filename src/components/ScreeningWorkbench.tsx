@@ -11,9 +11,11 @@ import {
   Scan, 
   Shield, 
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  UserCheck,
+  FileCode
 } from 'lucide-react';
-import { ScreeningSession, DocumentType } from '../types';
+import { ScreeningSession, OfficerReviewRecord, ScreeningFinding } from '../types';
 import { SAMPLE_SCREENING_CASES } from '../data/sampleScreenings';
 import { ForensicImageViewer } from './ForensicImageViewer';
 import { RiskScoreCard } from './RiskScoreCard';
@@ -22,6 +24,8 @@ import { TamperDetectionCard } from './TamperDetectionCard';
 import { BiometricVerificationCard } from './BiometricVerificationCard';
 import { ExtractedFieldsTable } from './ExtractedFieldsTable';
 import { WatchlistAlertCard } from './WatchlistAlertCard';
+import { ForensicFindingsPanel } from './ForensicFindingsPanel';
+import { OfficerReviewPanel } from './OfficerReviewPanel';
 import { LiveWebcamModal } from './LiveWebcamModal';
 import { OfficialDossierModal } from './OfficialDossierModal';
 
@@ -38,10 +42,9 @@ export const ScreeningWorkbench: React.FC<ScreeningWorkbenchProps> = ({
 }) => {
   const [isCameraModalOpen, setIsCameraModalOpen] = useState<boolean>(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
-  const [activeDetailTab, setActiveDetailTab] = useState<'ocr' | 'mrz' | 'tamper' | 'bio'>('tamper');
+  const [activeDetailTab, setActiveDetailTab] = useState<'findings' | 'review' | 'tamper' | 'mrz' | 'bio' | 'ocr'>('findings');
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
 
-  // Custom file upload handler
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -52,7 +55,6 @@ export const ScreeningWorkbench: React.FC<ScreeningWorkbenchProps> = ({
       setIsAnalyzing(true);
 
       setTimeout(() => {
-        // Build new screening session with uploaded image
         const newSession: ScreeningSession = {
           ...currentSession,
           id: `SSB-SCAN-${Date.now().toString().slice(-4)}`,
@@ -60,6 +62,7 @@ export const ScreeningWorkbench: React.FC<ScreeningWorkbenchProps> = ({
           travelerName: file.name.replace(/\.[^/.]+$/, '').toUpperCase(),
           timestamp: new Date().toISOString(),
           status: 'PENDING',
+          processingTimeMs: 1920,
         };
         onUpdateSession(newSession);
         setIsAnalyzing(false);
@@ -105,6 +108,17 @@ export const ScreeningWorkbench: React.FC<ScreeningWorkbenchProps> = ({
     });
   };
 
+  const handleSaveOfficerReview = (review: OfficerReviewRecord) => {
+    onUpdateSession({
+      ...currentSession,
+      status: review.finalDecision,
+      risk: {
+        ...currentSession.risk,
+        officerReview: review,
+      },
+    });
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Test Case Quick Selector Bar */}
@@ -113,19 +127,18 @@ export const ScreeningWorkbench: React.FC<ScreeningWorkbenchProps> = ({
           <div className="flex items-center gap-2">
             <Zap className="w-4 h-4 text-amber-400" />
             <span className="text-xs font-bold uppercase tracking-wider text-slate-200">
-              Interactive Test Scenarios (1-Click Evaluation):
+              Interactive Test Scenarios (1-Click SIH Evaluation):
             </span>
           </div>
           <span className="text-[11px] text-slate-400">
-            Select any real-world border forgery scenario or upload your own document:
+            Select any real-world border fraud vector or upload your own document:
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
-          {SAMPLE_SCREENING_CASES.map((sample, idx) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+          {SAMPLE_SCREENINGS_PREVIEW.map((sample, idx) => {
             const isSelected = currentSession.id === sample.id;
-            const isClear = sample.risk.riskTier === 'CLEAR';
-            const isHigh = sample.risk.riskTier === 'DETAIN_ALERT';
+            const isLow = sample.risk.reviewPriority === 'LOW REVIEW PRIORITY';
 
             return (
               <button
@@ -144,12 +157,12 @@ export const ScreeningWorkbench: React.FC<ScreeningWorkbenchProps> = ({
                     </span>
                     <span
                       className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded uppercase ${
-                        isClear
+                        isLow
                           ? 'bg-emerald-950 text-emerald-400'
                           : 'bg-red-950 text-red-400'
                       }`}
                     >
-                      {sample.risk.riskTier === 'CLEAR' ? '0% RISK' : `${sample.risk.overallRiskScore}% RISK`}
+                      {sample.risk.overallRiskScore}% RISK
                     </span>
                   </div>
                   <h4 className="text-xs font-bold text-white line-clamp-1">
@@ -165,8 +178,7 @@ export const ScreeningWorkbench: React.FC<ScreeningWorkbenchProps> = ({
                     {idx === 0 && 'Genuine Passport'}
                     {idx === 1 && 'Photo Replaced Permit'}
                     {idx === 2 && 'Altered DOB (MRZ Fail)'}
-                    {idx === 3 && 'Forged Visa Stamp'}
-                    {idx === 4 && 'Interpol Red Notice'}
+                    {idx === 3 && 'Interpol Red Notice'}
                   </span>
                   <ChevronRight className="w-3 h-3 ml-auto" />
                 </div>
@@ -194,7 +206,7 @@ export const ScreeningWorkbench: React.FC<ScreeningWorkbenchProps> = ({
           </div>
 
           <div className="text-slate-400 font-mono text-[11px]">
-            Inspecting Station: <strong className="text-white">{currentSession.checkpointId}</strong> | Officer: <strong className="text-white">{currentSession.officerName} ({currentSession.officerBadge})</strong>
+            Processing Time: <strong className="text-cyan-300">{currentSession.processingTimeMs}ms</strong> | Station: <strong className="text-white">{currentSession.checkpointId}</strong>
           </div>
         </div>
       </div>
@@ -225,10 +237,34 @@ export const ScreeningWorkbench: React.FC<ScreeningWorkbenchProps> = ({
         </div>
       </div>
 
-      {/* Bottom Forensic Detailed Modules (Tabbed) */}
+      {/* Bottom Detailed Inspection & Review Panels */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
         {/* Module Tab Selector */}
         <div className="bg-slate-950 border-b border-slate-800 px-4 py-2.5 flex items-center gap-2 overflow-x-auto">
+          <button
+            onClick={() => setActiveDetailTab('findings')}
+            className={`px-4 py-2 text-xs font-bold rounded-xl transition flex items-center gap-2 whitespace-nowrap ${
+              activeDetailTab === 'findings'
+                ? 'bg-red-600 text-white shadow-lg shadow-red-950'
+                : 'text-slate-400 hover:text-white hover:bg-slate-900'
+            }`}
+          >
+            <AlertTriangle className="w-3.5 h-3.5" />
+            Explainable Findings ({currentSession.risk.findings?.length || 0})
+          </button>
+
+          <button
+            onClick={() => setActiveDetailTab('review')}
+            className={`px-4 py-2 text-xs font-bold rounded-xl transition flex items-center gap-2 whitespace-nowrap ${
+              activeDetailTab === 'review'
+                ? 'bg-amber-600 text-white shadow-lg shadow-amber-950'
+                : 'text-slate-400 hover:text-white hover:bg-slate-900'
+            }`}
+          >
+            <UserCheck className="w-3.5 h-3.5" />
+            Human-in-the-Loop Officer Review
+          </button>
+
           <button
             onClick={() => setActiveDetailTab('tamper')}
             className={`px-4 py-2 text-xs font-bold rounded-xl transition flex items-center gap-2 whitespace-nowrap ${
@@ -238,10 +274,7 @@ export const ScreeningWorkbench: React.FC<ScreeningWorkbenchProps> = ({
             }`}
           >
             <Shield className="w-3.5 h-3.5" />
-            Module 3: Tampering Forensics (Core AI)
-            {currentSession.tampering.isTampered && (
-              <span className="w-2 h-2 rounded-full bg-red-400 animate-ping" />
-            )}
+            Module 3: Tampering Forensics
           </button>
 
           <button
@@ -283,6 +316,20 @@ export const ScreeningWorkbench: React.FC<ScreeningWorkbenchProps> = ({
 
         {/* Tab Content Display */}
         <div className="p-5">
+          {activeDetailTab === 'findings' && (
+            <ForensicFindingsPanel findings={currentSession.risk.findings} />
+          )}
+
+          {activeDetailTab === 'review' && (
+            <OfficerReviewPanel
+              findings={currentSession.risk.findings}
+              existingReview={currentSession.risk.officerReview}
+              officerBadge={currentSession.officerBadge}
+              officerName={currentSession.officerName}
+              onSaveReview={handleSaveOfficerReview}
+            />
+          )}
+
           {activeDetailTab === 'tamper' && (
             <TamperDetectionCard tampering={currentSession.tampering} />
           )}
@@ -320,3 +367,5 @@ export const ScreeningWorkbench: React.FC<ScreeningWorkbenchProps> = ({
     </div>
   );
 };
+
+const SAMPLE_SCREENINGS_PREVIEW = SAMPLE_SCREENING_CASES.slice(0, 4);

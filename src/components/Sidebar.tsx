@@ -1,129 +1,137 @@
 import React from 'react';
 import { 
-  ShieldAlert, 
-  Activity, 
-  Database, 
-  Cpu, 
-  Sliders, 
-  FileText, 
-  LogOut, 
+  ScanLine, 
+  BarChart3, 
+  Users, 
+  Settings, 
   ShieldCheck, 
-  Layers,
-  Sparkles
+  HelpCircle, 
+  Lock, 
+  Cpu, 
+  BookOpen
 } from 'lucide-react';
 
-export type MainTab = 'screening' | 'intelligence' | 'watchlist' | 'settings';
-
 interface SidebarProps {
-  activeTab: MainTab;
-  onTabChange: (tab: MainTab) => void;
-  onLogout: () => void;
+  activeTab: 'screening' | 'intelligence' | 'watchlist' | 'audit' | 'models' | 'settings';
+  setActiveTab: (tab: 'screening' | 'intelligence' | 'watchlist' | 'audit' | 'models' | 'settings') => void;
+  activeScreeningsCount?: number;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   activeTab,
-  onTabChange,
-  onLogout,
+  setActiveTab,
+  activeScreeningsCount = 4,
 }) => {
   const navItems = [
     {
-      id: 'screening' as MainTab,
+      id: 'screening' as const,
       label: 'Screening Station',
-      subtitle: 'Real-Time Inspection Terminal',
-      icon: ShieldAlert,
-      badge: 'LIVE',
+      subtitle: 'Primary OCR & Forensic Inspector',
+      icon: ScanLine,
+      badge: `${activeScreeningsCount} Active`,
+      badgeColor: 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30',
     },
     {
-      id: 'intelligence' as MainTab,
-      label: 'Intelligence & Audit',
-      subtitle: 'Analytics & Case Dossiers',
-      icon: Activity,
+      id: 'intelligence' as const,
+      label: 'Threat Analytics',
+      subtitle: 'Checkpoint Throughput & Forgery Trends',
+      icon: BarChart3,
     },
     {
-      id: 'watchlist' as MainTab,
+      id: 'watchlist' as const,
       label: 'Interpol & Watchlist',
-      subtitle: 'National Blacklist DB',
-      icon: Database,
-      badge: 'SYNCED',
+      subtitle: 'Red Notices & SLTD Fugitive Database',
+      icon: Users,
+      badge: '1 Alert',
+      badgeColor: 'bg-red-500/20 text-red-400 border border-red-500/30 animate-pulse',
     },
     {
-      id: 'settings' as MainTab,
-      label: 'Hardware & AI Engine',
-      subtitle: 'Optics, ELA & ICAO Config',
-      icon: Sliders,
+      id: 'audit' as const,
+      label: 'Cryptographic Audit',
+      subtitle: 'Tamper-Evident SHA-256 Hash Ledger',
+      icon: Lock,
+      badge: 'Verified',
+      badgeColor: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
+    },
+    {
+      id: 'models' as const,
+      label: 'AI Model Registry',
+      subtitle: 'Weights Hashes & Reproducibility',
+      icon: Cpu,
+    },
+    {
+      id: 'settings' as const,
+      label: 'Diagnostic Settings',
+      subtitle: 'Thresholds, ELA Gain & Biometrics',
+      icon: Settings,
     },
   ];
 
   return (
-    <aside className="w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between shrink-0 p-4 min-h-screen">
-      <div>
-        {/* Navigation Items */}
-        <div className="space-y-2 mt-2">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => onTabChange(item.id)}
-                className={`w-full p-3 rounded-xl text-left transition-all duration-200 flex items-center justify-between group ${
-                  isActive
-                    ? 'bg-cyan-600/20 text-white border border-cyan-500/40 shadow-lg shadow-cyan-950'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900 border border-transparent'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`p-2 rounded-lg transition ${
-                      isActive
-                        ? 'bg-cyan-500 text-slate-950 font-bold'
-                        : 'bg-slate-900 text-slate-400 group-hover:text-white'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold block">{item.label}</span>
-                    <span className="text-[10px] text-slate-500 block">{item.subtitle}</span>
-                  </div>
-                </div>
+    <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between p-4 shrink-0 select-none">
+      {/* Top Nav Items */}
+      <div className="space-y-6">
+        <div>
+          <span className="text-[10px] font-mono font-bold tracking-widest text-slate-500 uppercase px-3 block mb-2">
+            Command Modules
+          </span>
+          <nav className="space-y-1.5">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
 
-                {item.badge && (
-                  <span
-                    className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${
-                      item.badge === 'LIVE'
-                        ? 'bg-emerald-950 text-emerald-400 border border-emerald-800 animate-pulse'
-                        : 'bg-slate-900 text-slate-400 border border-slate-800'
-                    }`}
-                  >
-                    {item.badge}
-                  </span>
-                )}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`w-full flex items-center justify-between p-3 rounded-xl text-left transition-all duration-200 ${
+                    isActive
+                      ? 'bg-cyan-950/80 text-white border border-cyan-500/40 shadow-lg shadow-cyan-950/50'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Icon className={`w-5 h-5 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
+                    <div>
+                      <span className={`text-xs font-bold block ${isActive ? 'text-white' : 'text-slate-300'}`}>
+                        {item.label}
+                      </span>
+                      <span className="text-[10px] text-slate-400 block line-clamp-1">
+                        {item.subtitle}
+                      </span>
+                    </div>
+                  </div>
+
+                  {item.badge && (
+                    <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${item.badgeColor}`}>
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* SIH Hackathon Meta */}
+        <div className="bg-slate-950/80 rounded-2xl p-3.5 border border-slate-800/80">
+          <div className="flex items-center gap-2 text-amber-400 mb-1.5">
+            <ShieldCheck className="w-4 h-4" />
+            <span className="text-[11px] font-bold uppercase tracking-wider">SIH 2026 Ready</span>
+          </div>
+          <p className="text-[10px] text-slate-400 leading-relaxed font-sans">
+            MHA SSB Problem Statement <strong>SIH26188</strong>: AI Document Forensics &amp; Biometric Screening System.
+          </p>
         </div>
       </div>
 
-      {/* Bottom Checkpoint Summary & Log Out */}
-      <div className="space-y-3 pt-4 border-t border-slate-800/80">
-        <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-xs text-slate-400">
-          <div className="flex items-center justify-between text-[11px] font-bold text-slate-300 mb-1">
-            <span>SSB Network Node</span>
-            <span className="text-emerald-400 font-mono">ONLINE</span>
-          </div>
-          <p className="text-[10px] text-slate-500 leading-tight">
-            Encrypted TLS 1.3 link to Ministry of Home Affairs Central Intelligence Grid.
-          </p>
-        </div>
-
-        <button
-          onClick={onLogout}
-          className="w-full py-2.5 bg-slate-900 hover:bg-red-950/60 text-slate-400 hover:text-red-300 border border-slate-800 hover:border-red-800 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2"
-        >
-          <LogOut className="w-3.5 h-3.5" />
-          End Officer Shift (Logout)
-        </button>
+      {/* Bottom Status */}
+      <div className="pt-4 border-t border-slate-800/80 text-[11px] text-slate-400 flex items-center justify-between font-mono">
+        <span>Sentinel v2.5.0</span>
+        <span className="text-emerald-400 flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          ONLINE
+        </span>
       </div>
     </aside>
   );

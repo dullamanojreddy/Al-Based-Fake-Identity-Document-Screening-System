@@ -5,9 +5,14 @@ export type DocumentType =
   | 'driving_license' 
   | 'border_permit';
 
-export type RiskTier = 'CLEAR' | 'SECONDARY_REVIEW' | 'DETAIN_ALERT';
+export type ReviewPriority = 
+  | 'LOW REVIEW PRIORITY' 
+  | 'REVIEW RECOMMENDED' 
+  | 'ENHANCED REVIEW RECOMMENDED';
 
 export type ThreatLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+
+export type FindingSeverity = 'INFO' | 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 
 export interface DocumentField {
   key: string;
@@ -16,6 +21,7 @@ export interface DocumentField {
   confidence: number; // 0 - 100%
   isTampered?: boolean;
   anomalyReason?: string;
+  source?: 'visual_zone' | 'mrz' | 'barcode';
   boundingBox?: {
     x: number; // % from left
     y: number; // % from top
@@ -34,7 +40,7 @@ export interface MRZChecksumItem {
 }
 
 export interface MRZData {
-  format: 'TD1' | 'TD2' | 'TD3';
+  format: 'TD1' | 'TD2' | 'TD3' | 'MRV_A' | 'MRV_B';
   rawLines: string[];
   documentType: string;
   countryCode: string;
@@ -65,8 +71,8 @@ export interface TamperBoundingBox {
   width: number;
   height: number;
   label: string;
-  type: 'photo' | 'text' | 'stamp' | 'mrz' | 'metadata';
-  severity: 'low' | 'medium' | 'high';
+  type: 'photo' | 'text' | 'stamp' | 'mrz' | 'metadata' | 'copy_move';
+  severity: FindingSeverity;
   confidence: number;
   description: string;
   technicalDetails?: string;
@@ -166,20 +172,89 @@ export interface RiskBreakdown {
   watchlistThreatScore: number;// 0-100 (higher = higher threat)
 }
 
+export interface ScreeningFinding {
+  id: string;
+  sourceModule: 'OCR' | 'MRZ' | 'TAMPERING' | 'BIOMETRICS' | 'WATCHLIST' | 'METADATA';
+  code: string;
+  severity: FindingSeverity;
+  title: string;
+  description: string;
+  boundingBox?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+  visualEvidence?: string;
+}
+
+export interface OfficerReviewRecord {
+  confirmedFindingIds: string[];
+  dismissedFindingIds: string[];
+  officerNotes: string;
+  secondaryInspectionRequested: boolean;
+  finalDecision: 'CLEARED' | 'SECONDARY_INSPECTION' | 'DETAINED';
+  reviewedAt: string;
+  officerBadge: string;
+  officerName: string;
+}
+
 export interface CompositeRiskAssessment {
   overallRiskScore: number; // 0 - 100
-  riskTier: RiskTier;
+  reviewPriority: ReviewPriority;
   confidenceLevel: number;
   breakdown: RiskBreakdown;
   keyRiskFactors: string[];
   positiveFactors: string[];
   recommendedAction: string;
   decisionTimestamp: string;
-  officerOverride?: {
-    approvedBy: string;
-    overrideTier: RiskTier;
-    justification: string;
-    timestamp: string;
+  findings: ScreeningFinding[];
+  officerReview?: OfficerReviewRecord;
+}
+
+export interface AuditLogBlock {
+  id: string;
+  sequenceNumber: number;
+  actorId: string;
+  action: string;
+  entityType: 'SCREENING' | 'DOCUMENT' | 'OFFICER_REVIEW' | 'WATCHLIST' | 'CONFIG';
+  entityId: string;
+  timestamp: string;
+  previousHash: string;
+  recordHash: string;
+  payload: any;
+}
+
+export interface ModelRegistryEntry {
+  id: string;
+  modelName: string;
+  modelType: 'OCR_MULTIMODAL' | 'MRZ_PARSER' | 'TAMPER_DETECTOR' | 'FACE_VERIFIER' | 'STAMP_ANALYZER';
+  version: string;
+  framework: string;
+  weightsHash: string;
+  thresholdConfig: Record<string, number | string | boolean>;
+  active: boolean;
+  datasetReference: string;
+  metrics: {
+    accuracy: number;
+    f1Score?: number;
+    avgLatencyMs: number;
+  };
+}
+
+export interface ScreeningStats {
+  totalScreened: number;
+  clearedCount: number;
+  secondaryReviewCount: number;
+  detainedCount: number;
+  averageProcessingTimeMs: number;
+  forgeryTypeBreakdown: {
+    photoSplicing: number;
+    textManipulation: number;
+    mrzDiscrepancy: number;
+    stampSealForgery: number;
+    biometricImpersonation: number;
+    watchlistHit: number;
   };
 }
 
@@ -209,16 +284,5 @@ export interface ScreeningSession {
   risk: CompositeRiskAssessment;
   
   status: 'PENDING' | 'CLEARED' | 'SECONDARY_INSPECTION' | 'DETAINED';
-  notes?: string;
-}
-
-export interface ScreeningStats {
-  totalScanned: number;
-  clearedCount: number;
-  secondaryReviewCount: number;
-  detainedCount: number;
-  tamperingDetectedCount: number;
-  watchlistHitsCount: number;
-  biometricMismatchCount: number;
-  avgVerificationTimeSeconds: number;
+  processingTimeMs: number;
 }

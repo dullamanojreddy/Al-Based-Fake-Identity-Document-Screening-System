@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { 
+  AreaChart, 
+  Area, 
   BarChart, 
   Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer, 
   PieChart, 
   Pie, 
   Cell, 
-  AreaChart, 
-  Area 
+  XAxis, 
+  YAxis, 
+  Tooltip, 
+  ResponsiveContainer, 
+  CartesianGrid 
 } from 'recharts';
 import { 
   Activity, 
@@ -27,11 +27,13 @@ import {
   TrendingUp,
   Cpu
 } from 'lucide-react';
-import { ScreeningSession, ScreeningStats } from '../types';
+import { ScreeningSession } from '../types';
 
 interface IntelligenceDashboardProps {
-  records: ScreeningSession[];
-  onSelectRecord: (record: ScreeningSession) => void;
+  records?: ScreeningSession[];
+  sessions?: ScreeningSession[];
+  onSelectRecord?: (record: ScreeningSession) => void;
+  onSelectSession?: (session: ScreeningSession) => void;
 }
 
 const THROUGHPUT_DATA = [
@@ -62,19 +64,24 @@ const DOCUMENT_TYPE_DISTRIBUTION = [
 
 export const IntelligenceDashboard: React.FC<IntelligenceDashboardProps> = ({
   records,
+  sessions,
   onSelectRecord,
+  onSelectSession,
 }) => {
+  const activeRecords = records || sessions || [];
+  const handleSelect = onSelectRecord || onSelectSession || (() => {});
+
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
 
   // Compute live stats
-  const totalScanned = records.length + 3321;
-  const clearedCount = records.filter(r => r.status === 'CLEARED').length + 3180;
-  const secondaryCount = records.filter(r => r.status === 'SECONDARY_INSPECTION').length + 95;
-  const detainedCount = records.filter(r => r.status === 'DETAINED').length + 46;
+  const totalScanned = activeRecords.length + 3321;
+  const clearedCount = activeRecords.filter((r) => r.status === 'CLEARED').length + 3180;
+  const secondaryCount = activeRecords.filter((r) => r.status === 'SECONDARY_INSPECTION').length + 95;
+  const detainedCount = activeRecords.filter((r) => r.status === 'DETAINED').length + 46;
 
-  const filteredRecords = records.filter(rec => {
-    const matchesSearch = 
+  const filteredRecords = activeRecords.filter((rec) => {
+    const matchesSearch =
       rec.travelerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       rec.travelerPassportNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
       rec.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -86,8 +93,9 @@ export const IntelligenceDashboard: React.FC<IntelligenceDashboardProps> = ({
 
   const exportCSV = () => {
     const headers = ['Case ID,Timestamp,Traveler Name,Nationality,Passport No,Doc Type,Risk Score,Status,Decision'];
-    const rows = records.map(r => 
-      `"${r.id}","${r.timestamp}","${r.travelerName}","${r.travelerNationality}","${r.travelerPassportNumber}","${r.documentType}","${r.risk.overallRiskScore}","${r.status}","${r.risk.riskTier}"`
+    const rows = activeRecords.map(
+      (r) =>
+        `"${r.id}","${r.timestamp}","${r.travelerName}","${r.travelerNationality}","${r.travelerPassportNumber}","${r.documentType}","${r.risk.overallRiskScore}","${r.status}","${r.risk.reviewPriority}"`
     );
     const blob = new Blob([[...headers, ...rows].join('\n')], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -110,80 +118,80 @@ export const IntelligenceDashboard: React.FC<IntelligenceDashboardProps> = ({
           <span className="text-2xl sm:text-3xl font-black font-mono text-white">
             {totalScanned.toLocaleString()}
           </span>
-          <span className="text-[11px] text-cyan-400 font-medium mt-1 flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" /> +14.2% peak volume
+          <span className="text-[10px] text-slate-400 mt-1 flex items-center gap-1 font-mono">
+            <TrendingUp className="w-3 h-3 text-emerald-400" /> +14.2% peak surge
           </span>
         </div>
 
         {/* Cleared */}
         <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl flex flex-col justify-between">
           <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Cleared (e-Gate)</span>
+            <span className="text-xs font-bold uppercase tracking-wider">Cleared &amp; Admitted</span>
             <ShieldCheck className="w-4 h-4 text-emerald-400" />
           </div>
           <span className="text-2xl sm:text-3xl font-black font-mono text-emerald-400">
             {clearedCount.toLocaleString()}
           </span>
-          <span className="text-[11px] text-slate-400 font-medium mt-1">
-            95.8% Automated Fast-Track
+          <span className="text-[10px] text-emerald-500 mt-1 font-mono font-bold">
+            95.7% Automated e-Gate
           </span>
         </div>
 
         {/* Secondary Review */}
         <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl flex flex-col justify-between">
           <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Secondary Review</span>
+            <span className="text-xs font-bold uppercase tracking-wider">Secondary Inspection</span>
             <ShieldAlert className="w-4 h-4 text-amber-400" />
           </div>
           <span className="text-2xl sm:text-3xl font-black font-mono text-amber-400">
             {secondaryCount}
           </span>
-          <span className="text-[11px] text-slate-400 font-medium mt-1">
-            Physical UV / Stamp checks
+          <span className="text-[10px] text-amber-500 mt-1 font-mono font-bold">
+            2.9% Referred to Booth
           </span>
         </div>
 
-        {/* Detained / Forgeries */}
+        {/* Detained / Blocked */}
         <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl flex flex-col justify-between">
           <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Detained &amp; Forgeries</span>
+            <span className="text-xs font-bold uppercase tracking-wider">Detained &amp; Forged</span>
             <AlertOctagon className="w-4 h-4 text-red-400" />
           </div>
           <span className="text-2xl sm:text-3xl font-black font-mono text-red-400">
             {detainedCount}
           </span>
-          <span className="text-[11px] text-red-400 font-semibold mt-1">
-            100% Intercept Accuracy
+          <span className="text-[10px] text-red-400 mt-1 font-mono font-bold">
+            1.4% Intercepted Fraud
           </span>
         </div>
       </div>
 
-      {/* Analytics Charts Grid */}
+      {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Checkpoint Throughput & Forgery Trend Chart */}
+        {/* Checkpoint Throughput Area Chart */}
         <div className="lg:col-span-8 bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
             <div>
               <h3 className="text-sm font-bold uppercase tracking-wider text-slate-200">
-                Checkpoint Passenger Throughput &amp; Threat Detection Rate
+                Checkpoint Traveler Screening Throughput (Hourly)
               </h3>
-              <p className="text-xs text-slate-400">Real-time scan load vs security anomaly flags</p>
+              <p className="text-xs text-slate-400">Live processing volume across SSB Checkpoint ICP-04</p>
             </div>
-            <div className="flex items-center gap-3 text-xs font-mono">
-              <span className="flex items-center gap-1.5 text-cyan-400">
-                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" /> Scanned
+            <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
+              <span className="flex items-center gap-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" /> Cleared
               </span>
-              <span className="flex items-center gap-1.5 text-red-400">
-                <span className="w-2.5 h-2.5 rounded-full bg-red-500" /> Flagged Forgeries
+              <span className="flex items-center gap-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-400" /> Flagged
               </span>
             </div>
           </div>
 
-          <div className="h-64 w-full">
+          <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={THROUGHPUT_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="scannedGrad" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id="clearedGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.4} />
                     <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.0} />
                   </linearGradient>
@@ -193,49 +201,51 @@ export const IntelligenceDashboard: React.FC<IntelligenceDashboardProps> = ({
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis dataKey="time" stroke="#64748b" fontSize={11} />
-                <YAxis stroke="#64748b" fontSize={11} />
+                <XAxis dataKey="time" stroke="#64748b" tick={{ fontSize: 11 }} />
+                <YAxis stroke="#64748b" tick={{ fontSize: 11 }} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#090d16', borderColor: '#334155', borderRadius: '8px' }}
-                  labelStyle={{ color: '#94a3b8', fontSize: '11px' }}
+                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '0.75rem' }}
+                  itemStyle={{ fontSize: '12px' }}
                 />
-                <Area type="monotone" dataKey="scanned" stroke="#06b6d4" strokeWidth={2} fillOpacity={1} fill="url(#scannedGrad)" />
-                <Area type="monotone" dataKey="flagged" stroke="#ef4444" strokeWidth={2} fillOpacity={1} fill="url(#flaggedGrad)" />
+                <Area type="monotone" dataKey="cleared" stroke="#06b6d4" strokeWidth={2} fillOpacity={1} fill="url(#clearedGrad)" name="Cleared" />
+                <Area type="monotone" dataKey="flagged" stroke="#ef4444" strokeWidth={2} fillOpacity={1} fill="url(#flaggedGrad)" name="Flagged / Detained" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Forgery Techniques Breakdown */}
+        {/* Top Forgery Methods Breakdown */}
         <div className="lg:col-span-4 bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col justify-between">
-          <div>
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-200 border-b border-slate-800 pb-3 mb-4">
-              Top Forgery Modus Operandi
+          <div className="border-b border-slate-800 pb-3 mb-3">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-200">
+              Top Detected Forgery Vectors
             </h3>
-            <div className="space-y-3">
-              {FORGERY_TECHNIQUES.map((tech, idx) => (
-                <div key={idx}>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-slate-300 font-medium">{tech.name}</span>
-                    <span className="font-mono font-bold text-white">{tech.count} cases</span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{
-                        width: `${(tech.count / 48) * 100}%`,
-                        backgroundColor: tech.fill,
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <p className="text-xs text-slate-400">Distribution of confirmed forensic alterations</p>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex items-center gap-2">
-            <Cpu className="w-4 h-4 text-purple-400 shrink-0" />
-            <span>AI Multi-Spectral Splicing detection accounted for 33% of caught fraud.</span>
+          <div className="space-y-3">
+            {FORGERY_TECHNIQUES.map((technique) => (
+              <div key={technique.name} className="space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="text-slate-300 font-medium">{technique.name}</span>
+                  <span className="font-mono font-bold text-white">{technique.count} cases</span>
+                </div>
+                <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${(technique.count / 48) * 100}%`,
+                      backgroundColor: technique.fill,
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="pt-3 border-t border-slate-800/80 text-[11px] text-slate-400 flex items-center justify-between">
+            <span>Primary Vector: Photo Splicing (33%)</span>
+            <span className="text-cyan-400 font-mono font-bold">146 Total Flags</span>
           </div>
         </div>
       </div>
@@ -316,26 +326,34 @@ export const IntelligenceDashboard: React.FC<IntelligenceDashboardProps> = ({
                     <td className="py-2.5 px-3 font-mono text-slate-400">{rec.travelerNationality}</td>
                     <td className="py-2.5 px-3 uppercase text-slate-400 text-[11px]">{rec.documentType.replace('_', ' ')}</td>
                     <td className="py-2.5 px-3 text-center font-mono font-black">
-                      <span className={`px-2 py-0.5 rounded ${
-                        rec.risk.overallRiskScore > 65 ? 'bg-red-950 text-red-400 border border-red-800' :
-                        rec.risk.overallRiskScore > 25 ? 'bg-amber-950 text-amber-400 border border-amber-800' :
-                        'bg-emerald-950 text-emerald-400 border border-emerald-800'
-                      }`}>
+                      <span
+                        className={`px-2 py-0.5 rounded ${
+                          rec.risk.overallRiskScore > 65
+                            ? 'bg-red-950 text-red-400 border border-red-800'
+                            : rec.risk.overallRiskScore > 25
+                            ? 'bg-amber-950 text-amber-400 border border-amber-800'
+                            : 'bg-emerald-950 text-emerald-400 border border-emerald-800'
+                        }`}
+                      >
                         {rec.risk.overallRiskScore}
                       </span>
                     </td>
                     <td className="py-2.5 px-3">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
-                        isCleared ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' :
-                        isSecondary ? 'bg-amber-950 text-amber-400 border border-amber-800' :
-                        'bg-red-950 text-red-400 border border-red-800'
-                      }`}>
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+                          isCleared
+                            ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
+                            : isSecondary
+                            ? 'bg-amber-950 text-amber-400 border border-amber-800'
+                            : 'bg-red-950 text-red-400 border border-red-800'
+                        }`}
+                      >
                         {rec.status.replace('_', ' ')}
                       </span>
                     </td>
                     <td className="py-2.5 px-3 text-right">
                       <button
-                        onClick={() => onSelectRecord(rec)}
+                        onClick={() => handleSelect(rec)}
                         className="px-2.5 py-1 bg-cyan-600/20 hover:bg-cyan-600/40 text-cyan-300 border border-cyan-500/40 rounded-lg text-xs font-bold transition inline-flex items-center gap-1"
                       >
                         <Eye className="w-3 h-3" />
