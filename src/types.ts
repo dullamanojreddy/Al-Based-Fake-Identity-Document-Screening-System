@@ -3,7 +3,9 @@ export type DocumentType =
   | 'visa' 
   | 'national_id' 
   | 'driving_license' 
-  | 'border_permit';
+  | 'border_permit'
+  | 'unsupported_document'
+  | 'unknown';
 
 export type ReviewPriority = 
   | 'LOW REVIEW PRIORITY' 
@@ -283,6 +285,8 @@ export interface ScreeningSession {
   // Composite Evaluation
   risk: CompositeRiskAssessment;
   
-  status: 'PENDING' | 'CLEARED' | 'SECONDARY_INSPECTION' | 'DETAINED';
+  status: 'PENDING' | 'CLEARED' | 'SECONDARY_INSPECTION' | 'DETAINED' | 'UNSUPPORTED_DOCUMENT';
   processingTimeMs: number;
+  unsupportedReason?: string;
+  detectedClassificationConfidence?: number;
 }

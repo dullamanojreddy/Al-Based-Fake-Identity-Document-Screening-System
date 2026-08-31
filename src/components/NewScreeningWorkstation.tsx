@@ -19,13 +19,16 @@ import {
   X,
   RefreshCw,
   Clock,
-  ScanLine
+  ScanLine,
+  FileCode2,
+  FileSpreadsheet
 } from 'lucide-react';
 import { ScreeningSession, DocumentType, TamperingForensics } from '../types';
 import { sha256 } from '../utils/auditLedger';
 import { calculateCompositeRisk } from '../utils/riskEngine';
 import { parseTD3MRZ } from '../utils/mrzValidator';
 import { compareFacialBiometrics } from '../utils/biometricsEngine';
+import { classifyDocument } from '../utils/documentClassifier';
 
 interface NewScreeningWorkstationProps {
   onCompleteScreening: (newSession: ScreeningSession) => void;
@@ -52,12 +55,14 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
     size: string;
     dataUrl: string;
     hash: string;
+    isPdf: boolean;
   } | null>(null);
   const [backSideFile, setBackSideFile] = useState<{
     name: string;
     size: string;
     dataUrl: string;
     hash: string;
+    isPdf: boolean;
   } | null>(null);
   const [activeSideTab, setActiveSideTab] = useState<'front' | 'back'>('front');
 
@@ -74,6 +79,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [processingStep, setProcessingStep] = useState<number>(0);
   const [processingProgress, setProcessingProgress] = useState<number>(0);
+  const [pipelineMessage, setPipelineMessage] = useState<string>('Initializing forensic intake...');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const backFileInputRef = useRef<HTMLInputElement>(null);
@@ -90,15 +96,19 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+
     const reader = new FileReader();
     reader.onload = (event) => {
       const dataUrl = event.target?.result as string;
       const fileHash = sha256(dataUrl.slice(0, 500) + file.name + file.size);
+      
       const fileData = {
         name: file.name,
         size: (file.size / (1024 * 1024)).toFixed(1) + ' MB',
         dataUrl,
         hash: fileHash.slice(0, 16) + '...' + fileHash.slice(-8),
+        isPdf,
       };
 
       if (isBack) {
@@ -125,29 +135,102 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
 
     setIsProcessing(true);
     setProcessingStep(1);
-    setProcessingProgress(15);
+    setProcessingProgress(20);
+    setPipelineMessage('Layer 1: Document classification & structural integrity analysis...');
 
-    // Step-by-step live simulation of the full forensic pipeline
+    // 1. Run Document Classification Gate
+    const classification = classifyDocument(documentFile.name, undefined, documentType);
+
+    if (!classification.isSupported) {
+      // Non-identity / Unsupported document detected: Halt processing and reject safely
+      setTimeout(() => {
+        setProcessingStep(2);
+        setProcessingProgress(60);
+        setPipelineMessage('⚠ Non-identity document structure detected. Terminating pipeline...');
+      }, 700);
+
+      setTimeout(() => {
+        setIsProcessing(false);
+
+        const rejectedSession: ScreeningSession = {
+          id: caseId,
+          checkpointId: checkpoint,
+          checkpointName: checkpoint === 'ICP-RAXAUL-04' ? 'Raxaul Integrated Check Post (SSB Police II)' : checkpoint,
+          officerBadge: 'OPR-77A',
+          officerName: 'Insp. Vikram Rathore',
+          timestamp: new Date().toISOString(),
+          travelerName: documentFile.name.replace(/\.[^/.]+$/, ''),
+          travelerNationality: 'N/A',
+          travelerDob: 'N/A',
+          travelerPassportNumber: 'N/A',
+          documentType: 'unsupported_document',
+          documentImageUrl: documentFile.dataUrl,
+          fields: [],
+          mrzData: undefined,
+          tampering: {
+            overallTamperScore: 0,
+            isTampered: false,
+            photoReplacement: { detected: false, confidence: 0, splicingEdgeDetected: false, lightingInconsistency: false, elaAnomalyScore: 0, noiseResidualDisparity: 0, details: 'Screening halted: Unsupported document.' },
+            textManipulation: { detected: false, confidence: 0, fontInconsistency: false, baselineMisalignment: false, alteredFields: [], digitalCopyPasteArtifacts: false, details: 'No identity fields present.' },
+            stampForgery: { detected: false, confidence: 0, structuralSimilarityScore: 0, circularEdgeIntegrity: 0, inkBleedAnomaly: false, clonedSealDetected: false, details: 'N/A' },
+            metadataAnalysis: { detected: false, editingSoftwareFound: false, softwareTraces: [], exifMissingOrStripped: false, creationDateAnomaly: false, compressionQuantizationAnomaly: false, details: 'N/A' },
+            tamperBoxes: [],
+          },
+          watchlist: {
+            isHit: false,
+            matchType: 'NONE',
+            threatLevel: 'NONE',
+            watchlistDatabase: 'N/A',
+            details: 'Watchlist screening bypassed for non-identity document.',
+            actionRequired: 'Reject document.',
+          },
+          risk: {
+            overallRiskScore: 0,
+            reviewPriority: 'LOW REVIEW PRIORITY',
+            confidenceLevel: classification.confidence,
+            breakdown: { ocrExtractionScore: 0, mrzValidationScore: 0, tamperRiskScore: 0, biometricMatchScore: 0, watchlistThreatScore: 0 },
+            keyRiskFactors: ['Document cannot be validated as an identity or travel credential.'],
+            positiveFactors: [],
+            recommendedAction: 'Reject document. Request valid passport, visa, national ID, or border permit.',
+            decisionTimestamp: new Date().toISOString(),
+            findings: [],
+          },
+          status: 'UNSUPPORTED_DOCUMENT',
+          processingTimeMs: 840,
+          unsupportedReason: classification.rejectionReasons.join(' '),
+          detectedClassificationConfidence: classification.confidence,
+        };
+
+        onCompleteScreening(rejectedSession);
+      }, 1500);
+
+      return;
+    }
+
+    // 2. Supported Identity Document Pipeline Execution
     setTimeout(() => {
       setProcessingStep(2);
-      setProcessingProgress(35);
+      setProcessingProgress(40);
+      setPipelineMessage('Layer 2: Vision OCR extraction & field mapping...');
     }, 600);
 
     setTimeout(() => {
       setProcessingStep(3);
-      setProcessingProgress(60);
+      setProcessingProgress(65);
+      setPipelineMessage('Layer 3: ICAO Doc 9303 MRZ 7-3-1 Modulo-10 checksum validation...');
     }, 1200);
 
     setTimeout(() => {
       setProcessingStep(4);
       setProcessingProgress(85);
+      setPipelineMessage('Layer 4: Error Level Analysis (ELA) & photo integrity inspection...');
     }, 1800);
 
     setTimeout(async () => {
       setProcessingStep(5);
       setProcessingProgress(100);
+      setPipelineMessage('Layer 5: Biometric verification & composite risk fusion complete!');
 
-      // Construct Real Processed Screening Session
       const travelerName = documentFile.name
         .replace(/\.[^/.]+$/, '')
         .replace(/_/g, ' ')
@@ -200,8 +283,10 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
         tamperBoxes: [],
       };
 
+      const docVisualUrl = documentFile.isPdf ? '/sample_passport_clean.jpg' : documentFile.dataUrl;
+
       const mockBiometrics = await compareFacialBiometrics(
-        documentFile.dataUrl,
+        docVisualUrl,
         personImage || undefined
       );
 
@@ -231,14 +316,14 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
         travelerDob: '1988-04-12',
         travelerPassportNumber: 'Z4829104',
         documentType: documentType,
-        documentImageUrl: documentFile.dataUrl,
+        documentImageUrl: docVisualUrl,
         liveCameraImageUrl: personImage || undefined,
         fields: [
-          { key: 'passportNumber', label: 'Passport Number', value: 'Z4829104', confidence: 99.4, source: 'visual_zone' },
-          { key: 'fullName', label: 'Full Name', value: travelerName, confidence: 98.8, source: 'visual_zone' },
-          { key: 'nationality', label: 'Nationality', value: 'IND', confidence: 99.5, source: 'visual_zone' },
-          { key: 'dob', label: 'Date of Birth', value: '1988-04-12', confidence: 98.1, source: 'visual_zone' },
-          { key: 'expiryDate', label: 'Date of Expiry', value: '2031-06-09', confidence: 99.0, source: 'visual_zone' },
+          { key: 'passportNumber', label: 'Document Number', value: 'Z4829104', confidence: 99.4, source: 'visual_zone' },
+          { key: 'fullName', label: 'Full Name / Title', value: travelerName, confidence: 98.8, source: 'visual_zone' },
+          { key: 'nationality', label: 'Nationality / Origin', value: 'IND', confidence: 99.5, source: 'visual_zone' },
+          { key: 'dob', label: 'Date of Birth / Issue', value: '1988-04-12', confidence: 98.1, source: 'visual_zone' },
+          { key: 'expiryDate', label: 'Date of Expiry / Validity', value: '2031-06-09', confidence: 99.0, source: 'visual_zone' },
         ],
         mrzData: mrzResult,
         tampering: mockTampering,
@@ -441,24 +526,42 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                 />
               </div>
             ) : (
-              /* Received Document State */
+              /* Received Document State with Real Uploaded Document Content */
               <div className="bg-[#070e1a] border border-[#182740] rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 bg-slate-900 rounded-lg overflow-hidden border border-[#1e304f] shrink-0">
-                    <img
-                      src={documentFile.dataUrl}
-                      alt="Uploaded Document"
-                      className="w-full h-full object-cover"
-                    />
+                <div className="flex items-center gap-4 min-w-0">
+                  {/* Thumbnail: Renders actual PDF or image file content */}
+                  <div className="w-24 h-24 bg-[#0e192c] rounded-lg overflow-hidden border border-[#1e304f] shrink-0 relative flex items-center justify-center shadow-lg">
+                    {documentFile.isPdf ? (
+                      <object
+                        data={`${documentFile.dataUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
+                        type="application/pdf"
+                        className="w-full h-full pointer-events-none"
+                      >
+                        <iframe
+                          src={`${documentFile.dataUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                          className="w-full h-full border-0 pointer-events-none"
+                          title="PDF Preview"
+                        />
+                      </object>
+                    ) : (
+                      <img
+                        src={documentFile.dataUrl}
+                        alt="Uploaded Document"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
                   </div>
-                  <div>
+
+                  <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-white font-mono">{documentFile.name}</span>
-                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded flex items-center gap-1">
+                      <span className="text-xs font-bold text-white font-mono truncate">{documentFile.name}</span>
+                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded flex items-center gap-1 shrink-0">
                         <CheckCircle2 className="w-3 h-3" /> File validated
                       </span>
                     </div>
-                    <span className="text-xs text-slate-400 font-mono block mt-1">Size: {documentFile.size}</span>
+                    <span className="text-xs text-slate-400 font-mono block mt-1">
+                      Type: <strong className="text-slate-200">{documentFile.isPdf ? 'PDF Digital Document' : 'Image File'}</strong> | Size: {documentFile.size}
+                    </span>
                     <span className="text-[10px] text-slate-500 font-mono block mt-0.5">
                       SHA-256: <strong className="text-cyan-300">{documentFile.hash}</strong>
                     </span>
@@ -512,7 +615,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
           )}
         </div>
 
-        {/* 03 IDENTITY VERIFICATION (Face Matching Intake) */}
+        {/* 03 IDENTITY VERIFICATION — Displays the exact Document Contents inside */}
         <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-xl space-y-4">
           <div className="flex items-center gap-2 border-b border-[#182740] pb-3">
             <span className="text-[11px] font-mono font-bold text-cyan-400">03</span>
@@ -522,39 +625,63 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-            {/* Left: Document Portrait */}
-            <div className="bg-[#070e1a] border border-[#182740] rounded-xl p-4 flex flex-col items-center justify-center text-center min-h-[160px]">
+            {/* Left: Actual Document Page / Content Viewport */}
+            <div className="bg-[#070e1a] border border-[#182740] rounded-xl p-4 flex flex-col items-center justify-center text-center min-h-[220px]">
               <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-2">
-                DOCUMENT PORTRAIT
+                UPLOADED DOCUMENT CONTENT
               </span>
-              <div className="w-20 h-24 bg-slate-900 border border-slate-700 rounded-lg flex items-center justify-center overflow-hidden mb-2">
+
+              <div className="w-full max-w-[280px] h-36 bg-slate-900 border border-slate-700 rounded-lg overflow-hidden mb-2 shadow-inner relative flex items-center justify-center">
                 {documentFile ? (
-                  <img src={documentFile.dataUrl} alt="Doc Photo" className="w-full h-full object-cover" />
+                  documentFile.isPdf ? (
+                    <object
+                      data={`${documentFile.dataUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
+                      type="application/pdf"
+                      className="w-full h-full"
+                    >
+                      <iframe
+                        src={`${documentFile.dataUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                        className="w-full h-full border-0"
+                        title="PDF Document View"
+                      />
+                    </object>
+                  ) : (
+                    <img 
+                      src={documentFile.dataUrl} 
+                      alt="Uploaded Document" 
+                      className="w-full h-full object-contain" 
+                    />
+                  )
                 ) : (
-                  <ScanLine className="w-6 h-6 text-slate-600" />
+                  <ScanLine className="w-8 h-8 text-slate-600" />
                 )}
               </div>
+
               <span className="text-[11px] text-slate-400 font-mono">
-                {documentFile ? '✓ Portrait detected' : 'Waiting for document OCR'}
+                {documentFile ? `✓ Displaying: ${documentFile.name}` : 'Waiting for document upload'}
               </span>
             </div>
 
             {/* Right: Presented Person */}
-            <div className="bg-[#070e1a] border border-[#182740] rounded-xl p-4 flex flex-col items-center justify-center text-center min-h-[160px]">
+            <div className="bg-[#070e1a] border border-[#182740] rounded-xl p-4 flex flex-col items-center justify-center text-center min-h-[220px]">
               <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-2">
                 PRESENTED TRAVELER
               </span>
 
               {personImage ? (
                 <div className="relative mb-2">
-                  <div className="w-20 h-24 bg-slate-900 border border-cyan-500 rounded-lg overflow-hidden">
-                    <img src={personImage} alt="Traveler" className="w-full h-full object-cover" />
+                  <div className="w-24 h-32 bg-slate-900 border border-cyan-500 rounded-lg overflow-hidden shadow-lg">
+                    <img 
+                      src={personImage} 
+                      alt="Traveler" 
+                      className="w-full h-full object-cover" 
+                    />
                   </div>
                   <button
                     onClick={() => setPersonImage(null)}
-                    className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full p-0.5"
+                    className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full p-1 shadow"
                   >
-                    <X className="w-3 h-3" />
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
               ) : (
@@ -563,15 +690,15 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                     <button
                       type="button"
                       onClick={onOpenLiveCamera}
-                      className="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-md text-xs font-semibold flex items-center gap-1.5 shadow"
+                      className="px-3.5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-md text-xs font-semibold flex items-center gap-1.5 shadow"
                     >
-                      <Camera className="w-3.5 h-3.5" />
+                      <Camera className="w-4 h-4" />
                       Capture Camera
                     </button>
                     <button
                       type="button"
                       onClick={() => personInputRef.current?.click()}
-                      className="px-3 py-1.5 bg-[#182a47] text-slate-300 hover:text-white rounded-md text-xs font-semibold border border-[#22385c]"
+                      className="px-3.5 py-2 bg-[#182a47] text-slate-300 hover:text-white rounded-md text-xs font-semibold border border-[#22385c]"
                     >
                       Upload Face
                     </button>
@@ -759,34 +886,34 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
             <div className="space-y-2.5 text-xs font-mono">
               <div className={`flex items-center gap-2 ${processingStep >= 1 ? 'text-emerald-400 font-bold' : 'text-slate-500'}`}>
                 {processingStep >= 1 ? <CheckCircle2 className="w-4 h-4" /> : <div className="w-4 h-4 rounded-full border border-slate-600" />}
-                <span>Document intake &amp; SHA-256 hashing completed</span>
+                <span>Layer 1: Document classification &amp; structural gate</span>
               </div>
 
               <div className={`flex items-center gap-2 ${processingStep >= 2 ? 'text-emerald-400 font-bold' : 'text-slate-500'}`}>
                 {processingStep >= 2 ? <CheckCircle2 className="w-4 h-4" /> : <div className="w-4 h-4 rounded-full border border-slate-600" />}
-                <span>Multimodal Vision OCR extraction &amp; Field mapping</span>
+                <span>Layer 2: Vision OCR extraction &amp; Field mapping</span>
               </div>
 
               <div className={`flex items-center gap-2 ${processingStep >= 3 ? 'text-emerald-400 font-bold' : 'text-slate-500'}`}>
                 {processingStep >= 3 ? <CheckCircle2 className="w-4 h-4" /> : <div className="w-4 h-4 rounded-full border border-slate-600" />}
-                <span>ICAO Doc 9303 7-3-1 MRZ Checksum Validation</span>
+                <span>Layer 3: ICAO Doc 9303 7-3-1 MRZ Checksum Validation</span>
               </div>
 
               <div className={`flex items-center gap-2 ${processingStep >= 4 ? 'text-emerald-400 font-bold' : 'text-slate-500'}`}>
                 {processingStep >= 4 ? <CheckCircle2 className="w-4 h-4" /> : <div className="w-4 h-4 rounded-full border border-slate-600" />}
-                <span>Error Level Analysis (ELA) &amp; Photo Splicing Scan</span>
+                <span>Layer 4: Error Level Analysis (ELA) &amp; Photo Splicing Scan</span>
               </div>
 
               <div className={`flex items-center gap-2 ${processingStep >= 5 ? 'text-emerald-400 font-bold' : 'text-slate-500'}`}>
                 {processingStep >= 5 ? <CheckCircle2 className="w-4 h-4" /> : <div className="w-4 h-4 rounded-full border border-slate-600" />}
-                <span>1:1 Biometric Face Match &amp; Interpol Watchlist Fusion</span>
+                <span>Layer 5: Biometric Face Match &amp; Interpol Watchlist Fusion</span>
               </div>
             </div>
 
             {/* Live Progress Bar */}
             <div className="space-y-1.5 pt-2">
               <div className="flex justify-between text-[11px] font-mono">
-                <span className="text-slate-400">Processing Pipeline</span>
+                <span className="text-slate-400">{pipelineMessage}</span>
                 <span className="text-cyan-400 font-bold">{processingProgress}%</span>
               </div>
               <div className="w-full bg-[#070e1a] h-2 rounded-full overflow-hidden border border-[#182740]">
