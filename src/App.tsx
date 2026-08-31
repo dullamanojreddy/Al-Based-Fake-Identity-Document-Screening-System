@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { MissionControlDashboard } from './components/MissionControlDashboard';
+import { NewScreeningWorkstation } from './components/NewScreeningWorkstation';
 import { ScreeningDetailView } from './components/ScreeningDetailView';
 import { WatchlistDatabaseView } from './components/WatchlistDatabaseView';
 import { SystemAnalyticsView } from './components/SystemAnalyticsView';
 import { AuditLedgerView } from './components/AuditLedgerView';
 import { SystemSettingsView } from './components/SystemSettingsView';
+import { LiveWebcamModal } from './components/LiveWebcamModal';
 import { Login } from './components/Login';
 import { SAMPLE_SCREENING_CASES } from './data/sampleScreenings';
 import { ScreeningSession } from './types';
@@ -14,11 +16,13 @@ import { ScreeningSession } from './types';
 export function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<
-    'dashboard' | 'screenings' | 'watchlist' | 'reports' | 'audit' | 'settings'
+    'dashboard' | 'new_screening' | 'screenings' | 'watchlist' | 'reports' | 'audit' | 'settings'
   >('dashboard');
 
   const [currentSession, setCurrentSession] = useState<ScreeningSession>(SAMPLE_SCREENING_CASES[0]);
   const [allSessions, setAllSessions] = useState<ScreeningSession[]>(SAMPLE_SCREENING_CASES);
+  const [isCameraModalOpen, setIsCameraModalOpen] = useState<boolean>(false);
+  const [liveCapturedFaceUrl, setLiveCapturedFaceUrl] = useState<string | undefined>(undefined);
 
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -40,6 +44,26 @@ export function App() {
     );
   };
 
+  const handleCompleteNewScreening = (newSession: ScreeningSession) => {
+    setAllSessions((prev) => [newSession, ...prev]);
+    setCurrentSession(newSession);
+    setActiveTab('screenings');
+  };
+
+  const handleFaceCaptured = (faceUrl: string) => {
+    setLiveCapturedFaceUrl(faceUrl);
+    if (activeTab === 'screenings') {
+      const updatedBio = {
+        ...currentSession.biometrics!,
+        livePassengerFaceUrl: faceUrl,
+        isBiometricVerified: true,
+        similarityScore: 95.4,
+        matchStatus: 'MATCH_VERIFIED' as const,
+      };
+      handleUpdateSession({ ...currentSession, biometrics: updatedBio });
+    }
+  };
+
   if (!isAuthenticated) {
     return <Login onLogin={handleLogin} />;
   }
@@ -50,13 +74,10 @@ export function App() {
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        onNewScreening={() => {
-          setCurrentSession(SAMPLE_SCREENING_CASES[1]);
-          setActiveTab('screenings');
-        }}
+        onNewScreening={() => setActiveTab('new_screening')}
         onLogout={handleLogout}
-        operatorId="OPR-77A"
-        clearanceLevel="Level 4 Clearance"
+        operatorId="OPR-7742"
+        clearanceLevel="Clearance Lvl 4"
       />
 
       {/* Main Content Area */}
@@ -64,7 +85,7 @@ export function App() {
         {/* Header */}
         <Header
           activeScreeningId={activeTab === 'screenings' ? currentSession.id : undefined}
-          activeAlertsCount={3}
+          activeAlertsCount={allSessions.filter((s) => s.risk.overallRiskScore >= 26).length}
           integrityStatus="Verified"
           onRefresh={() => {}}
         />
@@ -74,8 +95,19 @@ export function App() {
           <div className="max-w-[1400px] mx-auto">
             {activeTab === 'dashboard' && (
               <MissionControlDashboard
+                sessions={allSessions}
                 onSelectScreening={handleSelectSession}
                 onNavigateToScreenings={() => setActiveTab('screenings')}
+                onNewScreening={() => setActiveTab('new_screening')}
+              />
+            )}
+
+            {activeTab === 'new_screening' && (
+              <NewScreeningWorkstation
+                onCompleteScreening={handleCompleteNewScreening}
+                onCancel={() => setActiveTab('dashboard')}
+                onOpenLiveCamera={() => setIsCameraModalOpen(true)}
+                liveCapturedFaceUrl={liveCapturedFaceUrl}
               />
             )}
 
@@ -102,6 +134,13 @@ export function App() {
           </div>
         </main>
       </div>
+
+      {/* Live Camera Modal */}
+      <LiveWebcamModal
+        isOpen={isCameraModalOpen}
+        onClose={() => setIsCameraModalOpen(false)}
+        onCaptureFace={handleFaceCaptured}
+      />
     </div>
   );
 }

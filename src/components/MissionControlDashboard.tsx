@@ -15,67 +15,24 @@ import {
 import { ScreeningSession } from '../types';
 
 interface MissionControlDashboardProps {
+  sessions: ScreeningSession[];
   onSelectScreening: (session: ScreeningSession) => void;
   onNavigateToScreenings: () => void;
+  onNewScreening: () => void;
 }
 
 export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = ({
+  sessions = [],
   onSelectScreening,
   onNavigateToScreenings,
+  onNewScreening,
 }) => {
   const [throughputTimeRange, setThroughputTimeRange] = useState<'1H' | '24H'>('24H');
 
-  const QUEUE_ITEMS = [
-    {
-      id: 'TX-9921',
-      caseRef: 'SID-2026-9921',
-      name: 'Doe, John A.',
-      docType: 'Passport',
-      terminal: 'TERM-04-JFK',
-      statusLabel: 'Complete',
-      statusProgress: 100,
-      statusColor: 'bg-white',
-      riskTier: 'Clear',
-      riskColor: 'bg-[#121c2d] text-slate-300 border border-[#22334d]',
-    },
-    {
-      id: 'TX-9922',
-      caseRef: 'SID-2026-9922',
-      name: 'Smith, Maria K.',
-      docType: 'Visa',
-      terminal: 'TERM-12-LHR',
-      statusLabel: 'Forensic',
-      statusProgress: 65,
-      statusColor: 'bg-[#f59e0b]',
-      riskTier: 'Review',
-      riskColor: 'bg-[#291e11] text-[#fbbf24] border border-[#784d12]',
-    },
-    {
-      id: 'TX-9923',
-      caseRef: 'SID-2026-9932',
-      name: 'Unknown',
-      isUnknown: true,
-      docType: 'ID Card',
-      terminal: 'TERM-01-CDG',
-      statusLabel: 'Halted',
-      statusProgress: 40,
-      statusColor: 'bg-[#f87171]',
-      riskTier: 'Enhanced',
-      riskColor: 'bg-[#3b1219] text-[#fca5a5] border border-[#882233] shadow-[0_0_10px_rgba(248,113,113,0.2)]',
-    },
-    {
-      id: 'TX-9924',
-      caseRef: 'SID-2026-9924',
-      name: 'Chen, Wei',
-      docType: 'Passport',
-      terminal: 'TERM-08-NRT',
-      statusLabel: 'OCR',
-      statusProgress: 20,
-      statusColor: 'bg-slate-500',
-      riskTier: 'Pending',
-      riskColor: 'bg-[#111927] text-slate-400 border border-[#1e2a3c]',
-    },
-  ];
+  // Dynamic statistics calculated directly from active database sessions
+  const totalActive = sessions.length;
+  const flaggedCount = sessions.filter((s) => s.risk.overallRiskScore >= 26).length;
+  const watchlistHits = sessions.filter((s) => s.watchlist.isHit).length;
 
   return (
     <div className="space-y-6 pb-8 text-slate-200">
@@ -101,7 +58,7 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
         </div>
       </div>
 
-      {/* 4 Stat Metric Cards */}
+      {/* 4 Stat Metric Cards (Dynamically Computed from Database) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: ACTIVE SCREENINGS */}
         <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-4 flex flex-col justify-between shadow-lg">
@@ -114,10 +71,10 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-bold font-mono text-white tracking-tight">
-                1,248
+                {totalActive}
               </span>
               <span className="text-xs font-mono text-slate-400 font-semibold">
-                +12% /hr
+                Live Records
               </span>
             </div>
           </div>
@@ -143,10 +100,10 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-bold font-mono text-[#f59e0b] tracking-tight">
-                42
+                {flaggedCount}
               </span>
               <span className="text-xs font-mono text-slate-400 font-semibold">
-                Today
+                Anomalous
               </span>
             </div>
           </div>
@@ -172,7 +129,7 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-bold font-mono text-[#f87171] tracking-tight">
-                12
+                {watchlistHits}
               </span>
               <span className="text-xs font-mono text-[#fca5a5] font-bold uppercase tracking-wide">
                 CRITICAL
@@ -219,22 +176,30 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
         </div>
       </div>
 
-      {/* Live Screening Queue Table */}
+      {/* Live Screening Queue Table (Rendered from DB Sessions) */}
       <div className="bg-[#0b1424] border border-[#182740] rounded-xl overflow-hidden shadow-xl">
         <div className="px-5 py-4 border-b border-[#182740] flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ListFilter className="w-4 h-4 text-cyan-400" />
             <h3 className="text-sm font-bold text-white tracking-wide">
-              Live Screening Queue
+              Live Screening Queue ({sessions.length})
             </h3>
           </div>
 
-          <button
-            onClick={onNavigateToScreenings}
-            className="px-3 py-1 bg-[#121f35] hover:bg-[#182a47] text-slate-300 hover:text-white border border-[#223553] text-[10px] font-mono font-bold uppercase tracking-wider rounded transition"
-          >
-            VIEW ALL
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onNewScreening}
+              className="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-white text-[10px] font-mono font-bold uppercase tracking-wider rounded transition"
+            >
+              + NEW CASE
+            </button>
+            <button
+              onClick={onNavigateToScreenings}
+              className="px-3 py-1 bg-[#121f35] hover:bg-[#182a47] text-slate-300 hover:text-white border border-[#223553] text-[10px] font-mono font-bold uppercase tracking-wider rounded transition"
+            >
+              VIEW ALL
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -250,44 +215,59 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
               </tr>
             </thead>
             <tbody className="divide-y divide-[#15233a] font-sans">
-              {QUEUE_ITEMS.map((item) => (
-                <tr 
-                  key={item.id}
-                  onClick={onNavigateToScreenings}
-                  className="hover:bg-[#101b2f] transition cursor-pointer"
-                >
-                  <td className="py-3 px-5 font-mono text-slate-300 font-semibold">
-                    {item.id}
-                  </td>
-                  <td className={`py-3 px-5 font-medium ${item.isUnknown ? 'text-[#f87171] font-bold' : 'text-slate-200'}`}>
-                    {item.name}
-                  </td>
-                  <td className="py-3 px-5 text-slate-300">
-                    {item.docType}
-                  </td>
-                  <td className="py-3 px-5 font-mono text-slate-400 text-[11px]">
-                    {item.terminal}
-                  </td>
-                  <td className="py-3 px-5">
-                    <div className="flex items-center gap-3 max-w-[180px]">
-                      <div className="w-20 bg-[#15233a] h-1.5 rounded-full overflow-hidden shrink-0">
-                        <div
-                          className={`h-full rounded-full ${item.statusColor}`}
-                          style={{ width: `${item.statusProgress}%` }}
-                        />
+              {sessions.map((item) => {
+                const isHigh = item.risk.overallRiskScore >= 66;
+                const isMedium = item.risk.overallRiskScore >= 26 && item.risk.overallRiskScore < 66;
+                const statusLabel = item.status === 'CLEARED' ? 'Complete' : item.status === 'SECONDARY_INSPECTION' ? 'Forensic' : 'Halted';
+                const statusProgress = item.status === 'CLEARED' ? 100 : item.status === 'SECONDARY_INSPECTION' ? 65 : 40;
+                const statusColor = item.status === 'CLEARED' ? 'bg-white' : item.status === 'SECONDARY_INSPECTION' ? 'bg-[#f59e0b]' : 'bg-[#f87171]';
+
+                const riskTier = isHigh ? 'Enhanced' : isMedium ? 'Review' : 'Clear';
+                const riskColor = isHigh
+                  ? 'bg-[#3b1219] text-[#fca5a5] border border-[#882233]'
+                  : isMedium
+                  ? 'bg-[#291e11] text-[#fbbf24] border border-[#784d12]'
+                  : 'bg-[#121c2d] text-slate-300 border border-[#22334d]';
+
+                return (
+                  <tr 
+                    key={item.id}
+                    onClick={() => onSelectScreening(item)}
+                    className="hover:bg-[#101b2f] transition cursor-pointer"
+                  >
+                    <td className="py-3 px-5 font-mono text-slate-300 font-semibold">
+                      {item.id}
+                    </td>
+                    <td className={`py-3 px-5 font-medium ${isHigh ? 'text-[#f87171] font-bold' : 'text-slate-200'}`}>
+                      {item.travelerName}
+                    </td>
+                    <td className="py-3 px-5 text-slate-300 uppercase text-[11px]">
+                      {item.documentType.replace('_', ' ')}
+                    </td>
+                    <td className="py-3 px-5 font-mono text-slate-400 text-[11px]">
+                      {item.checkpointId}
+                    </td>
+                    <td className="py-3 px-5">
+                      <div className="flex items-center gap-3 max-w-[180px]">
+                        <div className="w-20 bg-[#15233a] h-1.5 rounded-full overflow-hidden shrink-0">
+                          <div
+                            className={`h-full rounded-full ${statusColor}`}
+                            style={{ width: `${statusProgress}%` }}
+                          />
+                        </div>
+                        <span className="text-[11px] font-mono text-slate-300">
+                          {statusLabel}
+                        </span>
                       </div>
-                      <span className="text-[11px] font-mono text-slate-300">
-                        {item.statusLabel}
+                    </td>
+                    <td className="py-3 px-5 text-right">
+                      <span className={`px-2.5 py-0.5 rounded text-[11px] font-mono font-bold uppercase inline-block ${riskColor}`}>
+                        {riskTier}
                       </span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-5 text-right">
-                    <span className={`px-2.5 py-0.5 rounded text-[11px] font-mono font-bold uppercase inline-block ${item.riskColor}`}>
-                      {item.riskTier}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -306,52 +286,33 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
                 </h3>
               </div>
               <span className="px-2 py-0.5 bg-[#4c161d] text-[#fca5a5] text-[10px] font-mono font-bold rounded">
-                3 New
+                {flaggedCount} Active Flags
               </span>
             </div>
 
             <div className="space-y-3">
-              {/* Alert 1 */}
-              <div className="bg-[#121c2e] border-l-2 border-[#f87171] p-3 rounded-r-lg">
-                <div className="flex items-center justify-between font-mono text-[10px] text-slate-400 mb-1">
-                  <span className="font-bold text-[#f87171]">#AL-402</span>
-                  <span>14:02:11</span>
+              {sessions.filter(s => s.risk.overallRiskScore >= 26).slice(0, 3).map((alertItem, idx) => (
+                <div 
+                  key={alertItem.id} 
+                  onClick={() => onSelectScreening(alertItem)}
+                  className={`bg-[#121c2e] border-l-2 p-3 rounded-r-lg cursor-pointer hover:bg-[#18263e] transition ${
+                    alertItem.risk.overallRiskScore >= 66 ? 'border-[#f87171]' : 'border-[#f59e0b]'
+                  }`}
+                >
+                  <div className="flex items-center justify-between font-mono text-[10px] text-slate-400 mb-1">
+                    <span className={`font-bold ${alertItem.risk.overallRiskScore >= 66 ? 'text-[#f87171]' : 'text-[#f59e0b]'}`}>
+                      #{alertItem.id}
+                    </span>
+                    <span>{new Date(alertItem.timestamp).toLocaleTimeString()}</span>
+                  </div>
+                  <h4 className="text-xs font-bold text-white mb-1">
+                    {alertItem.risk.keyRiskFactors[0] || 'Forensic Discrepancy Detected'}
+                  </h4>
+                  <p className="text-[11px] text-slate-400 leading-relaxed font-sans line-clamp-2">
+                    Subject {alertItem.travelerName} ({alertItem.travelerNationality}) flagged at {alertItem.checkpointId}. {alertItem.risk.recommendedAction}
+                  </p>
                 </div>
-                <h4 className="text-xs font-bold text-white mb-1">
-                  Biometric Mismatch
-                </h4>
-                <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
-                  Facial recognition score below threshold (42%) for TX-9923 at TERM-01-CDG....
-                </p>
-              </div>
-
-              {/* Alert 2 */}
-              <div className="bg-[#121c2e] border-l-2 border-[#f59e0b] p-3 rounded-r-lg">
-                <div className="flex items-center justify-between font-mono text-[10px] text-slate-400 mb-1">
-                  <span className="font-bold text-[#f59e0b]">#AL-401</span>
-                  <span>13:45:00</span>
-                </div>
-                <h4 className="text-xs font-bold text-white mb-1">
-                  UV Watermark Anomaly
-                </h4>
-                <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
-                  Suspicious fluorescence pattern detected on Visa document TX-9922. Secondary scan...
-                </p>
-              </div>
-
-              {/* Alert 3 */}
-              <div className="bg-[#121c2e] border-l-2 border-slate-600 p-3 rounded-r-lg">
-                <div className="flex items-center justify-between font-mono text-[10px] text-slate-400 mb-1">
-                  <span className="font-bold text-slate-400">#AL-400</span>
-                  <span>13:10:55</span>
-                </div>
-                <h4 className="text-xs font-bold text-white mb-1">
-                  Terminal Latency Warning
-                </h4>
-                <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
-                  TERM-08-NRT experiencing OCR processing delays &gt; 5 seconds. Routing traffic to fallback...
-                </p>
-              </div>
+              ))}
             </div>
           </div>
         </div>
@@ -389,7 +350,6 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
 
             {/* Dark Blueprint Grid Map */}
             <div className="relative h-56 w-full bg-[#070e1a] rounded-lg border border-[#142239] overflow-hidden flex items-center justify-center p-4">
-              {/* Background Grid Lines */}
               <div 
                 className="absolute inset-0 opacity-15"
                 style={{
@@ -398,34 +358,29 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
                 }}
               />
 
-              {/* Glowing Nodes & Vectors */}
-              {/* JFK Node */}
+              {/* Glowing Nodes */}
               <div className="absolute left-[28%] top-[30%] flex flex-col items-center">
                 <span className="w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_12px_#38bdf8] animate-ping opacity-75" />
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 -mt-2.5" />
                 <span className="text-[9px] font-mono font-bold text-slate-400 mt-1">JFK</span>
               </div>
 
-              {/* LHR Node */}
               <div className="absolute right-[22%] top-[38%] flex flex-col items-center">
                 <span className="w-3.5 h-3.5 rounded-full bg-[#f59e0b] shadow-[0_0_12px_#f59e0b]" />
                 <span className="text-[9px] font-mono font-bold text-[#f59e0b] mt-1">LHR</span>
               </div>
 
-              {/* CDG Active Alert Node */}
               <div className="absolute left-[46%] bottom-[24%] flex flex-col items-center">
                 <span className="w-5 h-5 rounded-full bg-[#f87171] opacity-30 animate-pulse" />
                 <span className="w-3 h-3 rounded-full bg-[#f87171] shadow-[0_0_15px_#ef4444] -mt-4" />
                 <span className="text-[9px] font-mono font-bold text-[#fca5a5] mt-1">CDG</span>
               </div>
 
-              {/* DXB Node */}
               <div className="absolute right-[38%] bottom-[32%] flex flex-col items-center">
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-200 opacity-60" />
                 <span className="text-[9px] font-mono font-bold text-slate-400 mt-1">DXB</span>
               </div>
 
-              {/* Connecting Wave Line */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40">
                 <path
                   d="M 160,80 Q 240,140 320,110 T 480,95"

@@ -13,8 +13,8 @@ import {
 } from 'lucide-react';
 
 interface SidebarProps {
-  activeTab: 'dashboard' | 'screenings' | 'watchlist' | 'reports' | 'audit' | 'settings';
-  setActiveTab: (tab: 'dashboard' | 'screenings' | 'watchlist' | 'reports' | 'audit' | 'settings') => void;
+  activeTab: 'dashboard' | 'new_screening' | 'screenings' | 'watchlist' | 'reports' | 'audit' | 'settings';
+  setActiveTab: (tab: 'dashboard' | 'new_screening' | 'screenings' | 'watchlist' | 'reports' | 'audit' | 'settings') => void;
   onNewScreening?: () => void;
   onLogout?: () => void;
   operatorId?: string;
@@ -26,8 +26,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   onNewScreening,
   onLogout,
-  operatorId = 'OPR-77A',
-  clearanceLevel = 'Level 4 Clearance',
+  operatorId = 'OPR-7742',
+  clearanceLevel = 'Clearance Lvl 4',
 }) => {
   const menuItems = [
     { id: 'dashboard' as const, label: 'Dashboard', icon: LayoutGrid },
@@ -59,22 +59,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
 
-        {/* + NEW SCREENING Action Button */}
-        <div className="px-4 mb-5">
-          <button
-            onClick={() => {
-              if (onNewScreening) onNewScreening();
-              setActiveTab('screenings');
-            }}
-            className="w-full py-2.5 px-3 bg-[#d4e4f7] hover:bg-white text-[#071326] font-bold text-xs uppercase tracking-wider rounded-md transition flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(212,228,247,0.15)]"
-          >
-            <Plus className="w-4 h-4 stroke-[2.5]" />
-            New Screening
-          </button>
-        </div>
-
         {/* Navigation Items */}
-        <nav className="px-2 space-y-1">
+        <nav className="px-2 space-y-1 mb-4">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -95,6 +81,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
             );
           })}
         </nav>
+
+        {/* + NEW SCREENING Action Button */}
+        <div className="px-3">
+          <button
+            onClick={() => {
+              if (onNewScreening) onNewScreening();
+              setActiveTab('new_screening');
+            }}
+            className={`w-full py-2.5 px-3 font-bold text-xs uppercase tracking-wider rounded-md transition flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(212,228,247,0.15)] ${
+              activeTab === 'new_screening'
+                ? 'bg-white text-[#071326] ring-2 ring-cyan-400'
+                : 'bg-[#d4e4f7] hover:bg-white text-[#071326]'
+            }`}
+          >
+            <Plus className="w-4 h-4 stroke-[2.5]" />
+            New Screening
+          </button>
+        </div>
       </div>
 
       {/* Bottom Profile & Utilities */}
