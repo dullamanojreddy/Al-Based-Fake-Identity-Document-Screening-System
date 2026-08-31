@@ -95,7 +95,7 @@ export const IntelligenceDashboard: React.FC<IntelligenceDashboardProps> = ({
     const headers = ['Case ID,Timestamp,Traveler Name,Nationality,Passport No,Doc Type,Risk Score,Status,Decision'];
     const rows = activeRecords.map(
       (r) =>
-        `"${r.id}","${r.timestamp}","${r.travelerName}","${r.travelerNationality}","${r.travelerPassportNumber}","${r.documentType}","${r.risk.overallRiskScore}","${r.status}","${r.risk.reviewPriority}"`
+        `"${r.id}","${r.timestamp}","${r.travelerName}","${r.travelerNationality}","${r.travelerPassportNumber}","${r.documentType}","${r.risk?.overallRiskScore ?? 'N/A'}","${r.status}","${r.risk?.reviewPriority ?? 'N/A'}"`
     );
     const blob = new Blob([[...headers, ...rows].join('\n')], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -328,14 +328,14 @@ export const IntelligenceDashboard: React.FC<IntelligenceDashboardProps> = ({
                     <td className="py-2.5 px-3 text-center font-mono font-black">
                       <span
                         className={`px-2 py-0.5 rounded ${
-                          rec.risk.overallRiskScore > 65
+                          (rec.risk?.overallRiskScore ?? 0) > 65
                             ? 'bg-red-950 text-red-400 border border-red-800'
-                            : rec.risk.overallRiskScore > 25
+                            : (rec.risk?.overallRiskScore ?? 0) > 25
                             ? 'bg-amber-950 text-amber-400 border border-amber-800'
                             : 'bg-emerald-950 text-emerald-400 border border-emerald-800'
                         }`}
                       >
-                        {rec.risk.overallRiskScore}
+                        {rec.risk ? rec.risk.overallRiskScore : '—'}
                       </span>
                     </td>
                     <td className="py-2.5 px-3">

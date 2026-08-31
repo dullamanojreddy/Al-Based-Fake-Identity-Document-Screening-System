@@ -61,7 +61,7 @@ export const SystemAnalyticsView: React.FC<SystemAnalyticsViewProps> = ({
     const headers = ['Case ID,Timestamp,Traveler Name,Nationality,Passport No,Doc Type,Risk Score,Status'];
     const rows = sessions.map(
       (r) =>
-        `"${r.id}","${r.timestamp}","${r.travelerName}","${r.travelerNationality}","${r.travelerPassportNumber}","${r.documentType}","${r.risk.overallRiskScore}","${r.status}"`
+        `"${r.id}","${r.timestamp}","${r.travelerName}","${r.travelerNationality}","${r.travelerPassportNumber}","${r.documentType}","${r.risk?.overallRiskScore ?? 'N/A'}","${r.status}"`
     );
     const blob = new Blob([[...headers, ...rows].join('\n')], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -261,9 +261,9 @@ export const SystemAnalyticsView: React.FC<SystemAnalyticsViewProps> = ({
                   <td className="py-2.5 px-3 font-mono text-slate-400">{rec.travelerNationality}</td>
                   <td className="py-2.5 px-3 text-center font-mono font-bold">
                     <span className={`px-2 py-0.5 rounded text-[10px] ${
-                      rec.risk.overallRiskScore > 65 ? 'bg-red-950 text-red-400' : 'bg-emerald-950 text-emerald-400'
+                      (rec.risk?.overallRiskScore ?? 0) > 65 ? 'bg-red-950 text-red-400' : 'bg-emerald-950 text-emerald-400'
                     }`}>
-                      {rec.risk.overallRiskScore}%
+                      {rec.risk ? `${rec.risk.overallRiskScore}%` : '—'}
                     </span>
                   </td>
                   <td className="py-2.5 px-3 font-mono uppercase text-[10px] text-slate-300">

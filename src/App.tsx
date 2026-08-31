@@ -85,8 +85,8 @@ export function App() {
         {/* Header */}
         <Header
           activeScreeningId={activeTab === 'screenings' ? currentSession.id : undefined}
-          activeAlertsCount={allSessions.filter((s) => s.risk.overallRiskScore >= 26).length}
-          integrityStatus="Verified"
+          activeAlertsCount={allSessions.filter((s) => (s.risk?.overallRiskScore ?? 0) >= 26).length}
+          integrityStatus="OPERATIONAL"
           onRefresh={() => {}}
         />
 

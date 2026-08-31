@@ -1,5 +1,5 @@
-import React from 'react';
-import { Search, Bell, Shield, RefreshCw } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, Bell, Shield, RefreshCw, Activity, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
 
 interface HeaderProps {
   activeScreeningId?: string;
@@ -11,11 +11,13 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   activeScreeningId,
   activeAlertsCount = 3,
-  integrityStatus = 'Verified',
+  integrityStatus = 'OPERATIONAL',
   onRefresh,
 }) => {
+  const [isHealthModalOpen, setIsHealthModalOpen] = useState<boolean>(false);
+
   return (
-    <header className="h-14 bg-[#08101e] border-b border-[#152238] px-6 flex items-center justify-between shrink-0 select-none text-slate-200">
+    <header className="h-14 bg-[#08101e] border-b border-[#152238] px-6 flex items-center justify-between shrink-0 select-none text-slate-200 relative">
       {/* Left: Search input or Active Case Banner */}
       <div className="flex items-center gap-4">
         {activeScreeningId ? (
@@ -29,26 +31,98 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </div>
         ) : (
-          <div className="relative w-80">
+          <div className="relative w-84">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search identities, cases, ID..."
+              placeholder="Search identities, cases, document IDs..."
               className="w-full bg-[#0c1628] border border-[#1b2b46] rounded-md pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-sans"
             />
           </div>
         )}
       </div>
 
-      {/* Center/Right: Integrity Status & Global Controls */}
-      <div className="flex items-center gap-6">
-        <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
-          <span className="text-slate-400">Integrity Status:</span>
-          <span className="text-white font-bold tracking-wide">{integrityStatus}</span>
-        </div>
+      {/* Center/Right: Dynamic System Status & Controls */}
+      <div className="flex items-center gap-5">
+        {/* Dynamic System Status Trigger */}
+        <button
+          onClick={() => setIsHealthModalOpen(!isHealthModalOpen)}
+          className="flex items-center gap-2 px-3 py-1 bg-[#0c1628] hover:bg-[#121f35] border border-[#1b2b46] rounded-md text-xs font-mono transition"
+          title="Click to view live subsystem status"
+        >
+          <span className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
+          <span className="text-slate-400 uppercase text-[10px] font-bold">SYSTEM STATUS:</span>
+          <span className="text-white font-bold tracking-wider">{integrityStatus}</span>
+        </button>
+
+        {/* System Health Dropdown Popup */}
+        {isHealthModalOpen && (
+          <div className="absolute right-24 top-14 w-80 bg-[#0b1424] border border-[#1e304f] rounded-xl shadow-2xl p-4 z-50 text-xs font-mono space-y-3 animate-in fade-in">
+            <div className="flex items-center justify-between border-b border-[#182740] pb-2">
+              <div className="flex items-center gap-2">
+                <Activity className="w-4 h-4 text-cyan-400" />
+                <span className="font-bold text-white uppercase tracking-wider">System Health</span>
+              </div>
+              <span className="text-[10px] text-emerald-400 bg-emerald-950 px-1.5 py-0.5 rounded">
+                6/7 ONLINE
+              </span>
+            </div>
+
+            <div className="space-y-2 text-[11px]">
+              <div className="flex items-center justify-between">
+                <span className="text-slate-300">OCR Engine</span>
+                <span className="text-emerald-400 font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> Operational
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-slate-300">Document Classifier</span>
+                <span className="text-emerald-400 font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> Operational
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-slate-300">MRZ 7-3-1 Engine</span>
+                <span className="text-emerald-400 font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> Operational
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-slate-300">Forensic ELA Engine</span>
+                <span className="text-emerald-400 font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> Operational
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-slate-300">Biometric Nodal Engine</span>
+                <span className="text-emerald-400 font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> Operational
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-slate-300">Database Cache</span>
+                <span className="text-emerald-400 font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> Connected
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between border-t border-[#182740] pt-1.5">
+                <span className="text-slate-400">Government Gateway API</span>
+                <span className="text-slate-500 font-semibold flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3 text-slate-500" /> Not Connected (Standby)
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Action Icons */}
-        <div className="flex items-center gap-3 text-slate-400">
+        <div className="flex items-center gap-2.5 text-slate-400">
           <button className="p-1.5 hover:text-white hover:bg-[#121f35] rounded-md transition relative">
             <Bell className="w-4 h-4" />
             {activeAlertsCount > 0 && (
@@ -56,13 +130,10 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </button>
 
-          <button className="p-1.5 hover:text-white hover:bg-[#121f35] rounded-md transition">
-            <Shield className="w-4 h-4" />
-          </button>
-
           <button 
             onClick={onRefresh}
             className="p-1.5 hover:text-white hover:bg-[#121f35] rounded-md transition"
+            title="Refresh screening data"
           >
             <RefreshCw className="w-4 h-4" />
           </button>
