@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+server/node_modules/
+
+# Production Builds
+build/
+dist/
+server/dist/
+
+# Test & Coverage
+coverage/
+
+# Logs & Uploads
+*.log
+logs/
+server/logs/
+uploads/
+server/uploads/
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

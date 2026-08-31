@@ -1,0 +1,62 @@
+================================================================================
+  Agentic AI–Powered Secure Digital Answer Script Evaluation System
+  VS CODE SETUP & DEPENDENCY REQUIREMENTS
+================================================================================
+
+[1] SYSTEM PREREQUISITES
+--------------------------------------------------------------------------------
+• Node.js: Version 18.0.0 or higher (Recommended: Node v20 LTS)
+• Package Manager: npm (v9.0.0+) or bun / yarn
+• IDE: Visual Studio Code
+
+[2] VS CODE EXTENSIONS RECOMMENDED
+--------------------------------------------------------------------------------
+• Tailwind CSS IntelliSense (by Tailwind Labs)
+• ES7+ React/Redux/React-Native snippets (by dsznajder)
+• TypeScript and JavaScript Language Features (built-in)
+• Prettier - Code formatter (by Prettier)
+
+[3] ONE-LINE QUICK INSTALLATION COMMANDS (Run in VS Code Terminal)
+--------------------------------------------------------------------------------
+# Option A: Automatic installation using package.json
+npm install
+
+# Option B: Manual command installing all required dependencies
+npm install @google/genai @tailwindcss/vite @tanstack/react-table @vitejs/plugin-react axios bcrypt chromadb clsx cors dotenv express framer-motion helmet jsonwebtoken jspdf lucide-react mongoose motion multer pdfkit react react-dom react-hook-form react-router-dom recharts sonner tailwind-merge uuid vite winston xlsx zod
+
+# Install Development Dependencies
+npm install -D @types/bcrypt @types/cors @types/express @types/jsonwebtoken @types/multer @types/node @types/pdfkit @types/uuid autoprefixer esbuild tailwindcss tsx typescript vite
+
+[4] HOW TO RUN THE PROJECT IN VS CODE
+--------------------------------------------------------------------------------
+1. Open project folder in VS Code:
+   File -> Open Folder -> Select this directory
+
+2. Open Terminal in VS Code:
+   Press Ctrl + ` (or Terminal -> New Terminal)
+
+3. Install dependencies:
+   npm install
+
+4. Start Development Server:
+   npm run dev
+
+5. Open application in browser:
+   Navigate to http://localhost:3000
+
+[5] PRODUCTION BUILD COMMANDS
+--------------------------------------------------------------------------------
+# Build for production distribution
+npm run build
+
+# Preview production build locally
+npm run preview
+
+[6] DETAILED PACKAGE LIST
+--------------------------------------------------------------------------------
+• Core Framework: react (v19), react-dom (v19), vite (v6)
+• AI & Vector DB: @google/genai, chromadb
+• UI & Styling: lucide-react, motion, framer-motion, recharts, tailwindcss, @tailwindcss/vite, clsx, tailwind-merge, sonner
+• PDF & Data Processing: jspdf, pdfkit, xlsx, uuid
+• Backend & API Utilities: express, axios, cors, helmet, dotenv, winston, mongoose, multer, bcrypt, jsonwebtoken, zod
+• Dev Tooling: typescript, tsx, esbuild, @types/node
