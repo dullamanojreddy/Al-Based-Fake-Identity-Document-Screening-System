@@ -1,4 +1,4 @@
-import { MRZData, MRZChecksumItem, DocumentField } from '../types';
+import { MRZData, MRZChecksumItem, DocumentField, MRZStatus } from '../types';
 
 /**
  * ICAO Doc 9303 character weighting values
@@ -45,10 +45,8 @@ export function formatYYMMDD(yymmdd: string, isExpiry: boolean = false): string 
   let fullYear: number;
   
   if (isExpiry) {
-    // Expiry dates are typically in the future
     fullYear = 2000 + yy;
   } else {
-    // Birth dates: if yy <= currentYear, could be 2000s, else 1900s
     fullYear = yy <= currentYear ? 2000 + yy : 1900 + yy;
   }
   
@@ -84,14 +82,12 @@ export function parseTD3MRZ(line1: string, line2: string, vizFields?: DocumentFi
   const computedBirthDateCD = calculateICAOCheckDigit(birthDate);
   const computedExpiryCD = calculateICAOCheckDigit(expirationDate);
   
-  // Optional personal number check digit (if present)
   let computedPersonalNumCD = '';
   if (cleanL2.slice(28, 42) !== '<<<<<<<<<<<<<<') {
     computedPersonalNumCD = calculateICAOCheckDigit(cleanL2.slice(28, 42));
   }
 
   // Composite check digit over (Doc# + CD + DOB + CD + Expiry + CD + Optional + CD)
-  // Which is line2 positions 0..9 + 13..19 + 21..42
   const compositeSource = cleanL2.slice(0, 10) + cleanL2.slice(13, 20) + cleanL2.slice(21, 43);
   const computedCompositeCD = calculateICAOCheckDigit(compositeSource);
 
@@ -143,7 +139,7 @@ export function parseTD3MRZ(line1: string, line2: string, vizFields?: DocumentFi
 
   const isAllChecksumsValid = checksumList.every(c => c.isValid);
 
-  // Cross-reference VIZ (Visual Inspection Zone) against MRZ
+  // Cross-reference VIZ against MRZ
   const vizMismatchDetails: string[] = [];
   let vizMismatchDetected = false;
 
@@ -161,7 +157,6 @@ export function parseTD3MRZ(line1: string, line2: string, vizFields?: DocumentFi
     const vizDob = vizFields.find(f => f.key === 'dob' || f.key === 'dateOfBirth')?.value;
     if (vizDob && birthDate) {
       const formattedDob = formatYYMMDD(birthDate);
-      // Check if visual DOB matches MRZ DOB
       if (vizDob && !vizDob.includes(birthDate.slice(0, 2)) && !formattedDob.includes(vizDob.slice(0, 4))) {
         vizMismatchDetected = true;
         vizMismatchDetails.push(`Date of Birth Discrepancy: Visual says "${vizDob}" vs MRZ decoded "${formattedDob}"`);
@@ -177,8 +172,11 @@ export function parseTD3MRZ(line1: string, line2: string, vizFields?: DocumentFi
     }
   }
 
+  const status: MRZStatus = isAllChecksumsValid ? 'CHECKSUM_VALID' : 'CHECKSUM_INVALID';
+
   return {
     format: 'TD3',
+    status,
     rawLines: [cleanL1, cleanL2],
     documentType: docType || 'P',
     countryCode,
@@ -204,7 +202,8 @@ export function parseTD3MRZ(line1: string, line2: string, vizFields?: DocumentFi
 }
 
 /**
- * Universal MRZ parser (auto-detects TD1, TD2, TD3)
+ * Universal MRZ parser with structure validation.
+ * Rejects random text with angle brackets that does not conform to ICAO Doc 9303.
  */
 export function parseMRZ(rawText: string, vizFields?: DocumentField[]): MRZData | null {
   if (!rawText) return null;
@@ -213,11 +212,11 @@ export function parseMRZ(rawText: string, vizFields?: DocumentField[]): MRZData 
   const lines = rawText
     .split('\n')
     .map(l => l.trim().replace(/\s+/g, ''))
-    .filter(l => l.includes('<') && l.length >= 25);
+    .filter(l => l.includes('<') && l.length >= 25 && /^[A-Z0-9<]+$/.test(l));
 
   if (lines.length >= 2) {
     // Check if 44-char TD3
-    if (lines[0].length >= 35 || lines[1].length >= 35) {
+    if (lines[0].length >= 35 && lines[1].length >= 35) {
       return parseTD3MRZ(lines[0], lines[1], vizFields);
     }
   }

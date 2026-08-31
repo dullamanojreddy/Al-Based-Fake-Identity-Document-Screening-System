@@ -14,7 +14,21 @@ export type ReviewPriority =
 
 export type ThreatLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 
-export type FindingSeverity = 'INFO' | 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+export type FindingSeverity = 'INFO' | 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' | 'PASS';
+
+export type MRZStatus = 
+  | 'NOT_DETECTED' 
+  | 'DETECTED' 
+  | 'STRUCTURALLY_VALID' 
+  | 'CHECKSUM_VALID' 
+  | 'CHECKSUM_INVALID';
+
+export interface BoundingBoxCoordinates {
+  x: number; // % from left (0 - 100)
+  y: number; // % from top (0 - 100)
+  width: number; // % width (0 - 100)
+  height: number; // % height (0 - 100)
+}
 
 export interface DocumentField {
   key: string;
@@ -23,13 +37,10 @@ export interface DocumentField {
   confidence: number; // 0 - 100%
   isTampered?: boolean;
   anomalyReason?: string;
-  source?: 'visual_zone' | 'mrz' | 'barcode';
-  boundingBox?: {
-    x: number; // % from left
-    y: number; // % from top
-    width: number; // % width
-    height: number; // % height
-  };
+  source?: 'visual_zone' | 'ocr' | 'mrz' | 'barcode';
+  boundingBox?: BoundingBoxCoordinates;
+  labelDetected?: boolean;
+  validation?: 'VALID' | 'INVALID' | 'SUSPICIOUS' | 'UNVERIFIED';
 }
 
 export interface MRZChecksumItem {
@@ -43,6 +54,7 @@ export interface MRZChecksumItem {
 
 export interface MRZData {
   format: 'TD1' | 'TD2' | 'TD3' | 'MRV_A' | 'MRV_B';
+  status?: MRZStatus;
   rawLines: string[];
   documentType: string;
   countryCode: string;
@@ -135,58 +147,86 @@ export interface TamperingForensics {
 export interface AntiSpoofingResult {
   isLive: boolean;
   confidence: number;
+  livenessPassed?: boolean;
   screenReplayAttack: boolean;
   printAttackDetected: boolean;
   depthAnomaly: boolean;
-  livenessPassed: boolean;
-  details: string;
+  details?: string;
 }
+
+export type BiometricMatchStatus = 
+  | 'MATCH_VERIFIED' 
+  | 'MATCH_DISCREPANCY' 
+  | 'MATCH_FAILED' 
+  | 'PHOTO_UNAVAILABLE'
+  | 'SUSPECT_IMPERSONATION'
+  | 'UNMATCHED'
+  | 'NO_FACE_DETECTED';
 
 export interface BiometricVerification {
   isBiometricVerified: boolean;
   similarityScore: number; // 0 - 100%
-  matchStatus: 'MATCH_VERIFIED' | 'SUSPECT_IMPERSONATION' | 'UNMATCHED' | 'NO_FACE_DETECTED';
+  matchStatus: BiometricMatchStatus;
+  matchConfidence?: number;
   antiSpoofing: AntiSpoofingResult;
+  extractedDocFaceUrl?: string;
   documentFaceUrl?: string;
   livePassengerFaceUrl?: string;
-  facialLandmarksCount: number;
-  matchConfidence: number;
+  facialLandmarksCount?: number;
   details: string;
 }
 
+export type WatchlistMatchType = 
+  | 'NONE' 
+  | 'EXACT_MATCH' 
+  | 'FUZZY_NAME_MATCH' 
+  | 'DOCUMENT_NUMBER_MATCH'
+  | 'INTERPOL_RED_NOTICE'
+  | 'SSB_BLACKLIST'
+  | 'VISA_VIOLATION';
+
 export interface WatchlistResult {
   isHit: boolean;
-  matchType: 'INTERPOL_RED_NOTICE' | 'INTERPOL_SLTD' | 'SSB_BLACKLIST' | 'MULTI_IDENTITY_FRAUD' | 'VISA_VIOLATION' | 'NONE';
+  matchType: WatchlistMatchType;
   threatLevel: ThreatLevel;
+  matchedEntityName?: string;
   matchedAlias?: string;
   interpolNoticeId?: string;
   offenseCategory?: string;
   watchlistDatabase: string;
   details: string;
   actionRequired: string;
+  isExternalGovernmentVerified?: boolean;
 }
 
 export interface RiskBreakdown {
-  ocrExtractionScore: number; // 0-100 (higher = more reliable)
-  mrzValidationScore: number; // 0-100 (higher = more valid)
-  tamperRiskScore: number;    // 0-100 (higher = higher danger)
-  biometricMatchScore: number;// 0-100 (higher = match)
-  watchlistThreatScore: number;// 0-100 (higher = higher threat)
+  ocrExtractionScore: number; // 0-100
+  mrzValidationScore: number; // 0-100
+  tamperRiskScore: number; // 0-100
+  biometricMatchScore: number; // 0-100
+  watchlistThreatScore: number; // 0-100
+}
+
+export interface EvidenceSource {
+  type: 'OCR_FIELD' | 'MRZ_FIELD' | 'FORENSIC_ZONE' | 'BIOMETRIC_NODAL' | 'METADATA';
+  field?: string;
+  value?: string;
+  boundingBox?: BoundingBoxCoordinates | [number, number, number, number];
+  details?: string;
 }
 
 export interface ScreeningFinding {
   id: string;
-  sourceModule: 'OCR' | 'MRZ' | 'TAMPERING' | 'BIOMETRICS' | 'WATCHLIST' | 'METADATA';
+  finding_id?: string;
+  sourceModule?: string;
+  type?: string;
+  category?: 'OCR_INTEGRITY' | 'MRZ_CHECKSUM' | 'TAMPERING' | 'BIOMETRICS' | 'WATCHLIST' | 'EXPIRY' | 'CONSISTENCY';
   code: string;
   severity: FindingSeverity;
   title: string;
   description: string;
-  boundingBox?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
+  boundingBox?: BoundingBoxCoordinates;
+  sources?: EvidenceSource[];
   visualEvidence?: string;
 }
 
@@ -275,17 +315,23 @@ export interface ScreeningSession {
   documentImageUrl: string;
   liveCameraImageUrl?: string;
   
-  // 4 Core Modules Output
+  // Document Type Gate Metadata
+  document_type_confidence?: number;
+  document_type_evidence?: string[];
+  reason_code?: string;
+  screening_started?: boolean;
+  
+  // Core Modules Output (Nullable if screening is rejected at document gate)
   fields: DocumentField[];
-  mrzData?: MRZData;
-  tampering: TamperingForensics;
-  biometrics?: BiometricVerification;
-  watchlist: WatchlistResult;
+  mrzData?: MRZData | null;
+  tampering?: TamperingForensics | null;
+  biometrics?: BiometricVerification | null;
+  watchlist?: WatchlistResult | null;
   
-  // Composite Evaluation
-  risk: CompositeRiskAssessment;
+  // Composite Evaluation (Null if screening not performed)
+  risk?: CompositeRiskAssessment | null;
   
-  status: 'PENDING' | 'CLEARED' | 'SECONDARY_INSPECTION' | 'DETAINED' | 'UNSUPPORTED_DOCUMENT';
+  status: 'PENDING' | 'CLEARED' | 'SECONDARY_INSPECTION' | 'DETAINED' | 'UNSUPPORTED_DOCUMENT' | 'REJECTED';
   processingTimeMs: number;
   unsupportedReason?: string;
   detectedClassificationConfidence?: number;

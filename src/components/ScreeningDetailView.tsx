@@ -34,7 +34,7 @@ import {
   XCircle,
   HelpCircle
 } from 'lucide-react';
-import { ScreeningSession, OfficerReviewRecord } from '../types';
+import { ScreeningSession, OfficerReviewRecord, ScreeningFinding } from '../types';
 import { SAMPLE_SCREENING_CASES } from '../data/sampleScreenings';
 import { LiveWebcamModal } from './LiveWebcamModal';
 import { OfficialDossierModal } from './OfficialDossierModal';
@@ -55,68 +55,63 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
   // Document View Mode: Original, OCR, Evidence, Forensic
   const [viewMode, setViewMode] = useState<'original' | 'ocr' | 'evidence' | 'forensic'>('evidence');
   const [zoomLevel, setZoomLevel] = useState<number>(1);
-  const [selectedFindingId, setSelectedFindingId] = useState<string>('dob_mismatch');
+  
+  // Selected finding focus
+  const findingsList = currentSession.risk?.findings || [];
+  const [selectedFindingId, setSelectedFindingId] = useState<string>(() => {
+    return findingsList.length > 0 ? (findingsList[0].finding_id || findingsList[0].id) : 'default';
+  });
+
   const [isCameraModalOpen, setIsCameraModalOpen] = useState<boolean>(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
   const [investigatorNote, setInvestigatorNote] = useState<string>(
-    currentSession.risk.officerReview?.officerNotes || ''
+    currentSession.risk?.officerReview?.officerNotes || ''
   );
   const [noteSavedToast, setNoteSavedToast] = useState<boolean>(false);
 
-  // Field bounding boxes for the document viewer
+  // Derive dynamic bounding boxes from extracted fields and findings
   const boundingBoxes = isUnsupported ? [] : [
-    { id: 'portrait', label: 'Portrait Photo', x: 23, y: 38, width: 17, height: 26, isSuspicious: false, type: 'photo' },
-    { id: 'doc_no', label: 'Passport No.', x: 63, y: 30, width: 16, height: 4, value: currentSession.travelerPassportNumber || '1234567890', isSuspicious: false },
-    { id: 'surname', label: 'Surname', x: 41, y: 34, width: 22, height: 4, value: currentSession.travelerName.split(' ').slice(-1)[0] || 'SPECIMEN', isSuspicious: false },
-    { id: 'given_names', label: 'Given Names', x: 41, y: 39, width: 26, height: 4, value: currentSession.travelerName.split(' ').slice(0, -1).join(' ') || 'UNITED STATES', isSuspicious: false },
-    { id: 'nationality', label: 'Nationality', x: 41, y: 44, width: 12, height: 4, value: currentSession.travelerNationality || 'USA', isSuspicious: false },
-    { id: 'dob', label: 'Date of Birth', x: 41, y: 49, width: 18, height: 4.5, value: currentSession.travelerDob || '01 JAN 1985', isSuspicious: true, discrepancy: 'MRZ indicates 01 JAN 1995' },
-    { id: 'sex', label: 'Sex', x: 41, y: 53.5, width: 8, height: 4, value: 'F', isSuspicious: false },
-    { id: 'issue_date', label: 'Date of Issue', x: 41, y: 58, width: 18, height: 4, value: '01 JAN 2024', isSuspicious: false },
-    { id: 'expiry_date', label: 'Date of Expiry', x: 41, y: 62.5, width: 18, height: 4, value: '01 JAN 2034', isSuspicious: false },
-    { id: 'mrz', label: 'MRZ Data Zone', x: 22, y: 70, width: 58, height: 9.5, isSuspicious: false, type: 'mrz' },
+    ...currentSession.fields.map(f => ({
+      id: f.key,
+      label: f.label,
+      value: f.value,
+      x: f.boundingBox?.x || 41,
+      y: f.boundingBox?.y || 40,
+      width: f.boundingBox?.width || 20,
+      height: f.boundingBox?.height || 5,
+      isSuspicious: f.isTampered || false,
+      type: 'field',
+    })),
+    ...(currentSession.mrzData ? [{
+      id: 'mrz',
+      label: 'MRZ Data Zone',
+      value: currentSession.mrzData.rawLines.join(' | '),
+      x: 22,
+      y: 70,
+      width: 58,
+      height: 9.5,
+      isSuspicious: !currentSession.mrzData.isAllChecksumsValid || currentSession.mrzData.vizMismatchDetected,
+      type: 'mrz',
+    }] : []),
+    ...(currentSession.tampering?.tamperBoxes || []).map(tb => ({
+      id: tb.id,
+      label: tb.label,
+      value: tb.description,
+      x: tb.x,
+      y: tb.y,
+      width: tb.width,
+      height: tb.height,
+      isSuspicious: true,
+      type: tb.type,
+    })),
   ];
 
-  // Evidence Navigator items
-  const evidenceItems = isUnsupported ? [] : [
-    {
-      id: 'dob_mismatch',
-      title: 'Date of Birth Consistency',
-      subtitle: 'MRZ and visual data do not match',
-      severity: 'HIGH' as const,
-      category: 'MRZ / VIZ DISCREPANCY',
-      visualValue: '01 JAN 1985',
-      mrzValue: '850101 -> 01 JAN 1995 (Checksum CD: 7)',
-      reason: 'Visual DOB and MRZ DOB do not represent the same calendar date. Potential counterfeit alteration in visual zone.',
-      targetBoxId: 'dob',
-    },
-    {
-      id: 'bio_match',
-      title: 'Biometric Photo Match',
-      subtitle: 'Face similarity below threshold (62%)',
-      severity: 'HIGH' as const,
-      category: '1:1 FACIAL BIOMETRICS',
-      similarityScore: 62.0,
-      confidence: 'High Discrepancy',
-      reason: 'Live passenger nodal geometry differs from passport portrait. High confidence of imposter substitution.',
-      targetBoxId: 'portrait',
-    },
-    {
-      id: 'security_features',
-      title: 'Document Security Features',
-      subtitle: 'All visible security features intact',
-      severity: 'PASS' as const,
-      category: 'FORENSIC SUBSTRATE',
-      reason: 'Guilloche security background, microprinting, and UV luminescence show uniform integrity.',
-      targetBoxId: 'mrz',
-    },
-  ];
-
-  const activeEvidence = evidenceItems.find(e => e.id === selectedFindingId) || evidenceItems[0];
+  const activeFinding = findingsList.find(f => (f.finding_id || f.id) === selectedFindingId) || findingsList[0];
 
   const handleCaptureLiveFace = (liveFaceUrl: string) => {
+    if (!currentSession.biometrics) return;
     const updatedBio = {
-      ...currentSession.biometrics!,
+      ...currentSession.biometrics,
       livePassengerFaceUrl: liveFaceUrl,
       isBiometricVerified: true,
       similarityScore: 94.6,
@@ -161,7 +156,9 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
           <span className={`px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
             isUnsupported
               ? 'bg-red-950 text-red-400 border border-red-800'
-              : 'bg-amber-950 text-amber-400 border border-amber-800'
+              : currentSession.risk?.overallRiskScore && currentSession.risk.overallRiskScore > 50
+              ? 'bg-amber-950 text-amber-400 border border-amber-800'
+              : 'bg-emerald-950 text-emerald-400 border border-emerald-800'
           }`}>
             ● {currentSession.status.replace('_', ' ')}
           </span>
@@ -182,7 +179,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
             >
               {SAMPLE_SCREENING_CASES.map((cs) => (
                 <option key={cs.id} value={cs.id} className="bg-[#070e1a] text-slate-200">
-                  {cs.id} - {cs.travelerName} ({cs.risk.overallRiskScore}%)
+                  {cs.id} - {cs.travelerName} ({cs.risk?.overallRiskScore ?? 0}%)
                 </option>
               ))}
             </select>
@@ -249,7 +246,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
             </div>
           </div>
 
-          {/* Right: Rejection Card matching User Specification */}
+          {/* Right: Rejection Card matching Specification */}
           <div className="lg:col-span-6 space-y-4">
             <div className="bg-[#1b141d] border-2 border-[#882233] rounded-xl p-6 shadow-2xl space-y-5">
               <div className="flex items-start gap-4 border-b border-[#3b1219] pb-4">
@@ -258,7 +255,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white tracking-wide font-sans">
-                    ⚠ UNSUPPORTED DOCUMENT TYPE
+                    ⚠ UNSUPPORTED DOCUMENT
                   </h3>
                   <p className="text-xs text-slate-300 mt-1 leading-relaxed font-sans">
                     The uploaded document could not be identified as a supported identity or travel document.
@@ -279,10 +276,10 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
 
                 <div className="bg-[#070e1a] p-3 rounded-lg border border-[#182740]">
                   <span className="text-[10px] text-slate-400 uppercase block mb-1">
-                    CLASSIFIER CONFIDENCE
+                    CLASSIFICATION CONFIDENCE
                   </span>
                   <span className="text-sm font-bold text-white block">
-                    {currentSession.detectedClassificationConfidence || 96.4}%
+                    {currentSession.detectedClassificationConfidence || 96.8}%
                   </span>
                 </div>
               </div>
@@ -290,48 +287,48 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
               {/* Structural Gating Findings */}
               <div className="bg-[#070e1a] p-4 rounded-lg border border-[#182740] space-y-2 text-xs font-sans">
                 <span className="text-[10px] font-mono text-slate-400 uppercase font-bold block mb-1">
-                  GATE VALIDATION FAILURES
+                  STRUCTURAL GATE EVIDENCE
                 </span>
                 <div className="flex items-center gap-2 text-slate-300">
                   <XCircle className="w-4 h-4 text-red-400 shrink-0" />
-                  <span>No passport machine-readable zone (MRZ) detected</span>
+                  <span>No supported identity-document structure detected</span>
                 </div>
                 <div className="flex items-center gap-2 text-slate-300">
                   <XCircle className="w-4 h-4 text-red-400 shrink-0" />
-                  <span>No supported identity-document structure or visual zone detected</span>
+                  <span>No passport MRZ detected</span>
                 </div>
                 <div className="flex items-center gap-2 text-slate-300">
                   <XCircle className="w-4 h-4 text-red-400 shrink-0" />
-                  <span>Semantic classification identified file as an ordinary academic/memo document</span>
+                  <span>Required identity-document fields absent</span>
                 </div>
               </div>
 
               {/* Supported Documents List */}
               <div className="space-y-2 text-xs">
                 <span className="text-[10px] font-mono text-slate-400 uppercase font-bold block">
-                  SUPPORTED CREDENTIAL FORMATS:
+                  SUPPORTED DOCUMENT FORMATS:
                 </span>
                 <div className="flex flex-wrap gap-2">
                   <span className="px-2.5 py-1 bg-[#121f35] border border-[#223553] text-cyan-300 rounded font-mono text-xs">
-                    Passport (ICAO 9303)
+                    Passport
                   </span>
                   <span className="px-2.5 py-1 bg-[#121f35] border border-[#223553] text-cyan-300 rounded font-mono text-xs">
-                    Visa Vignette
+                    Visa
                   </span>
                   <span className="px-2.5 py-1 bg-[#121f35] border border-[#223553] text-cyan-300 rounded font-mono text-xs">
-                    National ID Card
+                    National ID
                   </span>
                   <span className="px-2.5 py-1 bg-[#121f35] border border-[#223553] text-cyan-300 rounded font-mono text-xs">
                     Driving Licence
                   </span>
                   <span className="px-2.5 py-1 bg-[#121f35] border border-[#223553] text-cyan-300 rounded font-mono text-xs">
-                    Border Permit
+                    Permit / Travel Authorization
                   </span>
                 </div>
               </div>
 
-              <div className="p-3 bg-[#2a0e14] border border-[#882233] rounded-lg text-xs text-[#fca5a5] font-mono">
-                🛑 <strong>PIPELINE TERMINATED:</strong> Identity validation and risk scoring were safely bypassed to prevent hallucinated biometric and document findings.
+              <div className="p-3.5 bg-[#2a0e14] border border-[#882233] rounded-lg text-xs text-[#fca5a5] font-mono">
+                🛑 <strong>SCREENING NOT PERFORMED:</strong> No risk score or fabricated identity findings generated.
               </div>
             </div>
           </div>
@@ -353,7 +350,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                   </h3>
                 </div>
 
-                {/* View Mode Switcher: [ Original ] [ OCR ] [ Evidence ] [ Forensic ] */}
+                {/* View Mode Switcher */}
                 <div className="flex items-center gap-1 bg-[#070e1a] p-1 rounded-lg border border-[#182740]">
                   <button
                     onClick={() => setViewMode('original')}
@@ -400,7 +397,6 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
 
               {/* Document Interactive Surface Viewport */}
               <div className="relative w-full aspect-[4/3] bg-[#070e1a] rounded-xl border border-[#142239] overflow-hidden flex items-center justify-center p-3 shadow-inner">
-                {/* Dark Blueprint Grid Background */}
                 <div 
                   className="absolute inset-0 opacity-10 pointer-events-none"
                   style={{
@@ -454,7 +450,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                           }}
                         >
                           <span className="absolute -top-4 left-0 bg-[#070e1a] text-cyan-300 border border-cyan-500 text-[8px] font-mono font-bold px-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-20">
-                            {box.label} ({box.value || 'Detected'})
+                            {box.label}: {box.value}
                           </span>
                         </div>
                       ))}
@@ -464,37 +460,34 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                   {/* 2. Evidence Focus Highlights (When in 'evidence' mode) */}
                   {viewMode === 'evidence' && (
                     <div className="absolute inset-0 pointer-events-none">
-                      {/* DOB Mismatch Red Glowing Bounding Box */}
-                      <div 
-                        onClick={() => setSelectedFindingId('dob_mismatch')}
-                        className={`absolute border-2 rounded pointer-events-auto cursor-pointer transition-all duration-300 z-20 ${
-                          selectedFindingId === 'dob_mismatch'
-                            ? 'border-[#ef4444] bg-red-500/25 ring-4 ring-red-500/40 shadow-[0_0_20px_rgba(239,68,68,0.8)] animate-pulse'
-                            : 'border-red-500/80 bg-red-500/10 hover:bg-red-500/20'
-                        }`}
-                        style={{ left: '40%', top: '48%', width: '20%', height: '5.5%' }}
-                      >
-                        <div className="absolute -top-6 left-0 bg-[#3b1219] text-[#fca5a5] border border-[#882233] text-[9px] font-mono font-bold px-1.5 py-0.5 rounded shadow-lg flex items-center gap-1 whitespace-nowrap">
-                          <AlertTriangle className="w-2.5 h-2.5 text-[#f87171]" />
-                          DOB MISMATCH (VIZ vs MRZ)
-                        </div>
-                      </div>
+                      {findingsList.map((finding) => {
+                        const fid = finding.finding_id || finding.id;
+                        const isFocused = selectedFindingId === fid;
+                        const bbox = finding.boundingBox || { x: 40, y: 45, width: 20, height: 6 };
 
-                      {/* Photo Splicing / Face Anomaly Amber Bounding Box */}
-                      <div
-                        onClick={() => setSelectedFindingId('bio_match')}
-                        className={`absolute border-2 rounded pointer-events-auto cursor-pointer transition-all duration-300 z-10 ${
-                          selectedFindingId === 'bio_match'
-                            ? 'border-[#f59e0b] bg-amber-500/20 ring-4 ring-amber-500/40 shadow-[0_0_20px_rgba(245,158,11,0.8)]'
-                            : 'border-amber-500/60 bg-amber-500/10 hover:bg-amber-500/20'
-                        }`}
-                        style={{ left: '22.5%', top: '37%', width: '18%', height: '27%' }}
-                      >
-                        <div className="absolute -top-6 left-0 bg-[#291e11] text-[#fbbf24] border border-[#784d12] text-[9px] font-mono font-bold px-1.5 py-0.5 rounded shadow-lg flex items-center gap-1 whitespace-nowrap">
-                          <ScanLine className="w-2.5 h-2.5 text-[#f59e0b]" />
-                          BIOMETRIC TARGET (62%)
-                        </div>
-                      </div>
+                        return (
+                          <div
+                            key={fid}
+                            onClick={() => setSelectedFindingId(fid)}
+                            className={`absolute border-2 rounded pointer-events-auto cursor-pointer transition-all duration-300 z-20 ${
+                              isFocused
+                                ? 'border-[#ef4444] bg-red-500/25 ring-4 ring-red-500/40 shadow-[0_0_20px_rgba(239,68,68,0.8)] animate-pulse'
+                                : 'border-amber-500/70 bg-amber-500/10 hover:bg-amber-500/20'
+                            }`}
+                            style={{
+                              left: `${bbox.x}%`,
+                              top: `${bbox.y}%`,
+                              width: `${bbox.width}%`,
+                              height: `${bbox.height}%`,
+                            }}
+                          >
+                            <div className="absolute -top-6 left-0 bg-[#3b1219] text-[#fca5a5] border border-[#882233] text-[9px] font-mono font-bold px-1.5 py-0.5 rounded shadow-lg flex items-center gap-1 whitespace-nowrap">
+                              <AlertTriangle className="w-2.5 h-2.5 text-[#f87171]" />
+                              {finding.title}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
 
@@ -507,13 +500,6 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                           background: 'radial-gradient(circle at 31% 50%, rgba(244, 63, 94, 0.7) 0%, transparent 40%), radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.4) 0%, transparent 60%)'
                         }}
                       />
-                      <div className="absolute left-[26%] top-[42%] w-[11%] h-[16%] border border-cyan-400/60 rounded flex items-center justify-center">
-                        <div className="grid grid-cols-4 gap-1 opacity-70">
-                          {Array.from({ length: 16 }).map((_, i) => (
-                            <span key={i} className="w-1 h-1 rounded-full bg-cyan-400" />
-                          ))}
-                        </div>
-                      </div>
                     </div>
                   )}
                 </div>
@@ -547,157 +533,87 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
               </div>
 
               <div className="text-[11px] text-slate-400">
-                Active Focus: <strong className="text-cyan-400 uppercase">{selectedFindingId.replace('_', ' ')}</strong>
+                Confidence: <strong className="text-cyan-400">{currentSession.document_type_confidence || 96.5}%</strong>
               </div>
             </div>
           </div>
 
           {/* RIGHT COLUMN: EVIDENCE FOCUS, BIOMETRICS & VERIFICATION */}
           <div className="lg:col-span-6 space-y-4">
-            {/* Top Banner: Enhanced Review Recommended */}
-            <div className="bg-[#1b141d] border border-[#882233] rounded-xl p-4 shadow-lg flex items-start gap-3.5">
-              <div className="p-2 bg-[#3b1219] text-[#f87171] border border-[#882233] rounded-lg shrink-0">
-                <AlertTriangle className="w-6 h-6" />
+            {/* Top Banner */}
+            <div className={`border rounded-xl p-4 shadow-lg flex items-start gap-3.5 ${
+              (currentSession.risk?.overallRiskScore ?? 0) > 50
+                ? 'bg-[#1b141d] border-[#882233]'
+                : 'bg-[#0e1e17] border-[#1d5236]'
+            }`}>
+              <div className={`p-2 rounded-lg shrink-0 ${
+                (currentSession.risk?.overallRiskScore ?? 0) > 50
+                  ? 'bg-[#3b1219] text-[#f87171] border border-[#882233]'
+                  : 'bg-[#112419] text-[#4ade80] border border-[#1d5236]'
+              }`}>
+                {(currentSession.risk?.overallRiskScore ?? 0) > 50 ? <AlertTriangle className="w-6 h-6" /> : <CheckCircle2 className="w-6 h-6" />}
               </div>
               <div className="min-w-0">
-                <h3 className="text-base font-bold text-[#f87171] tracking-wide font-sans">
-                  Enhanced Review Recommended
+                <h3 className={`text-base font-bold tracking-wide font-sans ${
+                  (currentSession.risk?.overallRiskScore ?? 0) > 50 ? 'text-[#f87171]' : 'text-[#4ade80]'
+                }`}>
+                  {currentSession.risk?.reviewPriority || 'LOW REVIEW PRIORITY'}
                 </h3>
                 <p className="text-xs text-slate-300 mt-0.5 leading-relaxed font-sans">
-                  Discrepancies detected require manual review and verification prior to border clearance.
+                  {currentSession.risk?.recommendedAction || 'Document screening completed.'}
                 </p>
               </div>
             </div>
 
             {/* DYNAMIC EVIDENCE FOCUS PANEL */}
-            <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-4 shadow-xl space-y-3">
-              <div className="flex items-center justify-between border-b border-[#182740] pb-2.5">
-                <div className="flex items-center gap-2">
-                  <Target className="w-4 h-4 text-cyan-400" />
-                  <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
-                    EVIDENCE FOCUS: {activeEvidence?.title}
-                  </h4>
+            {activeFinding && (
+              <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-4 shadow-xl space-y-3">
+                <div className="flex items-center justify-between border-b border-[#182740] pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <Target className="w-4 h-4 text-cyan-400" />
+                    <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+                      EVIDENCE FOCUS: {activeFinding.title}
+                    </h4>
+                  </div>
+
+                  <span className={`px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded ${
+                    activeFinding.severity === 'HIGH' || activeFinding.severity === 'CRITICAL'
+                      ? 'bg-[#3b1219] text-[#fca5a5] border border-[#882233]'
+                      : 'bg-[#112419] text-[#6ee7b7]'
+                  }`}>
+                    {activeFinding.severity} PRIORITY
+                  </span>
                 </div>
 
-                <span className={`px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded ${
-                  activeEvidence?.severity === 'HIGH' ? 'bg-[#3b1219] text-[#fca5a5] border border-[#882233]' : 'bg-[#112419] text-[#6ee7b7]'
-                }`}>
-                  {activeEvidence?.severity} PRIORITY
-                </span>
-              </div>
-
-              {/* If DOB Mismatch is focused */}
-              {activeEvidence?.id === 'dob_mismatch' && (
                 <div className="space-y-2.5 text-xs font-sans">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-[#070e1a] p-3 rounded-lg border border-[#182740]">
-                      <span className="text-[10px] font-mono text-slate-400 uppercase block mb-1">
-                        DOCUMENT FIELD (VIZ)
-                      </span>
-                      <span className="text-sm font-mono font-bold text-white block">
-                        {activeEvidence.visualValue}
-                      </span>
-                    </div>
+                  <p className="text-slate-300 leading-relaxed">
+                    {activeFinding.description}
+                  </p>
 
-                    <div className="bg-[#070e1a] p-3 rounded-lg border border-[#182740]">
-                      <span className="text-[10px] font-mono text-slate-400 uppercase block mb-1">
-                        MRZ ENCODED FIELD
+                  {activeFinding.sources && activeFinding.sources.length > 0 && (
+                    <div className="bg-[#070e1a] p-3 rounded-lg border border-[#182740] space-y-1 font-mono text-[11px]">
+                      <span className="text-slate-400 uppercase font-bold block mb-1">
+                        AUTHENTICATED EVIDENCE SOURCES:
                       </span>
-                      <span className="text-sm font-mono font-bold text-[#f87171] block">
-                        {activeEvidence.mrzValue}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="bg-[#2a0e14] border border-[#882233] p-3 rounded-lg text-xs text-[#fca5a5]">
-                    <strong className="block font-mono text-[11px] mb-0.5">⚠ PARITY FAILURE REASON:</strong>
-                    {activeEvidence.reason}
-                  </div>
-                </div>
-              )}
-
-              {/* If Face Match is focused */}
-              {activeEvidence?.id === 'bio_match' && (
-                <div className="space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {/* Circular Gauge */}
-                    <div className="bg-[#070e1a] p-3 rounded-lg border border-[#182740] flex flex-col items-center justify-center text-center">
-                      <span className="text-[10px] font-mono text-slate-400 uppercase mb-2">
-                        FACE MATCH SCORE
-                      </span>
-
-                      <div className="relative w-20 h-20 flex items-center justify-center">
-                        <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                          <path
-                            className="text-[#182a47]"
-                            strokeWidth="3.5"
-                            stroke="currentColor"
-                            fill="none"
-                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                          />
-                          <path
-                            className="text-[#f87171]"
-                            strokeDasharray="62, 100"
-                            strokeWidth="3.5"
-                            strokeLinecap="round"
-                            stroke="currentColor"
-                            fill="none"
-                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                          />
-                        </svg>
-                        <span className="absolute text-lg font-bold font-mono text-white">62%</span>
-                      </div>
-
-                      <span className="text-xs font-mono text-[#f87171] font-bold mt-1.5 flex items-center gap-1">
-                        <AlertTriangle className="w-3 h-3" /> Low Similarity
-                      </span>
-                    </div>
-
-                    {/* Side by Side Photos */}
-                    <div className="bg-[#070e1a] p-3 rounded-lg border border-[#182740] flex items-center justify-around">
-                      <div className="text-center">
-                        <span className="text-[9px] font-mono text-slate-400 block mb-1">DOC PHOTO</span>
-                        <div className="w-14 h-18 bg-slate-900 rounded border border-slate-700 overflow-hidden">
-                          <img
-                            src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80"
-                            alt="Doc"
-                            className="w-full h-full object-cover"
-                          />
+                      {activeFinding.sources.map((s, idx) => (
+                        <div key={idx} className="text-cyan-300 flex items-center gap-1.5">
+                          <span>•</span>
+                          <span><strong>{s.type}:</strong> {s.field ? `${s.field} -> ` : ''}{s.value || s.details}</span>
                         </div>
-                      </div>
-
-                      <div className="text-center">
-                        <span className="text-[9px] font-mono text-slate-400 block mb-1">LIVE PERSON</span>
-                        <div className="w-14 h-18 bg-slate-900 rounded border border-cyan-500 overflow-hidden">
-                          <img
-                            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
-                            alt="Live"
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      </div>
+                      ))}
                     </div>
-                  </div>
-
-                  <div className="flex justify-end">
-                    <button
-                      onClick={() => setIsCameraModalOpen(true)}
-                      className="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded text-xs font-semibold flex items-center gap-1.5 shadow"
-                    >
-                      <Camera className="w-3.5 h-3.5" /> Re-Capture Live Camera
-                    </button>
-                  </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
-            {/* Extracted Fields Table matching Reference Screenshot */}
+            {/* DYNAMIC EXTRACTED FIELDS TABLE */}
             <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-4 shadow-xl space-y-3">
               <div className="flex items-center justify-between border-b border-[#182740] pb-2">
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4 text-cyan-400" />
                   <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
-                    EXTRACTED FIELDS
+                    EXTRACTED FIELDS ({currentSession.fields.length})
                   </h4>
                 </div>
               </div>
@@ -712,95 +628,68 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#15233a] font-sans text-xs">
-                    <tr>
-                      <td className="py-1.5 px-2 text-slate-400 font-medium">Document Type</td>
-                      <td className="py-1.5 px-2 text-white">Passport</td>
-                      <td className="py-1.5 px-2 text-right font-mono text-slate-300">98%</td>
-                    </tr>
-                    <tr>
-                      <td className="py-1.5 px-2 text-slate-400 font-medium">Issuing State</td>
-                      <td className="py-1.5 px-2 text-white">USA</td>
-                      <td className="py-1.5 px-2 text-right font-mono text-slate-300">99%</td>
-                    </tr>
-                    <tr>
-                      <td className="py-1.5 px-2 text-slate-400 font-medium">Surname</td>
-                      <td className="py-1.5 px-2 text-white font-mono">UNITED STATES SPECIMEN</td>
-                      <td className="py-1.5 px-2 text-right font-mono text-slate-300">96%</td>
-                    </tr>
-                    <tr className="bg-[#2a0e14]/60">
-                      <td className="py-1.5 px-2 text-[#f87171] font-bold flex items-center gap-1">
-                        Date of Birth
-                      </td>
-                      <td className="py-1.5 px-2 font-mono font-bold text-[#f87171]">
-                        01 JAN 1985
-                      </td>
-                      <td className="py-1.5 px-2 text-right font-mono text-[#f87171] font-bold flex items-center justify-end gap-1">
-                        92% <AlertTriangle className="w-3 h-3 text-[#f59e0b]" />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="py-1.5 px-2 text-slate-400 font-medium">Sex</td>
-                      <td className="py-1.5 px-2 text-white font-mono">F</td>
-                      <td className="py-1.5 px-2 text-right font-mono text-slate-300">97%</td>
-                    </tr>
-                    <tr>
-                      <td className="py-1.5 px-2 text-slate-400 font-medium">Date of Issue</td>
-                      <td className="py-1.5 px-2 text-white font-mono">01 JAN 2024</td>
-                      <td className="py-1.5 px-2 text-right font-mono text-slate-300">96%</td>
-                    </tr>
-                    <tr>
-                      <td className="py-1.5 px-2 text-slate-400 font-medium">Date of Expiry</td>
-                      <td className="py-1.5 px-2 text-white font-mono">01 JAN 2034</td>
-                      <td className="py-1.5 px-2 text-right font-mono text-slate-300">97%</td>
-                    </tr>
-                    <tr>
-                      <td className="py-1.5 px-2 text-slate-400 font-medium">Passport Number</td>
-                      <td className="py-1.5 px-2 text-white font-mono">1234567890</td>
-                      <td className="py-1.5 px-2 text-right font-mono text-slate-300">98%</td>
-                    </tr>
+                    {currentSession.fields.map((f) => (
+                      <tr key={f.key} className={f.isTampered ? 'bg-[#2a0e14]/60' : ''}>
+                        <td className={`py-1.5 px-2 font-medium ${f.isTampered ? 'text-[#f87171] font-bold' : 'text-slate-400'}`}>
+                          {f.label}
+                        </td>
+                        <td className={`py-1.5 px-2 font-mono ${f.isTampered ? 'text-[#f87171] font-bold' : 'text-white'}`}>
+                          {f.value}
+                        </td>
+                        <td className="py-1.5 px-2 text-right font-mono text-slate-300">
+                          {f.confidence}%
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
 
-              {/* MRZ Status Sub-card */}
-              <div className="bg-[#070e1a] p-3 rounded-lg border border-[#182740] space-y-1.5 text-xs font-sans">
-                <span className="text-[10px] font-mono text-slate-400 uppercase font-bold block">
-                  MRZ STATUS
-                </span>
-                <div className="flex items-center gap-1.5 text-[#4ade80] font-medium">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#4ade80]" />
-                  MRZ Checksum: Valid (All MRZ check digits passed)
+              {/* Dynamic MRZ Status Sub-card */}
+              {currentSession.mrzData && (
+                <div className="bg-[#070e1a] p-3 rounded-lg border border-[#182740] space-y-1.5 text-xs font-sans">
+                  <span className="text-[10px] font-mono text-slate-400 uppercase font-bold block">
+                    MRZ STATUS: {currentSession.mrzData.status}
+                  </span>
+                  <div className={`flex items-center gap-1.5 font-medium ${
+                    currentSession.mrzData.isAllChecksumsValid ? 'text-[#4ade80]' : 'text-[#f87171]'
+                  }`}>
+                    {currentSession.mrzData.isAllChecksumsValid ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
+                    <span>MRZ Checksums: {currentSession.mrzData.isAllChecksumsValid ? 'Valid (All check digits passed)' : 'Checksum failure detected'}</span>
+                  </div>
+
+                  {currentSession.mrzData.vizMismatchDetected && (
+                    <div className="text-[11px] font-mono text-[#fbbf24] pl-5 space-y-0.5">
+                      {currentSession.mrzData.vizMismatchDetails.map((det, i) => (
+                        <div key={i}>⚠ {det}</div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center gap-1.5 text-[#fbbf24] font-medium">
-                  <AlertTriangle className="w-3.5 h-3.5 text-[#f59e0b]" />
-                  Date of Birth (MRZ vs Visual): Mismatch
-                </div>
-                <div className="text-[11px] font-mono text-slate-400 pl-5">
-                  MRZ DOB: <strong className="text-white">01 JAN 1995</strong> | Visual DOB: <strong className="text-[#f87171]">01 JAN 1985</strong>
-                </div>
-              </div>
+              )}
             </div>
 
-            {/* EVIDENCE NAVIGATOR */}
+            {/* DYNAMIC EVIDENCE NAVIGATOR */}
             <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-4 shadow-xl space-y-3">
               <div className="flex items-center justify-between border-b border-[#182740] pb-2">
                 <div className="flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4 text-cyan-400" />
                   <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
-                    EVIDENCE NAVIGATOR (CLICK TO FOCUS ON DOCUMENT)
+                    EVIDENCE NAVIGATOR ({findingsList.length} FINDINGS)
                   </h4>
                 </div>
               </div>
 
               <div className="space-y-2">
-                {evidenceItems.map((item) => {
-                  const isSelected = selectedFindingId === item.id;
+                {findingsList.map((item) => {
+                  const fid = item.finding_id || item.id;
+                  const isSelected = selectedFindingId === fid;
 
                   return (
                     <div
-                      key={item.id}
+                      key={fid}
                       onClick={() => {
-                        setSelectedFindingId(item.id);
+                        setSelectedFindingId(fid);
                         setViewMode('evidence');
                       }}
                       className={`p-3 rounded-lg border transition cursor-pointer flex items-center justify-between ${
@@ -811,18 +700,18 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                     >
                       <div className="flex items-center gap-3">
                         <div className={`p-2 rounded-md ${
-                          item.severity === 'HIGH' ? 'bg-[#3b1219] text-[#f87171]' : 'bg-[#112419] text-[#4ade80]'
+                          item.severity === 'HIGH' || item.severity === 'CRITICAL' ? 'bg-[#3b1219] text-[#f87171]' : 'bg-[#112419] text-[#4ade80]'
                         }`}>
-                          {item.severity === 'HIGH' ? <AlertTriangle className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
+                          {item.severity === 'HIGH' || item.severity === 'CRITICAL' ? <AlertTriangle className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
                         </div>
                         <div>
                           <h5 className="text-xs font-bold text-white">{item.title}</h5>
-                          <p className="text-[11px] text-slate-400">{item.subtitle}</p>
+                          <p className="text-[11px] text-slate-400 line-clamp-1">{item.description}</p>
                         </div>
                       </div>
 
                       <span className={`px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded ${
-                        item.severity === 'HIGH'
+                        item.severity === 'HIGH' || item.severity === 'CRITICAL'
                           ? 'bg-[#3b1219] text-[#fca5a5] border border-[#882233]'
                           : 'bg-[#112419] text-[#6ee7b7] border border-[#1d5236]'
                       }`}>
@@ -834,7 +723,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
               </div>
             </div>
 
-            {/* OFFICER NOTES & ACTION BUTTONS */}
+            {/* OFFICER NOTES & DECISION */}
             <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-4 shadow-xl space-y-3">
               <div className="flex items-center justify-between border-b border-[#182740] pb-2">
                 <div className="flex items-center gap-2">
@@ -905,11 +794,13 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
       />
 
       {/* Official PDF / JSON Dossier Modal */}
-      <OfficialDossierModal
-        isOpen={isReportModalOpen}
-        onClose={() => setIsReportModalOpen(false)}
-        session={currentSession}
-      />
+      {!isUnsupported && (
+        <OfficialDossierModal
+          isOpen={isReportModalOpen}
+          onClose={() => setIsReportModalOpen(false)}
+          session={currentSession}
+        />
+      )}
     </div>
   );
 };

@@ -19,16 +19,16 @@ import {
   X,
   RefreshCw,
   Clock,
-  ScanLine,
-  FileCode2,
-  FileSpreadsheet
+  ScanLine
 } from 'lucide-react';
-import { ScreeningSession, DocumentType, TamperingForensics } from '../types';
+import { ScreeningSession, DocumentType, TamperingForensics, DocumentField } from '../types';
 import { sha256 } from '../utils/auditLedger';
 import { calculateCompositeRisk } from '../utils/riskEngine';
 import { parseTD3MRZ } from '../utils/mrzValidator';
 import { compareFacialBiometrics } from '../utils/biometricsEngine';
 import { classifyDocument } from '../utils/documentClassifier';
+import { extractIdentityFields } from '../utils/fieldExtractor';
+import { activeVerificationProvider } from '../utils/verificationProvider';
 
 interface NewScreeningWorkstationProps {
   onCompleteScreening: (newSession: ScreeningSession) => void;
@@ -136,16 +136,16 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
     setIsProcessing(true);
     setProcessingStep(1);
     setProcessingProgress(20);
-    setPipelineMessage('Layer 1: Document classification & structural integrity analysis...');
+    setPipelineMessage('Layer 1: Document classification & structural gate analysis...');
 
-    // 1. Run Document Classification Gate
-    const classification = classifyDocument(documentFile.name, undefined, documentType);
+    // 1. Run Strict Multi-Signal Document Classification Gate
+    const classification = classifyDocument(documentFile.name, '', documentType);
 
     if (!classification.isSupported) {
-      // Non-identity / Unsupported document detected: Halt processing and reject safely
+      // Non-identity / Unsupported file detected -> Halt immediately
       setTimeout(() => {
         setProcessingStep(2);
-        setProcessingProgress(60);
+        setProcessingProgress(65);
         setPipelineMessage('⚠ Non-identity document structure detected. Terminating pipeline...');
       }, 700);
 
@@ -165,38 +165,18 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
           travelerPassportNumber: 'N/A',
           documentType: 'unsupported_document',
           documentImageUrl: documentFile.dataUrl,
+          document_type_confidence: classification.confidence,
+          document_type_evidence: classification.evidence,
+          reason_code: 'UNSUPPORTED_DOCUMENT',
+          screening_started: false,
           fields: [],
-          mrzData: undefined,
-          tampering: {
-            overallTamperScore: 0,
-            isTampered: false,
-            photoReplacement: { detected: false, confidence: 0, splicingEdgeDetected: false, lightingInconsistency: false, elaAnomalyScore: 0, noiseResidualDisparity: 0, details: 'Screening halted: Unsupported document.' },
-            textManipulation: { detected: false, confidence: 0, fontInconsistency: false, baselineMisalignment: false, alteredFields: [], digitalCopyPasteArtifacts: false, details: 'No identity fields present.' },
-            stampForgery: { detected: false, confidence: 0, structuralSimilarityScore: 0, circularEdgeIntegrity: 0, inkBleedAnomaly: false, clonedSealDetected: false, details: 'N/A' },
-            metadataAnalysis: { detected: false, editingSoftwareFound: false, softwareTraces: [], exifMissingOrStripped: false, creationDateAnomaly: false, compressionQuantizationAnomaly: false, details: 'N/A' },
-            tamperBoxes: [],
-          },
-          watchlist: {
-            isHit: false,
-            matchType: 'NONE',
-            threatLevel: 'NONE',
-            watchlistDatabase: 'N/A',
-            details: 'Watchlist screening bypassed for non-identity document.',
-            actionRequired: 'Reject document.',
-          },
-          risk: {
-            overallRiskScore: 0,
-            reviewPriority: 'LOW REVIEW PRIORITY',
-            confidenceLevel: classification.confidence,
-            breakdown: { ocrExtractionScore: 0, mrzValidationScore: 0, tamperRiskScore: 0, biometricMatchScore: 0, watchlistThreatScore: 0 },
-            keyRiskFactors: ['Document cannot be validated as an identity or travel credential.'],
-            positiveFactors: [],
-            recommendedAction: 'Reject document. Request valid passport, visa, national ID, or border permit.',
-            decisionTimestamp: new Date().toISOString(),
-            findings: [],
-          },
+          mrzData: null,
+          tampering: null,
+          biometrics: null,
+          watchlist: null,
+          risk: null,
           status: 'UNSUPPORTED_DOCUMENT',
-          processingTimeMs: 840,
+          processingTimeMs: 820,
           unsupportedReason: classification.rejectionReasons.join(' '),
           detectedClassificationConfidence: classification.confidence,
         };
@@ -211,7 +191,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
     setTimeout(() => {
       setProcessingStep(2);
       setProcessingProgress(40);
-      setPipelineMessage('Layer 2: Vision OCR extraction & field mapping...');
+      setPipelineMessage('Layer 2: Vision OCR extraction & field label association...');
     }, 600);
 
     setTimeout(() => {
@@ -236,9 +216,63 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
         .replace(/_/g, ' ')
         .toUpperCase();
 
+      const extractedFields: DocumentField[] = [
+        {
+          key: 'passportNumber',
+          label: 'Passport Number',
+          value: 'Z4829104',
+          confidence: 99.4,
+          source: 'visual_zone',
+          labelDetected: true,
+          validation: 'VALID',
+          boundingBox: { x: 63, y: 30, width: 16, height: 4 },
+        },
+        {
+          key: 'fullName',
+          label: 'Full Name',
+          value: travelerName,
+          confidence: 98.8,
+          source: 'visual_zone',
+          labelDetected: true,
+          validation: 'VALID',
+          boundingBox: { x: 41, y: 34, width: 26, height: 8 },
+        },
+        {
+          key: 'nationality',
+          label: 'Nationality',
+          value: 'IND',
+          confidence: 99.5,
+          source: 'visual_zone',
+          labelDetected: true,
+          validation: 'VALID',
+          boundingBox: { x: 41, y: 44, width: 12, height: 4 },
+        },
+        {
+          key: 'dob',
+          label: 'Date of Birth',
+          value: '1988-04-12',
+          confidence: 98.1,
+          source: 'visual_zone',
+          labelDetected: true,
+          validation: 'VALID',
+          boundingBox: { x: 41, y: 49, width: 18, height: 4.5 },
+        },
+        {
+          key: 'expiryDate',
+          label: 'Date of Expiry',
+          value: '2031-06-09',
+          confidence: 99.0,
+          source: 'visual_zone',
+          labelDetected: true,
+          validation: 'VALID',
+          boundingBox: { x: 41, y: 62.5, width: 18, height: 4 },
+        },
+      ];
+
       const mrzResult = parseTD3MRZ(
         `P<IND${travelerName.replace(/\s/g, '<')}<<<<<<<<<<<<<<<<<<<`,
-        `Z4829104<4IND8804128M3106096<<<<<<<<<<<<<<8`
+        `Z4829104<4IND8804128M3106096<<<<<<<<<<<<<<8`,
+        extractedFields
       );
 
       const mockTampering: TamperingForensics = {
@@ -290,18 +324,14 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
         personImage || undefined
       );
 
+      const watchlistResult = await activeVerificationProvider.checkWatchlist(travelerName, 'Z4829104');
+
       const calculatedRisk = calculateCompositeRisk(
-        [
-          { key: 'docNum', label: 'Document No.', value: 'Z4829104', confidence: 99.2 },
-          { key: 'name', label: 'Full Name', value: travelerName, confidence: 98.8 },
-          { key: 'nationality', label: 'Nationality', value: 'IND', confidence: 99.5 },
-          { key: 'dob', label: 'Date of Birth', value: '1988-04-12', confidence: 98.1 },
-          { key: 'expiry', label: 'Date of Expiry', value: '2031-06-09', confidence: 99.0 },
-        ],
+        extractedFields,
         mrzResult,
         mockTampering,
         mockBiometrics,
-        { isHit: false, matchType: 'NONE', threatLevel: 'NONE', watchlistDatabase: 'INTERPOL SLTD', details: 'Clear across databases', actionRequired: 'Clear' }
+        watchlistResult
       );
 
       const newSession: ScreeningSession = {
@@ -315,29 +345,19 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
         travelerNationality: 'IND',
         travelerDob: '1988-04-12',
         travelerPassportNumber: 'Z4829104',
-        documentType: documentType,
+        documentType: classification.detectedType,
         documentImageUrl: docVisualUrl,
         liveCameraImageUrl: personImage || undefined,
-        fields: [
-          { key: 'passportNumber', label: 'Document Number', value: 'Z4829104', confidence: 99.4, source: 'visual_zone' },
-          { key: 'fullName', label: 'Full Name / Title', value: travelerName, confidence: 98.8, source: 'visual_zone' },
-          { key: 'nationality', label: 'Nationality / Origin', value: 'IND', confidence: 99.5, source: 'visual_zone' },
-          { key: 'dob', label: 'Date of Birth / Issue', value: '1988-04-12', confidence: 98.1, source: 'visual_zone' },
-          { key: 'expiryDate', label: 'Date of Expiry / Validity', value: '2031-06-09', confidence: 99.0, source: 'visual_zone' },
-        ],
+        document_type_confidence: classification.confidence,
+        document_type_evidence: classification.evidence,
+        screening_started: true,
+        fields: extractedFields,
         mrzData: mrzResult,
         tampering: mockTampering,
         biometrics: mockBiometrics,
-        watchlist: {
-          isHit: false,
-          matchType: 'NONE',
-          threatLevel: 'NONE',
-          watchlistDatabase: 'INTERPOL SLTD + SSB National Database',
-          details: 'Clear across Interpol and National Watchlists.',
-          actionRequired: 'Automated clearance authorized.',
-        },
+        watchlist: watchlistResult,
         risk: calculatedRisk,
-        status: calculatedRisk.overallRiskScore > 65 ? 'DETAINED' : calculatedRisk.overallRiskScore > 25 ? 'SECONDARY_INSPECTION' : 'CLEARED',
+        status: calculatedRisk.overallRiskScore > 60 ? 'DETAINED' : calculatedRisk.overallRiskScore > 25 ? 'SECONDARY_INSPECTION' : 'CLEARED',
         processingTimeMs: 1840,
       };
 
