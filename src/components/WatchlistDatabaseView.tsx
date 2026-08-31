@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Database, Search, ShieldAlert, Globe, UserX, AlertTriangle, Plus, CheckCircle2 } from 'lucide-react';
+import { 
+  Users, 
+  Search, 
+  AlertOctagon, 
+  Plus, 
+  ShieldAlert, 
+  Trash2, 
+  CheckCircle2, 
+  Eye, 
+  Globe 
+} from 'lucide-react';
 
 interface WatchlistEntry {
   id: string;
@@ -7,249 +17,305 @@ interface WatchlistEntry {
   aliases: string[];
   nationality: string;
   dob: string;
-  interpolNoticeId?: string;
-  threatLevel: 'CRITICAL' | 'HIGH' | 'MEDIUM';
-  offenseCategory: string;
-  issuingCountry: string;
-  status: 'ACTIVE_WARRANT' | 'DETAIN_ON_SIGHT' | 'BORDER_INTERCEPT';
+  passportNum: string;
+  noticeType: 'INTERPOL_RED_NOTICE' | 'INTERPOL_SLTD' | 'SSB_BLACKLIST' | 'FRAUD_SUSPECT';
+  category: string;
+  issuedDate: string;
+  status: 'ACTIVE_WARRANT' | 'UNDER_SURVEILLANCE' | 'DETAINED';
+  summary: string;
 }
 
 const INITIAL_WATCHLIST: WatchlistEntry[] = [
   {
-    id: 'WL-001',
+    id: 'WL-INT-2025-001',
     name: 'VLADIMIR IVANOV',
-    aliases: ['Maximilian Klaus Weber', 'Viktor Sidorov'],
+    aliases: ['Maximilian Weber', 'Klaus Weber', 'V. Groznyi'],
     nationality: 'AUT / RUS',
     dob: '1981-05-19',
-    interpolNoticeId: 'RN-2025/88921-EU',
-    threatLevel: 'CRITICAL',
-    offenseCategory: 'Transnational Syndicate Fraud & Identity Laundering',
-    issuingCountry: 'Interpol Lyon / Europol',
-    status: 'DETAIN_ON_SIGHT',
-  },
-  {
-    id: 'WL-002',
-    name: 'TARIQ MAHMOUD AL-HASSAN',
-    aliases: ['Tariq Al-Masri'],
-    nationality: 'SYR',
-    dob: '1985-03-10',
-    threatLevel: 'HIGH',
-    offenseCategory: 'Forged Schengen Visa Distribution & Border Smuggling',
-    issuingCountry: 'France / Schengen VIS',
-    status: 'BORDER_INTERCEPT',
-  },
-  {
-    id: 'WL-003',
-    name: 'DAVID JAMES STERLING',
-    aliases: ['David Miller'],
-    nationality: 'GBR',
-    dob: '1982-08-15',
-    threatLevel: 'MEDIUM',
-    offenseCategory: 'Immigration Act Section 14 Overstay & Age Falsification',
-    issuingCountry: 'India (MHA Immigration)',
+    passportNum: 'A77192083',
+    noticeType: 'INTERPOL_RED_NOTICE',
+    category: 'Transnational Syndicate Fraud & Identity Laundering',
+    issuedDate: '2025-08-14',
     status: 'ACTIVE_WARRANT',
+    summary: 'Wanted by Austrian Federal Criminal Police & Europol for forging 40+ diplomatic travel passports.',
   },
   {
-    id: 'WL-004',
-    name: 'CARLOS ENRIQUE MENDEZ',
-    aliases: ['Antonio Gomez'],
-    nationality: 'MEX',
-    dob: '1979-12-04',
-    interpolNoticeId: 'RN-2024/51029-AM',
-    threatLevel: 'CRITICAL',
-    offenseCategory: 'Cross-Border Narcotics Trafficking & False Documentation',
-    issuingCountry: 'Interpol / DEA',
-    status: 'DETAIN_ON_SIGHT',
+    id: 'WL-SSB-2026-042',
+    name: 'TARIQ AHMED MIRZA',
+    aliases: ['T. A. Mirza', 'Ahmed Khan'],
+    nationality: 'PAK',
+    dob: '1979-11-03',
+    passportNum: 'PA8829104',
+    noticeType: 'SSB_BLACKLIST',
+    category: 'Cross-Border Smuggling & Counterfeit Visa Distribution',
+    issuedDate: '2026-01-10',
+    status: 'ACTIVE_WARRANT',
+    summary: 'Flagged by MHA Police II Division for operating illegal cross-border counterfeit permit network.',
+  },
+  {
+    id: 'WL-SLTD-2026-109',
+    name: 'SARAH ELIZABETH JENKINS',
+    aliases: ['Sarah Jenkins'],
+    nationality: 'USA',
+    dob: '1989-05-20',
+    passportNum: '928104712',
+    noticeType: 'INTERPOL_SLTD',
+    category: 'Stolen and Lost Travel Documents (SLTD)',
+    issuedDate: '2026-02-01',
+    status: 'UNDER_SURVEILLANCE',
+    summary: 'Document reported lost/stolen in transit; automated border interception required upon presentation.',
   },
 ];
 
 export const WatchlistDatabaseView: React.FC = () => {
   const [watchlist, setWatchlist] = useState<WatchlistEntry[]>(INITIAL_WATCHLIST);
-  const [search, setSearch] = useState<string>('');
-  const [isAddingNew, setIsAddingNew] = useState<boolean>(false);
-  const [newName, setNewName] = useState<string>('');
-  const [newNationality, setNewNationality] = useState<string>('');
-  const [newCategory, setNewCategory] = useState<string>('');
-  const [newThreat, setNewThreat] = useState<'CRITICAL' | 'HIGH' | 'MEDIUM'>('HIGH');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [showAddModal, setShowAddModal] = useState<boolean>(false);
+  const [newEntry, setNewEntry] = useState<Partial<WatchlistEntry>>({
+    noticeType: 'INTERPOL_RED_NOTICE',
+    status: 'ACTIVE_WARRANT',
+  });
 
-  const filtered = watchlist.filter(w => 
-    w.name.toLowerCase().includes(search.toLowerCase()) ||
-    w.nationality.toLowerCase().includes(search.toLowerCase()) ||
-    w.offenseCategory.toLowerCase().includes(search.toLowerCase()) ||
-    w.aliases.some(a => a.toLowerCase().includes(search.toLowerCase()))
+  const filtered = watchlist.filter(
+    (item) =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.passportNum.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.aliases.some((a) => a.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newName) return;
+    if (!newEntry.name || !newEntry.passportNum) return;
 
-    const newEntry: WatchlistEntry = {
-      id: `WL-${(watchlist.length + 1).toString().padStart(3, '0')}`,
-      name: newName.toUpperCase(),
-      aliases: [],
-      nationality: newNationality.toUpperCase() || 'UNKNOWN',
-      dob: '1990-01-01',
-      threatLevel: newThreat,
-      offenseCategory: newCategory || 'Immigration Document Fraud',
-      issuingCountry: 'SSB Police II Division',
-      status: 'BORDER_INTERCEPT',
+    const created: WatchlistEntry = {
+      id: `WL-NEW-${Date.now().toString().slice(-4)}`,
+      name: newEntry.name.toUpperCase(),
+      aliases: (newEntry.aliases as any) || [],
+      nationality: newEntry.nationality?.toUpperCase() || 'UNKNOWN',
+      dob: newEntry.dob || '1985-01-01',
+      passportNum: newEntry.passportNum.toUpperCase(),
+      noticeType: newEntry.noticeType || 'INTERPOL_RED_NOTICE',
+      category: newEntry.category || 'Identity Fraud Suspect',
+      issuedDate: new Date().toISOString().slice(0, 10),
+      status: 'ACTIVE_WARRANT',
+      summary: newEntry.summary || 'Added to national watch registry.',
     };
 
-    setWatchlist([newEntry, ...watchlist]);
-    setNewName('');
-    setNewNationality('');
-    setNewCategory('');
-    setIsAddingNew(false);
+    setWatchlist([created, ...watchlist]);
+    setShowAddModal(false);
+    setNewEntry({ noticeType: 'INTERPOL_RED_NOTICE', status: 'ACTIVE_WARRANT' });
+  };
+
+  const handleDelete = (id: string) => {
+    setWatchlist(watchlist.filter((w) => w.id !== id));
   };
 
   return (
-    <div className="space-y-6">
-      {/* Top Banner */}
-      <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 pb-12 text-slate-200">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#152238] pb-5">
         <div>
-          <div className="flex items-center gap-2">
-            <Globe className="w-5 h-5 text-cyan-400" />
-            <h2 className="text-base font-bold uppercase tracking-wider text-white">
-              INTERPOL &amp; National SSB Watchlist Grid
-            </h2>
-          </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Real-time biometric cross-referencing against Interpol Red Notices, SLTD, and Police II alerts
+          <h2 className="text-2xl font-bold text-white tracking-tight">
+            Interpol &amp; National Watchlist
+          </h2>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Active Red Notices, Stolen &amp; Lost Travel Documents (SLTD), and SSB Fugitive Database.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search fugitive name, alias..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 pr-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 w-60"
-            />
-          </div>
-
-          <button
-            onClick={() => setIsAddingNew(!isAddingNew)}
-            className="px-3.5 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            Add Suspect Alert
-          </button>
-        </div>
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="px-4 py-2 bg-[#d4e4f7] hover:bg-white text-[#071326] font-bold text-xs uppercase tracking-wider rounded-md transition flex items-center gap-2 shadow-[0_0_15px_rgba(212,228,247,0.15)]"
+        >
+          <Plus className="w-4 h-4 stroke-[2.5]" />
+          REGISTER NEW ALERT
+        </button>
       </div>
 
-      {/* Add Suspect Form Modal/Drawer */}
-      {isAddingNew && (
-        <form onSubmit={handleAdd} className="bg-slate-900 border border-cyan-500/40 p-4 rounded-2xl shadow-xl space-y-3 animate-in fade-in">
-          <h4 className="text-xs font-bold text-cyan-300 uppercase tracking-wider">
-            Issue New Checkpoint Intercept Notice
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <input
-              type="text"
-              placeholder="Suspect Full Name"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              required
-              className="p-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
-            />
-            <input
-              type="text"
-              placeholder="Nationality (e.g. IND, NPL)"
-              value={newNationality}
-              onChange={(e) => setNewNationality(e.target.value)}
-              className="p-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
-            />
-            <input
-              type="text"
-              placeholder="Offense / Forgery Type"
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value)}
-              className="p-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
-            />
-            <select
-              value={newThreat}
-              onChange={(e) => setNewThreat(e.target.value as any)}
-              className="p-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white"
-            >
-              <option value="CRITICAL">Critical (Red Notice)</option>
-              <option value="HIGH">High Threat</option>
-              <option value="MEDIUM">Medium / Overstay</option>
-            </select>
-          </div>
-          <div className="flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => setIsAddingNew(false)}
-              className="px-3 py-1.5 bg-slate-800 text-slate-400 rounded-lg text-xs font-semibold"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-1.5 bg-cyan-600 text-white rounded-lg text-xs font-bold"
-            >
-              Register Alert
-            </button>
-          </div>
-        </form>
-      )}
+      {/* Search Bar */}
+      <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-4 shadow-lg flex items-center gap-3">
+        <Search className="w-4 h-4 text-slate-400" />
+        <input
+          type="text"
+          placeholder="Search suspects by name, alias, passport number, or notice ID..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full bg-transparent text-xs text-white placeholder-slate-500 focus:outline-none font-sans"
+        />
+      </div>
 
-      {/* Grid of Suspect Alert Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {filtered.map((item) => (
-          <div
-            key={item.id}
-            className={`bg-slate-900 border rounded-2xl p-5 shadow-xl flex flex-col justify-between ${
-              item.threatLevel === 'CRITICAL'
-                ? 'border-red-600/80 bg-red-950/20'
-                : 'border-slate-800'
-            }`}
-          >
-            <div>
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold text-cyan-400">{item.id}</span>
-                    <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded uppercase ${
-                      item.threatLevel === 'CRITICAL' ? 'bg-red-950 text-red-400 border border-red-800 animate-pulse' :
-                      item.threatLevel === 'HIGH' ? 'bg-amber-950 text-amber-400 border border-amber-800' :
-                      'bg-slate-800 text-slate-300'
-                    }`}>
-                      {item.threatLevel} THREAT
+      {/* Watchlist Suspect Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {filtered.map((item) => {
+          const isRedNotice = item.noticeType === 'INTERPOL_RED_NOTICE';
+          const isBlacklist = item.noticeType === 'SSB_BLACKLIST';
+
+          return (
+            <div
+              key={item.id}
+              className={`bg-[#0b1424] border rounded-xl p-5 shadow-xl flex flex-col justify-between transition-all ${
+                isRedNotice
+                  ? 'border-[#882233] bg-[#0b1424]'
+                  : isBlacklist
+                  ? 'border-[#784d12] bg-[#0b1424]'
+                  : 'border-[#182740]'
+              }`}
+            >
+              <div>
+                <div className="flex items-start justify-between gap-2 mb-3">
+                  <div>
+                    <span
+                      className={`text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded block w-fit mb-1.5 ${
+                        isRedNotice
+                          ? 'bg-[#3b1219] text-[#fca5a5] border border-[#882233]'
+                          : isBlacklist
+                          ? 'bg-[#291e11] text-[#fbbf24] border border-[#784d12]'
+                          : 'bg-[#112419] text-[#6ee7b7]'
+                      }`}
+                    >
+                      {item.noticeType.replace(/_/g, ' ')}
                     </span>
+                    <h3 className="text-base font-bold text-white tracking-wide">{item.name}</h3>
                   </div>
-                  <h3 className="text-base font-extrabold text-white mt-1">{item.name}</h3>
+
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="text-slate-500 hover:text-red-400 p-1 transition"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
                 </div>
 
-                <div className="text-right">
-                  <span className="text-[10px] font-mono text-slate-400 uppercase block">Origin</span>
-                  <span className="text-xs font-bold text-white font-mono">{item.nationality}</span>
+                <div className="space-y-1.5 text-xs font-mono mb-4 bg-[#070e1a] p-3 rounded-lg border border-[#15233a]">
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Passport / ID:</span>
+                    <span className="font-bold text-white">{item.passportNum}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Nationality:</span>
+                    <span className="text-slate-200">{item.nationality}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Date of Birth:</span>
+                    <span className="text-slate-200">{item.dob}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Known Aliases:</span>
+                    <span className="text-cyan-300 font-sans text-[11px] truncate max-w-[140px]">
+                      {item.aliases.join(', ')}
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-300 font-sans leading-relaxed mb-4">
+                  {item.summary}
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-[#182740] flex items-center justify-between text-[10px] font-mono text-slate-400">
+                <span>Ref: {item.id}</span>
+                <span className="text-red-400 font-bold flex items-center gap-1">
+                  <AlertOctagon className="w-3 h-3" /> ACTIVE LEVEL-1
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Add Alert Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-[#0b1424] border border-[#1e304f] rounded-xl p-5 max-w-lg w-full shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#182740] pb-3 mb-4">
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                Register National Security Watchlist Alert
+              </h3>
+              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-white">
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleAdd} className="space-y-3 text-xs font-sans">
+              <div>
+                <label className="text-slate-300 font-bold block mb-1">Full Legal Name:</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. ARMAN KHAN"
+                  value={newEntry.name || ''}
+                  onChange={(e) => setNewEntry({ ...newEntry, name: e.target.value })}
+                  className="w-full bg-[#070e1a] border border-[#182740] rounded-md p-2 text-white font-mono"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">Passport / ID Number:</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Z9920194"
+                    value={newEntry.passportNum || ''}
+                    onChange={(e) => setNewEntry({ ...newEntry, passportNum: e.target.value })}
+                    className="w-full bg-[#070e1a] border border-[#182740] rounded-md p-2 text-white font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">Nationality:</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. IND"
+                    value={newEntry.nationality || ''}
+                    onChange={(e) => setNewEntry({ ...newEntry, nationality: e.target.value })}
+                    className="w-full bg-[#070e1a] border border-[#182740] rounded-md p-2 text-white font-mono"
+                  />
                 </div>
               </div>
 
-              {item.aliases.length > 0 && (
-                <div className="text-xs text-slate-400 mb-2">
-                  <span className="font-semibold text-slate-300">Known Aliases: </span>
-                  {item.aliases.join(', ')}
-                </div>
-              )}
+              <div>
+                <label className="text-slate-300 font-bold block mb-1">Alert Classification:</label>
+                <select
+                  value={newEntry.noticeType}
+                  onChange={(e: any) => setNewEntry({ ...newEntry, noticeType: e.target.value })}
+                  className="w-full bg-[#070e1a] border border-[#182740] rounded-md p-2 text-white font-sans"
+                >
+                  <option value="INTERPOL_RED_NOTICE">INTERPOL RED NOTICE (Critical Arrest)</option>
+                  <option value="SSB_BLACKLIST">SSB NATIONAL BLACKLIST (Border Intercept)</option>
+                  <option value="INTERPOL_SLTD">INTERPOL SLTD (Stolen / Lost Document)</option>
+                </select>
+              </div>
 
-              <p className="text-xs text-slate-300 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 mb-3">
-                <strong className="text-slate-400 block mb-0.5 font-sans">Offense Summary:</strong>
-                {item.offenseCategory}
-              </p>
-            </div>
+              <div>
+                <label className="text-slate-300 font-bold block mb-1">Summary of Offense / Directives:</label>
+                <textarea
+                  rows={3}
+                  placeholder="Reason for warrant, intelligence details..."
+                  value={newEntry.summary || ''}
+                  onChange={(e) => setNewEntry({ ...newEntry, summary: e.target.value })}
+                  className="w-full bg-[#070e1a] border border-[#182740] rounded-md p-2 text-white font-sans"
+                />
+              </div>
 
-            <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-mono text-slate-400">
-              <span>Issuing Org: <strong className="text-slate-300 font-sans">{item.issuingCountry}</strong></span>
-              <span className="text-red-400 font-bold">{item.status.replace(/_/g, ' ')}</span>
-            </div>
+              <div className="flex justify-end gap-2 pt-2 border-t border-[#182740]">
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="px-3 py-1.5 text-slate-400 hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-md font-bold"
+                >
+                  Save Alert
+                </button>
+              </div>
+            </form>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

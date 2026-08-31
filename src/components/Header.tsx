@@ -1,102 +1,79 @@
-import React, { useState, useEffect } from 'react';
-import { Shield, Bell, Volume2, VolumeX, LogOut, Radio, Clock, UserCheck } from 'lucide-react';
+import React from 'react';
+import { Search, Bell, Shield, RefreshCw } from 'lucide-react';
 
 interface HeaderProps {
-  onLogout: () => void;
-  checkpointName?: string;
-  officerBadge?: string;
-  officerName?: string;
+  activeScreeningId?: string;
   activeAlertsCount?: number;
+  integrityStatus?: string;
+  onRefresh?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  onLogout,
-  checkpointName = 'Raxaul Integrated Check Post (ICP-04)',
-  officerBadge = 'SSB-7092',
-  officerName = 'Insp. Vikram Rathore',
-  activeAlertsCount = 2,
+  activeScreeningId,
+  activeAlertsCount = 3,
+  integrityStatus = 'Verified',
+  onRefresh,
 }) => {
-  const [time, setTime] = useState<string>('');
-  const [isAudioAlertEnabled, setIsAudioAlertEnabled] = useState<boolean>(true);
-
-  useEffect(() => {
-    const update = () => {
-      setTime(new Date().toLocaleTimeString('en-IN', { hour12: false }));
-    };
-    update();
-    const interval = setInterval(update, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <header className="bg-slate-950 border-b border-slate-800 sticky top-0 z-40 px-4 sm:px-6 py-3">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
-        {/* Left Branding */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-600 to-blue-800 flex items-center justify-center text-white shadow-lg shadow-cyan-950 border border-cyan-500/40">
-            <Shield className="w-5 h-5 text-cyan-200" />
+    <header className="h-14 bg-[#08101e] border-b border-[#152238] px-6 flex items-center justify-between shrink-0 select-none text-slate-200">
+      {/* Left: Search input or Active Case Banner */}
+      <div className="flex items-center gap-4">
+        {activeScreeningId ? (
+          <div className="flex items-center gap-3">
+            <span className="text-base font-black font-mono tracking-wider text-white">
+              {activeScreeningId}
+            </span>
+            <span className="px-2.5 py-0.5 rounded-full bg-[#1e141a] border border-[#4d1f28] text-[#f87171] text-[10px] font-mono font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_10px_rgba(248,113,113,0.15)]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#f87171] animate-pulse" />
+              Active Screening
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-black tracking-wider uppercase text-white">
-                SASHASTRA SEEMA BAL (SSB)
-              </span>
-              <span className="bg-cyan-950 text-cyan-400 border border-cyan-800 text-[10px] font-mono px-1.5 py-0.2 rounded font-bold">
-                MHA POLICE II
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-400 font-medium">
-              AI-Based Fake Identity &amp; Document Screening System (SIH26188)
-            </p>
+        ) : (
+          <div className="relative w-80">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search identities, cases, ID..."
+              className="w-full bg-[#0c1628] border border-[#1b2b46] rounded-md pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-sans"
+            />
           </div>
+        )}
+      </div>
+
+      {/* Center/Right: Integrity Status & Global Controls */}
+      <div className="flex items-center gap-6">
+        <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
+          <span className="text-slate-400">Integrity Status:</span>
+          <span className="text-white font-bold tracking-wide">{integrityStatus}</span>
         </div>
 
-        {/* Right Station & Officer Status */}
-        <div className="flex items-center gap-3 text-xs">
-          {/* Station Mode Indicator */}
-          <div className="hidden sm:flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl font-mono text-slate-300">
-            <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-            <span className="text-emerald-400 font-bold">ONLINE</span>
-            <span className="text-slate-600">|</span>
-            <span className="text-[11px] truncate max-w-[200px]">{checkpointName}</span>
-          </div>
-
-          {/* Clock */}
-          <div className="hidden sm:flex items-center gap-1.5 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl font-mono text-cyan-300">
-            <Clock className="w-3.5 h-3.5 text-cyan-400" />
-            <span>{time} IST</span>
-          </div>
-
-          {/* Audio Toggle */}
-          <button
-            onClick={() => setIsAudioAlertEnabled(!isAudioAlertEnabled)}
-            title={isAudioAlertEnabled ? 'Mute Sirens' : 'Enable Sirens'}
-            className="p-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 rounded-xl transition"
-          >
-            {isAudioAlertEnabled ? (
-              <Volume2 className="w-4 h-4 text-cyan-400" />
-            ) : (
-              <VolumeX className="w-4 h-4 text-slate-500" />
+        {/* Action Icons */}
+        <div className="flex items-center gap-3 text-slate-400">
+          <button className="p-1.5 hover:text-white hover:bg-[#121f35] rounded-md transition relative">
+            <Bell className="w-4 h-4" />
+            {activeAlertsCount > 0 && (
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#ef4444] ring-2 ring-[#08101e]" />
             )}
           </button>
 
-          {/* Officer Info */}
-          <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl">
-            <UserCheck className="w-4 h-4 text-cyan-400" />
-            <div className="text-left leading-tight">
-              <span className="font-bold text-white block text-[11px]">{officerName}</span>
-              <span className="text-[9px] font-mono text-slate-400">{officerBadge}</span>
-            </div>
-          </div>
-
-          {/* Logout */}
-          <button
-            onClick={onLogout}
-            title="Log Out Officer"
-            className="p-2 bg-red-950/60 border border-red-800/80 hover:bg-red-900 text-red-300 rounded-xl transition"
-          >
-            <LogOut className="w-4 h-4" />
+          <button className="p-1.5 hover:text-white hover:bg-[#121f35] rounded-md transition">
+            <Shield className="w-4 h-4" />
           </button>
+
+          <button 
+            onClick={onRefresh}
+            className="p-1.5 hover:text-white hover:bg-[#121f35] rounded-md transition"
+          >
+            <RefreshCw className="w-4 h-4" />
+          </button>
+
+          <div className="w-7 h-7 rounded-full overflow-hidden bg-slate-800 border border-slate-700 ml-1">
+            <img
+              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+              alt="Officer Profile"
+              className="w-full h-full object-cover grayscale brightness-90 contrast-125"
+            />
+          </div>
         </div>
       </div>
     </header>

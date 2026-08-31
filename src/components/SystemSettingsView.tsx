@@ -1,141 +1,159 @@
 import React, { useState } from 'react';
-import { Sliders, Cpu, Camera, ShieldCheck, CheckCircle2, RefreshCw, Save } from 'lucide-react';
+import { 
+  Settings, 
+  Sliders, 
+  Cpu, 
+  ShieldCheck, 
+  Save, 
+  RotateCcw, 
+  CheckCircle2, 
+  SlidersHorizontal,
+  Layers,
+  Sparkles
+} from 'lucide-react';
 
 export const SystemSettingsView: React.FC = () => {
   const [elaGain, setElaGain] = useState<number>(28);
-  const [bioMatchThreshold, setBioMatchThreshold] = useState<number>(80);
-  const [ocrEngine, setOcrEngine] = useState<string>('GEMINI_2_5_FLASH');
-  const [autoDetainThreshold, setAutoDetainThreshold] = useState<number>(65);
-  const [isSaved, setIsSaved] = useState<boolean>(false);
+  const [biometricCutoff, setBiometricCutoff] = useState<number>(80);
+  const [tamperSensitivity, setTamperSensitivity] = useState<number>(75);
+  const [ocrDeskew, setOcrDeskew] = useState<boolean>(true);
+  const [antiSpoofingMode, setAntiSpoofingMode] = useState<boolean>(true);
+  const [savedSuccess, setSavedSuccess] = useState<boolean>(false);
 
-  const handleSave = () => {
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 2500);
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 2500);
+  };
+
+  const handleReset = () => {
+    setElaGain(28);
+    setBiometricCutoff(80);
+    setTamperSensitivity(75);
+    setOcrDeskew(true);
+    setAntiSpoofingMode(true);
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      {/* Banner */}
-      <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl flex items-center justify-between">
+    <div className="space-y-6 pb-12 text-slate-200">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#152238] pb-5">
         <div>
-          <div className="flex items-center gap-2">
-            <Sliders className="w-5 h-5 text-cyan-400" />
-            <h2 className="text-base font-bold uppercase tracking-wider text-white">
-              System Configuration &amp; Hardware Diagnostics
-            </h2>
-          </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Configure AI forensic algorithms, biometric thresholds, and checkpoint hardware parameters
+          <h2 className="text-2xl font-bold text-white tracking-tight">
+            Diagnostic &amp; Algorithm Settings
+          </h2>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Calibrate forensic computer vision thresholds, ELA compression multipliers, and biometric confidence cutoffs.
           </p>
         </div>
 
-        {isSaved && (
-          <span className="text-xs font-bold text-emerald-400 bg-emerald-950 border border-emerald-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 animate-in fade-in">
-            <CheckCircle2 className="w-4 h-4" /> Parameters Updated
-          </span>
-        )}
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={handleReset}
+            className="px-3.5 py-2 bg-[#0e192c] hover:bg-[#182a47] text-slate-300 border border-[#1b2b46] rounded-md text-xs font-mono font-bold uppercase transition flex items-center gap-1.5"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            RESET FACTORY DEFAULTS
+          </button>
+        </div>
       </div>
 
-      {/* Settings Sections */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Module 3: Tamper Forensics Parameters */}
-        <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl space-y-4">
-          <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-            <Cpu className="w-5 h-5 text-purple-400" />
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-200">
-              Forensic Algorithm Thresholds
+      <form onSubmit={handleSave} className="space-y-5 max-w-4xl">
+        {/* Card 1: Forensic Computer Vision Thresholds */}
+        <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-xl space-y-4">
+          <div className="flex items-center gap-2 border-b border-[#182740] pb-3">
+            <SlidersHorizontal className="w-4 h-4 text-cyan-400" />
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+              Forensic Image Analysis &amp; ELA Configuration
             </h3>
           </div>
 
-          <div>
-            <div className="flex justify-between text-xs font-mono mb-1">
-              <span className="text-slate-300">ELA Amplification Gain</span>
-              <span className="text-purple-400 font-bold">{elaGain}x</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* ELA Gain Multiplier */}
+            <div>
+              <div className="flex justify-between text-xs font-mono mb-1.5">
+                <span className="text-slate-300 font-bold">Error Level Analysis (ELA) Gain:</span>
+                <span className="text-cyan-400 font-bold">{elaGain}x</span>
+              </div>
+              <input
+                type="range"
+                min="10"
+                max="50"
+                value={elaGain}
+                onChange={(e) => setElaGain(Number(e.target.value))}
+                className="w-full h-1.5 bg-[#15233a] rounded-lg appearance-none cursor-pointer accent-cyan-400"
+              />
+              <p className="text-[11px] text-slate-400 mt-1">
+                Amplifies JPEG compression error residuals to isolate cut-and-paste splicing boundaries.
+              </p>
             </div>
-            <input
-              type="range"
-              min="10"
-              max="50"
-              value={elaGain}
-              onChange={(e) => setElaGain(parseInt(e.target.value, 10))}
-              className="w-full accent-purple-500"
-            />
-            <span className="text-[10px] text-slate-500 block mt-0.5">
-              Controls JPEG compression difference scaling factor for detecting photo splicing.
-            </span>
-          </div>
 
-          <div>
-            <div className="flex justify-between text-xs font-mono mb-1">
-              <span className="text-slate-300">High-Alert Detain Threshold</span>
-              <span className="text-red-400 font-bold">{autoDetainThreshold} / 100</span>
+            {/* Tamper Sensitivity */}
+            <div>
+              <div className="flex justify-between text-xs font-mono mb-1.5">
+                <span className="text-slate-300 font-bold">Tamper Anomaly Cutoff:</span>
+                <span className="text-[#f59e0b] font-bold">{tamperSensitivity}%</span>
+              </div>
+              <input
+                type="range"
+                min="50"
+                max="95"
+                value={tamperSensitivity}
+                onChange={(e) => setTamperSensitivity(Number(e.target.value))}
+                className="w-full h-1.5 bg-[#15233a] rounded-lg appearance-none cursor-pointer accent-[#f59e0b]"
+              />
+              <p className="text-[11px] text-slate-400 mt-1">
+                Threshold for triggering automated secondary inspection flags upon localized pixel variance.
+              </p>
             </div>
-            <input
-              type="range"
-              min="50"
-              max="90"
-              value={autoDetainThreshold}
-              onChange={(e) => setAutoDetainThreshold(parseInt(e.target.value, 10))}
-              className="w-full accent-red-500"
-            />
-            <span className="text-[10px] text-slate-500 block mt-0.5">
-              Composite risk score cutoff that automatically triggers level-1 detention alarm.
-            </span>
           </div>
         </div>
 
-        {/* Module 4: Biometrics & Hardware */}
-        <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl space-y-4">
-          <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-            <Camera className="w-5 h-5 text-cyan-400" />
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-200">
-              Biometrics &amp; AI Vision Model
+        {/* Card 2: Biometric Facial Matching */}
+        <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-xl space-y-4">
+          <div className="flex items-center gap-2 border-b border-[#182740] pb-3">
+            <Cpu className="w-4 h-4 text-cyan-400" />
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+              1:1 Facial Biometric Verification Calibration
             </h3>
           </div>
 
           <div>
-            <div className="flex justify-between text-xs font-mono mb-1">
-              <span className="text-slate-300">Facial Similarity Pass Criteria</span>
-              <span className="text-cyan-400 font-bold">{bioMatchThreshold}%</span>
+            <div className="flex justify-between text-xs font-mono mb-1.5">
+              <span className="text-slate-300 font-bold">Minimum Face Match Cosine Similarity:</span>
+              <span className="text-emerald-400 font-bold">{biometricCutoff}%</span>
             </div>
             <input
               type="range"
               min="60"
               max="95"
-              value={bioMatchThreshold}
-              onChange={(e) => setBioMatchThreshold(parseInt(e.target.value, 10))}
-              className="w-full accent-cyan-500"
+              value={biometricCutoff}
+              onChange={(e) => setBiometricCutoff(Number(e.target.value))}
+              className="w-full h-1.5 bg-[#15233a] rounded-lg appearance-none cursor-pointer accent-emerald-400"
             />
-            <span className="text-[10px] text-slate-500 block mt-0.5">
-              Minimum cosine similarity between document portrait and live passenger camera.
-            </span>
-          </div>
-
-          <div>
-            <label className="text-xs font-mono text-slate-300 block mb-1">Active AI Multimodal Vision Pipeline</label>
-            <select
-              value={ocrEngine}
-              onChange={(e) => setOcrEngine(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 text-xs text-white rounded-xl p-2.5 focus:outline-none focus:border-cyan-500"
-            >
-              <option value="GEMINI_2_5_FLASH">Google Gemini 2.5 Flash Multimodal (Cloud / High Speed)</option>
-              <option value="TESSERACT_CLIENT">Tesseract.js Local Client Engine (Offline Safe)</option>
-              <option value="HYBRID_SSB">Hybrid Vision + ICAO 9303 Dual-Verification Pipeline</option>
-            </select>
+            <p className="text-[11px] text-slate-400 mt-1">
+              Required 68-landmark cosine similarity score to clear passenger through automated e-Gate.
+            </p>
           </div>
         </div>
-      </div>
 
-      {/* Save Button */}
-      <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          className="px-6 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-cyan-950"
-        >
-          <Save className="w-4 h-4" />
-          Save System Configuration
-        </button>
-      </div>
+        {/* Action Button */}
+        <div className="flex items-center justify-between pt-2">
+          {savedSuccess && (
+            <span className="text-emerald-400 font-mono text-xs font-bold flex items-center gap-1.5 animate-in fade-in">
+              <CheckCircle2 className="w-4 h-4" /> Threshold Configurations Successfully Deployed
+            </span>
+          )}
+          <button
+            type="submit"
+            className="ml-auto px-5 py-2.5 bg-[#d4e4f7] hover:bg-white text-[#071326] rounded-md font-bold text-xs uppercase tracking-wider transition flex items-center gap-2 shadow"
+          >
+            <Save className="w-4 h-4" />
+            SAVE &amp; APPLY CONFIGURATION
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
