@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # 1. Frontend Web App (React 19 + Vite + Nginx)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fidss-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:5000
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - fidss-network
+
+  # 2. Backend Server (Express + TypeScript)
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: fidss-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - CORS_ORIGIN=http://localhost:3000
+      - MONGODB_URI=mongodb://mongodb:27017/Scripthub
+      - UPLOAD_DIR=./uploads
+      - LOG_DIR=./logs
+      - PYTHON_PATH=python
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    networks:
+      - fidss-network
+
+  # 3. Python Forensic & OCR Engine (PaddleOCR + OpenCV)
+  python-engine:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    container_name: fidss-python-engine
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - fidss-network
+
+  # 4. Database (MongoDB)
+  mongodb:
+    image: mongo:7.0
+    container_name: fidss-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+    networks:
+      - fidss-network
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  fidss-network:
+    driver: bridge
