@@ -218,24 +218,22 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
 
               {/* Viewport: Renders actual document/PDF uploaded */}
               <div className="relative w-full aspect-[4/3] bg-slate-50 rounded-xl border border-slate-200 overflow-hidden flex items-center justify-center p-3 shadow-inner">
-                {currentSession.documentImageUrl?.startsWith('data:application/pdf') || currentSession.documentImageUrl?.endsWith('.pdf') ? (
-                  <object
-                    data={`${currentSession.documentImageUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
-                    type="application/pdf"
-                    className="w-full h-full min-h-[380px] rounded-lg"
-                  >
-                    <iframe
-                      src={`${currentSession.documentImageUrl}#toolbar=0&navpanes=0&scrollbar=0`}
-                      className="w-full h-full min-h-[380px] border-0 rounded-lg"
-                      title="PDF Document View"
-                    />
-                  </object>
-                ) : (
+                {documentImageSrc ? (
                   <img
                     src={documentImageSrc}
-                    alt="Uploaded Document"
+                    alt="Uploaded Non-Identity File"
                     className="w-full h-full object-contain block rounded-lg"
                   />
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-center p-6 space-y-3">
+                    <div className="w-12 h-12 rounded-full bg-red-100 border border-red-300 flex items-center justify-center text-red-500">
+                      <FileWarning className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900 font-mono">{currentSession.travelerName}</h4>
+                      <p className="text-xs text-red-600 mt-1 font-mono">Unsupported Document Substrate</p>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
