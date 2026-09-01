@@ -161,6 +161,7 @@ export type BiometricMatchStatus =
   | 'PHOTO_UNAVAILABLE'
   | 'SUSPECT_IMPERSONATION'
   | 'UNMATCHED'
+  | 'INCONCLUSIVE'
   | 'NO_FACE_DETECTED';
 
 export interface BiometricVerification {
@@ -336,3 +337,66 @@ export interface ScreeningSession {
   unsupportedReason?: string;
   detectedClassificationConfidence?: number;
 }
+
+export interface FieldConsistencyCheck {
+  ruleId: string;
+  ruleName: string;
+  passed: boolean;
+  severity: FindingSeverity;
+  details: string;
+  fieldsInvolved: string[];
+}
+
+export interface FieldConsistencyResult {
+  overallScore: number;
+  passed: boolean;
+  checks: FieldConsistencyCheck[];
+  details: string;
+}
+
+export interface LayoutRegionComparison {
+  regionName: string;
+  expectedPosition: BoundingBoxCoordinates;
+  positionDeviation: number;
+  matchScore: number;
+  details: string;
+}
+
+export interface LayoutAnalysisResult {
+  templateId: string;
+  templateName: string;
+  layoutSimilarity: number;
+  aspectRatioMatch: boolean;
+  regionComparisons: LayoutRegionComparison[];
+  details: string;
+}
+
+export interface TypographyAnalysisResult {
+  consistencyScore: number;
+  fontInconsistencyDetected: boolean;
+  baselineMisalignmentDetected: boolean;
+  strokeWidthVariation: number;
+  rowsAnalyzed: number;
+  suspiciousRegions: string[];
+  details: string;
+}
+
+export type QRPayloadFormat = 'UIDAI_XML' | 'NUMERIC_COMPRESSED' | 'PLAIN_TEXT' | 'NONE' | 'UNKNOWN';
+
+export interface QRPayloadField {
+  key: string;
+  value: string;
+}
+
+export interface QRValidationResult {
+  qrDetected: boolean;
+  decoded: boolean;
+  payloadFormat: QRPayloadFormat;
+  rawPayloadPreview?: string;
+  payloadFields: QRPayloadField[];
+  matches: string[];
+  mismatches: string[];
+  consistencyScore: number;
+  details: string;
+}
+

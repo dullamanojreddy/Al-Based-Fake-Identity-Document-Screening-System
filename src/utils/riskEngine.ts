@@ -10,6 +10,7 @@ import {
   ScreeningFinding,
   EvidenceSource,
 } from '../types';
+import { checkDuplicateIdentities } from './duplicateIdentityDetector';
 
 export function calculateCompositeRisk(
   fields: DocumentField[],
@@ -29,6 +30,37 @@ export function calculateCompositeRisk(
   let watchlistThreat = 0;
 
   let computedRisk = 0;
+
+  // 0. Duplicate Identity & Credential Recycling Check
+  const travelerNameField = fields.find(f => f.key === 'fullName' || f.key === 'name' || f.key === 'surname')?.value || '';
+  const docNumField = fields.find(f => f.key === 'passportNumber' || f.key === 'documentNumber' || f.key === 'aadhaarNumber')?.value || '';
+  const dobFieldVal = fields.find(f => f.key === 'dob' || f.key === 'dateOfBirth')?.value || mrzData?.birthDateFormatted || '';
+  const nationalityVal = fields.find(f => f.key === 'nationality' || f.key === 'country')?.value || mrzData?.nationality || '';
+
+  if (travelerNameField && docNumField) {
+    const dupResult = checkDuplicateIdentities(travelerNameField, docNumField, dobFieldVal, nationalityVal);
+    if (dupResult.hasDuplicateFlag) {
+      dupResult.matches.forEach((m, idx) => {
+        computedRisk += m.threatLevel === 'CRITICAL' ? 50 : 35;
+        keyRiskFactors.push(m.description);
+        findings.push({
+          id: `f-dup-${idx}`,
+          finding_id: 'duplicate_identity',
+          type: 'DUPLICATE_IDENTITY_DETECTED',
+          category: 'CONSISTENCY',
+          code: m.matchType,
+          severity: m.threatLevel === 'CRITICAL' ? 'CRITICAL' : 'HIGH',
+          title: 'Cross-Border Duplicate Identity Match',
+          description: m.description,
+          sources: [
+            { type: 'METADATA', details: `Previous Crossing ID: ${m.matchedRecord.previousScreeningId} (${m.matchedRecord.dateScreened})` },
+          ],
+        });
+      });
+    } else {
+      positiveFactors.push('Unique identity verification: No historical cross-credential collisions');
+    }
+  }
 
   // 1. Watchlist Screening (Highest Weight)
   if (watchlist?.isHit) {

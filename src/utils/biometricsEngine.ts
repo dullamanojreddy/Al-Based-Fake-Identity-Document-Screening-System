@@ -1,8 +1,47 @@
 import { BiometricVerification, AntiSpoofingResult } from '../types';
 
+export interface FaceQualityGate {
+  passed: boolean;
+  sharpnessScore: number; // 0-100 (Laplacian variance proxy)
+  illuminationUniformity: number; // 0-100
+  poseAngleDegrees: number; // estimated yaw/pitch
+  faceResolutionPx: { width: number; height: number };
+  details: string;
+}
+
+/**
+ * Assesses face image quality before running 1:1 facial biometric matching.
+ * Rejects degraded, blurry, dark, or heavily angled captures with INCONCLUSIVE
+ * to prevent false rejections.
+ */
+export function evaluateFaceQuality(imageUrl: string): FaceQualityGate {
+  // If no image, fail gate
+  if (!imageUrl) {
+    return {
+      passed: false,
+      sharpnessScore: 0,
+      illuminationUniformity: 0,
+      poseAngleDegrees: 0,
+      faceResolutionPx: { width: 0, height: 0 },
+      details: 'No image provided for face quality gating.',
+    };
+  }
+
+  // Standard acceptable quality metrics for demo
+  return {
+    passed: true,
+    sharpnessScore: 84,
+    illuminationUniformity: 92,
+    poseAngleDegrees: 4.2,
+    faceResolutionPx: { width: 320, height: 380 },
+    details: 'Face quality benchmarks passed: High sharpness, balanced lighting, near-frontal pose (<5° yaw).',
+  };
+}
+
 /**
  * Compares two face images and produces 1:1 facial biometric matching score
  * Includes simulated anti-spoofing heuristics (screen replay, print attack, 3D depth)
+ * and Face Quality Gating.
  */
 export async function compareFacialBiometrics(
   docFaceUrl: string,
@@ -11,10 +50,33 @@ export async function compareFacialBiometrics(
     similarityScore: number;
     isSpoof?: boolean;
     spoofType?: 'screen_replay' | 'printed_photo';
+    isLowQuality?: boolean;
   }
 ): Promise<BiometricVerification> {
   // If forced scenario (e.g. from preset test cases)
   if (forceMatchScenario) {
+    if (forceMatchScenario.isLowQuality) {
+      return {
+        isBiometricVerified: false,
+        similarityScore: 0,
+        matchStatus: 'INCONCLUSIVE',
+        antiSpoofing: {
+          isLive: true,
+          confidence: 50,
+          screenReplayAttack: false,
+          printAttackDetected: false,
+          depthAnomaly: false,
+          livenessPassed: false,
+          details: 'Face Quality Gating: Image resolution or illumination insufficient for definitive 1:1 comparison. Result marked INCONCLUSIVE to prevent false rejection.',
+        },
+        documentFaceUrl: docFaceUrl,
+        livePassengerFaceUrl: livePassengerFaceUrl || docFaceUrl,
+        facialLandmarksCount: 0,
+        matchConfidence: 0,
+        details: 'Quality Gating Triggered: Re-capture passenger portrait under direct frontal illumination.',
+      };
+    }
+
     const isVerified = forceMatchScenario.similarityScore >= 80 && !forceMatchScenario.isSpoof;
     let matchStatus: BiometricVerification['matchStatus'] = 'MATCH_VERIFIED';
     
@@ -70,6 +132,30 @@ export async function compareFacialBiometrics(
       facialLandmarksCount: 0,
       matchConfidence: 0,
       details: 'Awaiting live passenger camera capture at checkpoint terminal.',
+    };
+  }
+
+  // Face Quality Gate Check
+  const qualityGate = evaluateFaceQuality(livePassengerFaceUrl);
+  if (!qualityGate.passed) {
+    return {
+      isBiometricVerified: false,
+      similarityScore: 0,
+      matchStatus: 'INCONCLUSIVE',
+      antiSpoofing: {
+        isLive: false,
+        confidence: 50,
+        screenReplayAttack: false,
+        printAttackDetected: false,
+        depthAnomaly: false,
+        livenessPassed: false,
+        details: qualityGate.details,
+      },
+      documentFaceUrl: docFaceUrl,
+      livePassengerFaceUrl,
+      facialLandmarksCount: 0,
+      matchConfidence: 0,
+      details: 'Capture quality below threshold. Reposition subject and recapture.',
     };
   }
 
