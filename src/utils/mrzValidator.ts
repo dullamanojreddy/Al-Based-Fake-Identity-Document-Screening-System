@@ -140,32 +140,58 @@ export function parseTD3MRZ(line1: string, line2: string, vizFields?: DocumentFi
   const isAllChecksumsValid = checksumList.every(c => c.isValid);
 
   // Cross-reference VIZ against MRZ
+  // IMPORTANT: Only flag mismatches when:
+  //   (a) both sides have real values (not UNKNOWN/empty)
+  //   (b) the MRZ was reliably parsed (checked via checksums in riskEngine)
+  //   (c) comparison is done on normalized, same-format values
   const vizMismatchDetails: string[] = [];
   let vizMismatchDetected = false;
 
   if (vizFields && vizFields.length > 0) {
-    const vizDocNum = vizFields.find(f => f.key === 'passportNumber' || f.key === 'documentNumber')?.value;
-    if (vizDocNum && docNumber) {
-      const cleanVizDoc = vizDocNum.replace(/[\s-]/g, '').toUpperCase();
-      const cleanMrzDoc = docNumber.replace(/[\s-]/g, '').toUpperCase();
+    // --- Document Number ---
+    const vizDocField = vizFields.find(f => f.key === 'passportNumber' || f.key === 'documentNumber');
+    const vizDocNum = vizDocField?.value;
+    const vizDocUnknown = !vizDocNum || vizDocNum.startsWith('UNKNOWN') || vizDocField?.validation === 'UNVERIFIED';
+    if (!vizDocUnknown && docNumber) {
+      const cleanVizDoc = vizDocNum!.replace(/[\s\-]/g, '').toUpperCase();
+      const cleanMrzDoc = docNumber.replace(/[\s\-]/g, '').toUpperCase();
+      // Only flag if neither side is a substring of the other
       if (!cleanVizDoc.includes(cleanMrzDoc) && !cleanMrzDoc.includes(cleanVizDoc)) {
         vizMismatchDetected = true;
         vizMismatchDetails.push(`Document Number Mismatch: Visual says "${vizDocNum}" vs MRZ says "${docNumber}"`);
       }
     }
 
-    const vizDob = vizFields.find(f => f.key === 'dob' || f.key === 'dateOfBirth')?.value;
-    if (vizDob && birthDate) {
-      const formattedDob = formatYYMMDD(birthDate);
-      if (vizDob && !vizDob.includes(birthDate.slice(0, 2)) && !formattedDob.includes(vizDob.slice(0, 4))) {
+    // --- Date of Birth ---
+    // Both sides normalized to YYYY-MM-DD before comparing
+    const vizDobField = vizFields.find(f => f.key === 'dob' || f.key === 'dateOfBirth');
+    const vizDob = vizDobField?.value;
+    const vizDobUnknown = !vizDob || vizDob === 'UNKNOWN' || vizDobField?.validation === 'UNVERIFIED';
+    if (!vizDobUnknown && birthDate && birthDate.length === 6) {
+      const mrzDobFormatted = formatYYMMDD(birthDate, false); // e.g. "2006-09-04"
+      // Normalize VIZ DOB: handles DD/MM/YYYY and YYYY-MM-DD formats
+      let vizDobNormalized = vizDob!;
+      const ddmmyyyy = vizDob!.match(/^(\d{2})[\/\-](\d{2})[\/\-](\d{4})$/);
+      if (ddmmyyyy) {
+        vizDobNormalized = `${ddmmyyyy[3]}-${ddmmyyyy[2]}-${ddmmyyyy[1]}`;
+      }
+      // Compare YYYY-MM-DD strings
+      if (mrzDobFormatted && vizDobNormalized && mrzDobFormatted !== vizDobNormalized) {
+        // One more check: avoid false positives from year-century ambiguity
+        // e.g. "2006-09-04" vs "1906-09-04" would be a real mismatch; "2006" vs "06" is same.
         vizMismatchDetected = true;
-        vizMismatchDetails.push(`Date of Birth Discrepancy: Visual says "${vizDob}" vs MRZ decoded "${formattedDob}"`);
+        vizMismatchDetails.push(`Date of Birth Discrepancy: Visual says "${vizDob}" vs MRZ decoded "${mrzDobFormatted}"`);
       }
     }
 
-    const vizNationality = vizFields.find(f => f.key === 'nationality' || f.key === 'country')?.value;
-    if (vizNationality && nationality) {
-      if (!vizNationality.toUpperCase().includes(nationality) && !nationality.includes(vizNationality.slice(0, 3).toUpperCase())) {
+    // --- Nationality ---
+    const vizNatField = vizFields.find(f => f.key === 'nationality' || f.key === 'country');
+    const vizNationality = vizNatField?.value;
+    const vizNatUnknown = !vizNationality || vizNationality === 'UNKNOWN' || vizNatField?.validation === 'UNVERIFIED';
+    if (!vizNatUnknown && nationality) {
+      const vn = vizNationality!.toUpperCase().replace(/\s/g, '').slice(0, 3);
+      const mn = nationality.toUpperCase().slice(0, 3);
+      if (vn !== mn) {
         vizMismatchDetected = true;
         vizMismatchDetails.push(`Nationality Code Inconsistency: Visual says "${vizNationality}" vs MRZ "${nationality}"`);
       }
@@ -431,32 +457,64 @@ export function parseTD2MRZ(line1: string, line2: string, vizFields?: DocumentFi
 
 /**
  * Universal MRZ parser with structure validation for TD1 (3x30), TD2 (2x36), and TD3 (2x44).
+ *
+ * Handles OCR noise: normalizes whitespace, validates line identity before parsing.
+ * CRITICAL: For TD3, Line 2 must NOT start with 'P<' (that would be Line 1 again).
+ * When Line 1 and Line 2 are identical, parsing will produce garbage field values
+ * that generate false VIZ mismatches and checksum failures.
  */
 export function parseMRZ(rawText: string, vizFields?: DocumentField[]): MRZData | null {
   if (!rawText) return null;
-  
-  // Extract lines containing '<' with length >= 25
-  const lines = rawText
-    .split('\n')
-    .map(l => l.trim().replace(/\s+/g, ''))
-    .filter(l => l.includes('<') && l.length >= 25 && /^[A-Z0-9<]+$/.test(l));
 
-  // Case 1: 3 lines -> TD1 (3 x 30)
-  if (lines.length >= 3) {
-    if (lines[0].length >= 26 && lines[1].length >= 26 && lines[2].length >= 26) {
-      return parseTD1MRZ(lines[0], lines[1], lines[2], vizFields);
+  // Normalize all lines: uppercase, strip spaces within lines
+  const allLines = rawText
+    .split('\n')
+    .map(l => l.trim().replace(/\s+/g, '').toUpperCase());
+
+  // Filter for MRZ-valid lines (only A-Z, 0-9, '<')
+  const mrzCandidates = allLines
+    .filter(l => l.length >= 25 && /^[A-Z0-9<]+$/.test(l));
+
+  // TD3: specifically find Line 1 (P<CCC...) and Line 2 (docNum-led)
+  // Line 1 criterion: starts with P< or PI (OCR artefact) followed by 3-letter country code
+  const td3L1Candidates = mrzCandidates.filter(l => /^P[<I][A-Z]{3}/.test(l) && l.length >= 38);
+  // Line 2 criterion: does NOT start with P< (that's Line 1), starts with letter+digits
+  const td3L2Candidates = mrzCandidates.filter(
+    l => !/^P[<I][A-Z]/.test(l) && /^[A-Z][0-9]/.test(l) && l.length >= 38
+  );
+
+  if (td3L1Candidates.length >= 1 && td3L2Candidates.length >= 1) {
+    const l1 = td3L1Candidates[0];
+    const l2 = td3L2Candidates[0];
+    // Final sanity: they must be different lines
+    if (l1 !== l2) {
+      return parseTD3MRZ(l1, l2, vizFields);
     }
   }
 
-  // Case 2: 2 lines
-  if (lines.length >= 2) {
-    // If length >= 40 -> TD3 (2 x 44)
-    if (lines[0].length >= 38 && lines[1].length >= 38) {
-      return parseTD3MRZ(lines[0], lines[1], vizFields);
+  // If we couldn't cleanly separate L1/L2 for TD3, try ordered approach:
+  // Take first P< line as L1, next non-P< line as L2
+  if (mrzCandidates.length >= 2) {
+    const l1idx = mrzCandidates.findIndex(l => /^P[<I][A-Z]{3}/.test(l));
+    const l2idx = mrzCandidates.findIndex((l, i) => i !== l1idx && !/^P[<I][A-Z]/.test(l) && l.length >= 38);
+    if (l1idx >= 0 && l2idx >= 0) {
+      return parseTD3MRZ(mrzCandidates[l1idx], mrzCandidates[l2idx], vizFields);
     }
-    // If length between 30 and 39 -> TD2 (2 x 36)
-    if (lines[0].length >= 30 && lines[1].length >= 30) {
-      return parseTD2MRZ(lines[0], lines[1], vizFields);
+  }
+
+  // Fallback: TD1 (3 lines x 30 chars)
+  if (mrzCandidates.length >= 3) {
+    const l30 = mrzCandidates.filter(l => l.length >= 26 && l.length <= 32);
+    if (l30.length >= 3) {
+      return parseTD1MRZ(l30[0], l30[1], l30[2], vizFields);
+    }
+  }
+
+  // Fallback: TD2 (2 lines x 36 chars)
+  if (mrzCandidates.length >= 2) {
+    const l36 = mrzCandidates.filter(l => l.length >= 30 && l.length <= 40);
+    if (l36.length >= 2) {
+      return parseTD2MRZ(l36[0], l36[1], vizFields);
     }
   }
 

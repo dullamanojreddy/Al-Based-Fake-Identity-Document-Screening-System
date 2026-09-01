@@ -69,7 +69,7 @@ export function App() {
   }
 
   return (
-    <div className="flex h-screen bg-[#070d18] text-slate-100 font-sans overflow-hidden">
+    <div className="flex h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden">
       {/* Sidebar Navigation */}
       <Sidebar
         activeTab={activeTab}
@@ -81,17 +81,17 @@ export function App() {
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#070d18]">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-50">
         {/* Header */}
         <Header
           activeScreeningId={activeTab === 'screenings' ? currentSession.id : undefined}
           activeAlertsCount={allSessions.filter((s) => (s.risk?.overallRiskScore ?? 0) >= 26).length}
-          integrityStatus="OPERATIONAL"
+          integrityStatus="Operational"
           onRefresh={() => {}}
         />
 
         {/* Scrollable Page Body */}
-        <main className="flex-1 overflow-y-auto px-8 py-6 bg-[#070d18]">
+        <main className="flex-1 overflow-y-auto px-8 py-6 bg-slate-50">
           <div className="max-w-[1400px] mx-auto">
             {activeTab === 'dashboard' && (
               <MissionControlDashboard

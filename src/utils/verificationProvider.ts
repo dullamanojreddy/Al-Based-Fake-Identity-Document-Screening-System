@@ -90,9 +90,31 @@ export class LocalDemoVerificationProvider implements VerificationProvider {
     const normName = name.trim().toUpperCase();
     const normDoc = passportNumber.trim().toUpperCase();
 
-    const hit = this.syntheticWatchlist.find(
-      w => w.name === normName || w.passportNumber === normDoc
-    );
+    // CRITICAL GUARD: Never run a watchlist lookup when document number or name
+    // could not be extracted by OCR. An empty / UNKNOWN value must never be
+    // matched against the synthetic (or real) watchlist.
+    const isDocUnknown = !normDoc || normDoc === '' || normDoc.startsWith('UNKNOWN');
+    const isNameUnknown = !normName || normName === '' || normName.startsWith('UNKNOWN');
+
+    if (isDocUnknown && isNameUnknown) {
+      return {
+        isHit: false,
+        matchType: 'NONE',
+        threatLevel: 'NONE',
+        watchlistDatabase: 'Local Demo Sentinel Index (Offline)',
+        details: 'Watchlist check NOT PERFORMED: passport number and name could not be extracted by OCR. Inconclusive result — manual inspection required.',
+        actionRequired: 'Manual document inspection required: OCR inconclusive. Proceed with physical credential verification.',
+        isExternalGovernmentVerified: false,
+      };
+    }
+
+    // Only match on fields we actually have. If doc number is unknown,
+    // match only by exact full name; if name is unknown, match only by doc number.
+    const hit = this.syntheticWatchlist.find(w => {
+      const docMatch = !isDocUnknown && w.passportNumber === normDoc;
+      const nameMatch = !isNameUnknown && w.name === normName;
+      return docMatch || nameMatch;
+    });
 
     if (hit) {
       return {

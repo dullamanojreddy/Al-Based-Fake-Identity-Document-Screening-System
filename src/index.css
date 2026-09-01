@@ -2,9 +2,9 @@
 
 @layer base {
   html, body {
-    background-color: #020617 !important;
-    color: #f8fafc !important;
-    color-scheme: dark !important;
+    background-color: #f8fafc !important; /* slate-50 */
+    color: #0f172a !important; /* slate-900 */
+    color-scheme: light !important;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 }

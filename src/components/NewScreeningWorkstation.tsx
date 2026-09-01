@@ -229,16 +229,16 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
         console.warn('ELA processing error:', elaErr);
       }
 
-      // Parse MRZ if lines present or document is passport
+      // Parse MRZ only when actual MRZ lines were extracted by OCR.
+      // NEVER fabricate a synthetic MRZ with a hardcoded passport number —
+      // that would cause a false watchlist match via the demo record Z4829104.
+      // If scanResult.mrzRawLines were built by universalDocumentScanner using
+      // correctly-computed ICAO check digits, they are safe to parse.
       let mrzResult = null;
       if (scanResult.mrzRawLines && scanResult.mrzRawLines.length >= 2) {
         mrzResult = parseMRZ(scanResult.mrzRawLines.join('\n'), scanResult.fields);
-      } else if (scanResult.documentType === 'passport') {
-        const passportNum = scanResult.documentNumber || 'Z4829104';
-        const rawL1 = `P<IND${scanResult.travelerName.replace(/\s+/g, '<')}<<<<<<<<<<<<<<<<<<<`.slice(0, 44);
-        const rawL2 = `${passportNum}<4IND8804128M3106096<<<<<<<<<<<<<<8`;
-        mrzResult = parseMRZ(`${rawL1}\n${rawL2}`, scanResult.fields);
       }
+      // If no MRZ lines, mrzResult stays null → no MRZ checksum findings are raised. 
 
       const isAadhaarInvalid = scanResult.fields.some(
         f => f.key === 'aadhaarNumber' && f.validation === 'INVALID'
@@ -343,11 +343,11 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
   const isDualSided = documentType === 'national_id' || documentType === 'driving_license' || documentType === 'border_permit';
 
   return (
-    <div className="space-y-6 pb-16 text-slate-200 font-sans max-w-5xl mx-auto">
+    <div className="space-y-6 pb-16 text-slate-800 font-sans max-w-5xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#152238] pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">
+          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
             New Screening Workstation
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
@@ -357,17 +357,17 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
 
         <div className="text-right font-mono text-xs">
           <span className="text-[10px] text-slate-400 block uppercase tracking-wider">CASE ID</span>
-          <span className="text-cyan-300 font-bold text-sm tracking-wider">{caseId}</span>
+          <span className="text-blue-700 font-bold text-sm tracking-wider">{caseId}</span>
         </div>
       </div>
 
       {/* Main Intake Flow */}
       <div className="space-y-6">
         {/* 01 CASE INFORMATION */}
-        <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-xl space-y-4">
-          <div className="flex items-center gap-2 border-b border-[#182740] pb-3">
-            <span className="text-[11px] font-mono font-bold text-cyan-400">01</span>
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xl space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+            <span className="text-[11px] font-mono font-bold text-blue-600">01</span>
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
               CASE INFORMATION
             </h3>
           </div>
@@ -379,7 +379,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
               <select
                 value={screeningType}
                 onChange={(e) => setScreeningType(e.target.value)}
-                className="w-full bg-[#070e1a] border border-[#182740] rounded-md px-3 py-2 text-white text-xs focus:outline-none focus:border-cyan-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-md px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-blue-400"
               >
                 <option value="Primary Identity Screening">Primary Identity Screening</option>
                 <option value="Document Re-verification">Document Re-verification</option>
@@ -394,7 +394,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
               <select
                 value={documentType}
                 onChange={(e) => setDocumentType(e.target.value as DocumentType)}
-                className="w-full bg-[#070e1a] border border-[#182740] rounded-md px-3 py-2 text-white text-xs focus:outline-none focus:border-cyan-500 font-medium"
+                className="w-full bg-slate-50 border border-slate-200 rounded-md px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-blue-400 font-medium"
               >
                 <option value="passport">Passport</option>
                 <option value="visa">Visa</option>
@@ -410,7 +410,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
               <select
                 value={checkpoint}
                 onChange={(e) => setCheckpoint(e.target.value)}
-                className="w-full bg-[#070e1a] border border-[#182740] rounded-md px-3 py-2 text-white text-xs focus:outline-none focus:border-cyan-500 font-mono"
+                className="w-full bg-slate-50 border border-slate-200 rounded-md px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-blue-400 font-mono"
               >
                 <option value="ICP-RAXAUL-04">Raxaul ICP (ICP-04)</option>
                 <option value="TERM-04-JFK">TERM-04-JFK</option>
@@ -428,29 +428,29 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                 placeholder="Optional case / flight ref"
                 value={officerReference}
                 onChange={(e) => setOfficerReference(e.target.value)}
-                className="w-full bg-[#070e1a] border border-[#182740] rounded-md px-3 py-2 text-white text-xs focus:outline-none focus:border-cyan-500 font-mono"
+                className="w-full bg-slate-50 border border-slate-200 rounded-md px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-blue-400 font-mono"
               />
             </div>
           </div>
         </div>
 
         {/* 02 DOCUMENT INTAKE (Hero Section) */}
-        <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-xl space-y-4">
-          <div className="flex items-center justify-between border-b border-[#182740] pb-3">
+        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xl space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-mono font-bold text-cyan-400">02</span>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+              <span className="text-[11px] font-mono font-bold text-blue-600">02</span>
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
                 DOCUMENT INTAKE
               </h3>
             </div>
 
             {isDualSided && (
-              <div className="flex items-center bg-[#070e1a] p-0.5 rounded-md border border-[#182740]">
+              <div className="flex items-center bg-slate-50 p-0.5 rounded-md border border-slate-200">
                 <button
                   type="button"
                   onClick={() => setActiveSideTab('front')}
                   className={`px-3 py-1 text-[10px] font-mono font-bold uppercase rounded transition ${
-                    activeSideTab === 'front' ? 'bg-[#182a47] text-white' : 'text-slate-400 hover:text-white'
+                    activeSideTab === 'front' ? 'bg-blue-50 text-slate-900' : 'text-slate-400 hover:text-slate-900'
                   }`}
                 >
                   Front Side {documentFile && '✓'}
@@ -459,7 +459,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                   type="button"
                   onClick={() => setActiveSideTab('back')}
                   className={`px-3 py-1 text-[10px] font-mono font-bold uppercase rounded transition ${
-                    activeSideTab === 'back' ? 'bg-[#182a47] text-white' : 'text-slate-400 hover:text-white'
+                    activeSideTab === 'back' ? 'bg-blue-50 text-slate-900' : 'text-slate-400 hover:text-slate-900'
                   }`}
                 >
                   Back Side {backSideFile && '✓'}
@@ -473,14 +473,14 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
             !documentFile ? (
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-[#1e3252] hover:border-cyan-400/80 bg-[#070e1a] hover:bg-[#0a1426] rounded-xl p-8 text-center transition cursor-pointer flex flex-col items-center justify-center gap-3 select-none"
+                className="border-2 border-dashed border-slate-300 hover:border-blue-400 bg-slate-50 hover:bg-slate-100 rounded-xl p-8 text-center transition cursor-pointer flex flex-col items-center justify-center gap-3 select-none"
               >
-                <div className="w-12 h-12 rounded-full bg-[#122038] border border-[#1e3456] flex items-center justify-center text-cyan-400">
+                <div className="w-12 h-12 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center text-blue-600">
                   <Upload className="w-6 h-6" />
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-bold text-white tracking-wide">
+                  <h4 className="text-sm font-bold text-slate-900 tracking-wide">
                     DROP {documentType.toUpperCase()} HERE
                   </h4>
                   <p className="text-xs text-slate-400 mt-1">
@@ -495,7 +495,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                 <div className="flex items-center gap-3 mt-2">
                   <button
                     type="button"
-                    className="px-4 py-1.5 bg-[#182a47] hover:bg-[#22395e] text-slate-200 text-xs font-semibold rounded-md border border-[#263e66]"
+                    className="px-4 py-1.5 bg-blue-50 hover:bg-blue-100 text-slate-800 text-xs font-semibold rounded-md border border-slate-300"
                   >
                     Browse Files
                   </button>
@@ -505,7 +505,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                       e.stopPropagation();
                       onOpenLiveCamera();
                     }}
-                    className="px-4 py-1.5 bg-[#121f35] hover:bg-[#182a47] text-cyan-300 text-xs font-semibold rounded-md border border-[#1e3559] flex items-center gap-1.5"
+                    className="px-4 py-1.5 bg-white hover:bg-slate-50 text-blue-700 text-xs font-semibold rounded-md border border-slate-300 flex items-center gap-1.5"
                   >
                     <Camera className="w-3.5 h-3.5" />
                     Capture Image
@@ -522,7 +522,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
               </div>
             ) : (
               /* Received Document State with Real Uploaded Document Content */
-              <div className="bg-[#070e1a] border border-[#182740] rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-4 min-w-0">
                   {/* Thumbnail: Renders actual PDF or image file content */}
                   <div className="w-24 h-24 bg-[#0e192c] rounded-lg overflow-hidden border border-[#1e304f] shrink-0 relative flex items-center justify-center shadow-lg">
@@ -534,7 +534,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                       >
                         <iframe
                           src={`${documentFile.dataUrl}#toolbar=0&navpanes=0&scrollbar=0`}
-                          className="w-full h-full border-0 pointer-events-none"
+                          className="w-full h-full border-slate-300 pointer-events-none"
                           title="PDF Preview"
                         />
                       </object>
@@ -549,16 +549,16 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
 
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-white font-mono truncate">{documentFile.name}</span>
-                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded flex items-center gap-1 shrink-0">
+                      <span className="text-xs font-bold text-slate-900 font-mono truncate">{documentFile.name}</span>
+                      <span className="text-[10px] font-mono text-emerald-400 bg-slate-100merald-950 px-2 py-0.5 rounded flex items-center gap-1 shrink-0">
                         <CheckCircle2 className="w-3 h-3" /> File validated
                       </span>
                     </div>
                     <span className="text-xs text-slate-400 font-mono block mt-1">
-                      Type: <strong className="text-slate-200">{documentFile.isPdf ? 'PDF Digital Document' : 'Image File'}</strong> | Size: {documentFile.size}
+                      Type: <strong className="text-slate-800">{documentFile.isPdf ? 'PDF Digital Document' : 'Image File'}</strong> | Size: {documentFile.size}
                     </span>
                     <span className="text-[10px] text-slate-500 font-mono block mt-0.5">
-                      SHA-256: <strong className="text-cyan-300">{documentFile.hash}</strong>
+                      SHA-256: <strong className="text-blue-700">{documentFile.hash}</strong>
                     </span>
                   </div>
                 </div>
@@ -566,7 +566,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-3.5 py-1.5 bg-[#121f35] hover:bg-[#182a47] text-slate-300 text-xs font-semibold rounded-md border border-[#1e3559] shrink-0"
+                  className="px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-600 text-xs font-semibold rounded-md border border-slate-300 shrink-0"
                 >
                   Replace Document
                 </button>
@@ -584,10 +584,10 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
             !backSideFile ? (
               <div
                 onClick={() => backFileInputRef.current?.click()}
-                className="border-2 border-dashed border-[#1e3252] hover:border-cyan-400/80 bg-[#070e1a] hover:bg-[#0a1426] rounded-xl p-6 text-center transition cursor-pointer flex flex-col items-center justify-center gap-2 select-none"
+                className="border-2 border-dashed border-slate-300 hover:border-blue-400 bg-slate-50 hover:bg-slate-100 rounded-xl p-6 text-center transition cursor-pointer flex flex-col items-center justify-center gap-2 select-none"
               >
-                <Upload className="w-5 h-5 text-cyan-400" />
-                <h4 className="text-xs font-bold text-white">Upload Back Side of Document</h4>
+                <Upload className="w-5 h-5 text-blue-600" />
+                <h4 className="text-xs font-bold text-slate-900">Upload Back Side of Document</h4>
                 <input
                   ref={backFileInputRef}
                   type="file"
@@ -597,8 +597,8 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                 />
               </div>
             ) : (
-              <div className="bg-[#070e1a] border border-[#182740] rounded-xl p-3 flex items-center justify-between">
-                <span className="text-xs font-mono text-white">{backSideFile.name} (Back side)</span>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between">
+                <span className="text-xs font-mono text-slate-900">{backSideFile.name} (Back side)</span>
                 <button
                   onClick={() => setBackSideFile(null)}
                   className="text-slate-400 hover:text-red-400 text-xs"
@@ -611,22 +611,22 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
         </div>
 
         {/* 03 IDENTITY VERIFICATION — Displays the exact Document Contents inside */}
-        <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-xl space-y-4">
-          <div className="flex items-center gap-2 border-b border-[#182740] pb-3">
-            <span className="text-[11px] font-mono font-bold text-cyan-400">03</span>
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xl space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+            <span className="text-[11px] font-mono font-bold text-blue-600">03</span>
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
               1:1 IDENTITY VERIFICATION
             </h3>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             {/* Left: Actual Document Page / Content Viewport */}
-            <div className="bg-[#070e1a] border border-[#182740] rounded-xl p-4 flex flex-col items-center justify-center text-center min-h-[220px]">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center justify-center text-center min-h-[220px]">
               <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-2">
                 UPLOADED DOCUMENT CONTENT
               </span>
 
-              <div className="w-full max-w-[280px] h-36 bg-slate-900 border border-slate-700 rounded-lg overflow-hidden mb-2 shadow-inner relative flex items-center justify-center">
+              <div className="w-full max-w-[280px] h-36 bg-white border border-slate-700 rounded-lg overflow-hidden mb-2 shadow-inner relative flex items-center justify-center">
                 {documentFile ? (
                   documentFile.isPdf ? (
                     <object
@@ -636,7 +636,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                     >
                       <iframe
                         src={`${documentFile.dataUrl}#toolbar=0&navpanes=0&scrollbar=0`}
-                        className="w-full h-full border-0"
+                        className="w-full h-full border-slate-300"
                         title="PDF Document View"
                       />
                     </object>
@@ -658,14 +658,14 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
             </div>
 
             {/* Right: Presented Person */}
-            <div className="bg-[#070e1a] border border-[#182740] rounded-xl p-4 flex flex-col items-center justify-center text-center min-h-[220px]">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center justify-center text-center min-h-[220px]">
               <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-2">
                 PRESENTED TRAVELER
               </span>
 
               {personImage ? (
                 <div className="relative mb-2">
-                  <div className="w-24 h-32 bg-slate-900 border border-cyan-500 rounded-lg overflow-hidden shadow-lg">
+                  <div className="w-24 h-32 bg-white border border-blue-400 rounded-lg overflow-hidden shadow-lg">
                     <img 
                       src={personImage} 
                       alt="Traveler" 
@@ -674,7 +674,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                   </div>
                   <button
                     onClick={() => setPersonImage(null)}
-                    className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full p-1 shadow"
+                    className="absolute -top-1 -right-1 bg-red-600 text-slate-900 rounded-full p-1 shadow"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -685,7 +685,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                     <button
                       type="button"
                       onClick={onOpenLiveCamera}
-                      className="px-3.5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-md text-xs font-semibold flex items-center gap-1.5 shadow"
+                      className="px-3.5 py-2 bg-slate-100yan-600 hover:bg-slate-100yan-500 text-slate-900 rounded-md text-xs font-semibold flex items-center gap-1.5 shadow"
                     >
                       <Camera className="w-4 h-4" />
                       Capture Camera
@@ -693,7 +693,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                     <button
                       type="button"
                       onClick={() => personInputRef.current?.click()}
-                      className="px-3.5 py-2 bg-[#182a47] text-slate-300 hover:text-white rounded-md text-xs font-semibold border border-[#22385c]"
+                      className="px-3.5 py-2 bg-blue-50 text-slate-600 hover:text-slate-900 rounded-md text-xs font-semibold border border-slate-300"
                     >
                       Upload Face
                     </button>
@@ -716,65 +716,65 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
         </div>
 
         {/* 04 ANALYSIS PROFILE (Full Screening by Default) */}
-        <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-xl space-y-4">
-          <div className="flex items-center justify-between border-b border-[#182740] pb-3">
+        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xl space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-mono font-bold text-cyan-400">04</span>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+              <span className="text-[11px] font-mono font-bold text-blue-600">04</span>
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
                 ANALYSIS PROFILE
               </h3>
             </div>
 
-            <span className="px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800 text-[10px] font-mono font-bold uppercase">
+            <span className="px-2.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200 text-[10px] font-mono font-bold uppercase">
               FULL SCREENING (ALL 8 MODULES ENABLED)
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
             {/* Core Document Checks */}
-            <div className="bg-[#070e1a] p-3 rounded-lg border border-[#15233a] space-y-1.5">
+            <div className="bg-slate-50 p-3 rounded-lg border border-[#15233a] space-y-1.5">
               <span className="text-[10px] font-mono font-bold uppercase text-slate-400 block mb-1">
                 CORE DOCUMENT CHECKS
               </span>
-              <div className="text-slate-300 flex items-center gap-1.5 font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" /> OCR &amp; Field Extraction
+              <div className="text-slate-600 flex items-center gap-1.5 font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" /> OCR &amp; Field Extraction
               </div>
-              <div className="text-slate-300 flex items-center gap-1.5 font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" /> ICAO 9303 MRZ Engine
+              <div className="text-slate-600 flex items-center gap-1.5 font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" /> ICAO 9303 MRZ Engine
               </div>
-              <div className="text-slate-300 flex items-center gap-1.5 font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" /> Document Rules Engine
+              <div className="text-slate-600 flex items-center gap-1.5 font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" /> Document Rules Engine
               </div>
             </div>
 
             {/* Forensic Checks */}
-            <div className="bg-[#070e1a] p-3 rounded-lg border border-[#15233a] space-y-1.5">
+            <div className="bg-slate-50 p-3 rounded-lg border border-[#15233a] space-y-1.5">
               <span className="text-[10px] font-mono font-bold uppercase text-slate-400 block mb-1">
                 FORENSIC CHECKS
               </span>
-              <div className="text-slate-300 flex items-center gap-1.5 font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 text-purple-400" /> ELA Tampering Detection
+              <div className="text-slate-600 flex items-center gap-1.5 font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5 text-purple-600" /> ELA Tampering Detection
               </div>
-              <div className="text-slate-300 flex items-center gap-1.5 font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 text-purple-400" /> Photo Integrity &amp; Splicing
+              <div className="text-slate-600 flex items-center gap-1.5 font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5 text-purple-600" /> Photo Integrity &amp; Splicing
               </div>
-              <div className="text-slate-300 flex items-center gap-1.5 font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 text-purple-400" /> Metadata &amp; Stamp Analysis
+              <div className="text-slate-600 flex items-center gap-1.5 font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5 text-purple-600" /> Metadata &amp; Stamp Analysis
               </div>
             </div>
 
             {/* Identity Checks */}
-            <div className="bg-[#070e1a] p-3 rounded-lg border border-[#15233a] space-y-1.5">
+            <div className="bg-slate-50 p-3 rounded-lg border border-[#15233a] space-y-1.5">
               <span className="text-[10px] font-mono font-bold uppercase text-slate-400 block mb-1">
                 IDENTITY CHECKS
               </span>
-              <div className="text-slate-300 flex items-center gap-1.5 font-medium">
+              <div className="text-slate-600 flex items-center gap-1.5 font-medium">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> 1:1 Face Verification
               </div>
-              <div className="text-slate-300 flex items-center gap-1.5 font-medium">
+              <div className="text-slate-600 flex items-center gap-1.5 font-medium">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Interpol Watchlist Screening
               </div>
-              <div className="text-slate-300 flex items-center gap-1.5 font-medium">
+              <div className="text-slate-600 flex items-center gap-1.5 font-medium">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Duplicate Identity Check
               </div>
             </div>
@@ -785,20 +785,20 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
             <button
               type="button"
               onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-              className="text-slate-400 hover:text-white text-xs font-mono font-semibold flex items-center gap-1 transition"
+              className="text-slate-400 hover:text-slate-900 text-xs font-mono font-semibold flex items-center gap-1 transition"
             >
               {isAdvancedOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
               {isAdvancedOpen ? 'Hide Advanced Options' : 'Advanced Configuration Options'}
             </button>
 
             {isAdvancedOpen && (
-              <div className="mt-3 p-4 bg-[#070e1a] rounded-lg border border-[#15233a] grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs animate-in fade-in">
+              <div className="mt-3 p-4 bg-slate-50 rounded-lg border border-[#15233a] grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs animate-in fade-in">
                 <div>
                   <label className="text-slate-400 block mb-1">Processing Priority</label>
                   <select
                     value={processingPriority}
                     onChange={(e: any) => setProcessingPriority(e.target.value)}
-                    className="w-full bg-[#0b1424] border border-[#182740] rounded p-1.5 text-white"
+                    className="w-full bg-white border border-slate-200 rounded p-1.5 text-slate-900"
                   >
                     <option value="priority">Priority GPU (Fast)</option>
                     <option value="standard">Standard Queue</option>
@@ -810,7 +810,7 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                   <select
                     value={forensicSensitivity}
                     onChange={(e: any) => setForensicSensitivity(e.target.value)}
-                    className="w-full bg-[#0b1424] border border-[#182740] rounded p-1.5 text-white"
+                    className="w-full bg-white border border-slate-200 rounded p-1.5 text-slate-900"
                   >
                     <option value="enhanced">Enhanced (28x ELA)</option>
                     <option value="standard">Standard (15x ELA)</option>
@@ -823,9 +823,9 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
                     id="dupSearch"
                     checked={enableDuplicateSearch}
                     onChange={(e) => setEnableDuplicateSearch(e.target.checked)}
-                    className="rounded bg-[#0b1424] border-[#182740] accent-cyan-400"
+                    className="rounded bg-white border-slate-200 accent-cyan-400"
                   />
-                  <label htmlFor="dupSearch" className="text-slate-300">Cross-check multi-identity database</label>
+                  <label htmlFor="dupSearch" className="text-slate-600">Cross-check multi-identity database</label>
                 </div>
               </div>
             )}
@@ -833,17 +833,17 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
         </div>
 
         {/* Pre-Screening Summary & Action Bar */}
-        <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="text-xs font-mono text-slate-400 space-y-0.5">
-            <div>Document: <strong className="text-white uppercase">{documentType}</strong> | Sides: <strong className="text-white">{isDualSided ? '2' : '1'}</strong></div>
-            <div>Person Verification: <strong className="text-cyan-300">{personImage ? 'Active' : 'Document Only'}</strong> | Estimated Time: <strong className="text-emerald-400">~1.8s</strong></div>
+            <div>Document: <strong className="text-slate-900 uppercase">{documentType}</strong> | Sides: <strong className="text-slate-900">{isDualSided ? '2' : '1'}</strong></div>
+            <div>Person Verification: <strong className="text-blue-700">{personImage ? 'Active' : 'Document Only'}</strong> | Estimated Time: <strong className="text-emerald-400">~1.8s</strong></div>
           </div>
 
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={onCancel}
-              className="px-4 py-2 bg-[#0e192c] hover:bg-[#182a47] text-slate-300 rounded-md text-xs font-mono font-bold uppercase transition"
+              className="px-4 py-2 bg-[#0e192c] hover:bg-slate-50 text-slate-600 rounded-md text-xs font-mono font-bold uppercase transition"
             >
               Cancel
             </button>
@@ -867,14 +867,14 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
 
       {/* Live Pipeline Processing Overlay */}
       {isProcessing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md animate-in fade-in select-none">
-          <div className="bg-[#0b1424] border border-[#1e304f] rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-5">
-            <div className="flex items-center justify-between border-b border-[#182740] pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-50/90 backdrop-blur-md animate-in fade-in select-none">
+          <div className="bg-white border border-[#1e304f] rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <div>
                 <span className="text-[10px] font-mono text-slate-400 uppercase">SENTINEL-ID PIPELINE</span>
-                <h3 className="text-base font-bold text-white font-mono">SCREENING IN PROGRESS: {caseId}</h3>
+                <h3 className="text-base font-bold text-slate-900 font-mono">SCREENING IN PROGRESS: {caseId}</h3>
               </div>
-              <RefreshCw className="w-5 h-5 text-cyan-400 animate-spin" />
+              <RefreshCw className="w-5 h-5 text-blue-600 animate-spin" />
             </div>
 
             {/* Pipeline Stage Indicators */}
@@ -909,11 +909,11 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
             <div className="space-y-1.5 pt-2">
               <div className="flex justify-between text-[11px] font-mono">
                 <span className="text-slate-400">{pipelineMessage}</span>
-                <span className="text-cyan-400 font-bold">{processingProgress}%</span>
+                <span className="text-blue-600 font-bold">{processingProgress}%</span>
               </div>
-              <div className="w-full bg-[#070e1a] h-2 rounded-full overflow-hidden border border-[#182740]">
+              <div className="w-full bg-slate-50 h-2 rounded-full overflow-hidden border border-slate-200">
                 <div
-                  className="bg-cyan-400 h-full rounded-full transition-all duration-300 shadow-[0_0_10px_#22d3ee]"
+                  className="bg-slate-100yan-400 h-full rounded-full transition-all duration-300 shadow-[0_0_10px_#22d3ee]"
                   style={{ width: `${processingProgress}%` }}
                 />
               </div>

@@ -141,24 +141,24 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
   const documentImageSrc = currentSession.documentImageUrl || '/sample_passport_clean.jpg';
 
   return (
-    <div className="space-y-5 pb-16 text-slate-200 font-sans">
+    <div className="space-y-5 pb-16 text-slate-800 font-sans">
       {/* Top Breadcrumb / Case Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#152238] pb-3.5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3.5">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <span className={`w-2 h-2 rounded-full ${isUnsupported ? 'bg-red-400' : 'bg-cyan-400'} animate-pulse`} />
-            <span className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest">
+            <span className="text-xs font-mono font-bold text-blue-600 uppercase tracking-widest">
               SCREENING ID:
             </span>
-            <span className="text-sm font-bold text-white font-mono">{currentSession.id}</span>
+            <span className="text-sm font-bold text-slate-900 font-mono">{currentSession.id}</span>
           </div>
 
           <span className={`px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
             isUnsupported
-              ? 'bg-red-950 text-red-400 border border-red-800'
+              ? 'bg-red-50 text-red-400 border border-red-200'
               : currentSession.risk?.overallRiskScore && currentSession.risk.overallRiskScore > 50
-              ? 'bg-amber-950 text-amber-400 border border-amber-800'
-              : 'bg-emerald-950 text-emerald-400 border border-emerald-800'
+              ? 'bg-amber-50 text-amber-400 border border-amber-200'
+              : 'bg-emerald-50 text-emerald-400 border border-emerald-200'
           }`}>
             ● {currentSession.status.replace('_', ' ')}
           </span>
@@ -167,7 +167,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
         {/* Action Tray */}
         <div className="flex items-center gap-2">
           {/* Sample Case Switcher Dropdown */}
-          <div className="flex items-center gap-1.5 bg-[#0b1424] border border-[#182740] rounded-md px-2 py-1 text-xs">
+          <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-md px-2 py-1 text-xs">
             <span className="text-[10px] font-mono text-slate-400">DEMO CASE:</span>
             <select
               value={currentSession.id}
@@ -175,10 +175,10 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                 const found = SAMPLE_SCREENING_CASES.find((s) => s.id === e.target.value);
                 if (found) onSelectSampleCase(found);
               }}
-              className="bg-transparent text-cyan-300 font-mono text-xs focus:outline-none cursor-pointer"
+              className="bg-transparent text-blue-700 font-mono text-xs focus:outline-none cursor-pointer"
             >
               {SAMPLE_SCREENING_CASES.map((cs) => (
-                <option key={cs.id} value={cs.id} className="bg-[#070e1a] text-slate-200">
+                <option key={cs.id} value={cs.id} className="bg-slate-50 text-slate-200">
                   {cs.id} - {cs.travelerName} ({cs.risk?.overallRiskScore ?? 0}%)
                 </option>
               ))}
@@ -188,7 +188,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
           {!isUnsupported && (
             <button
               onClick={() => setIsReportModalOpen(true)}
-              className="px-3 py-1 bg-[#121f35] hover:bg-[#182a47] text-slate-300 hover:text-white border border-[#223553] rounded text-xs font-mono font-bold uppercase transition flex items-center gap-1.5"
+              className="px-3 py-1 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 border border-slate-200 rounded text-xs font-mono font-bold uppercase transition flex items-center gap-1.5"
             >
               <Download className="w-3.5 h-3.5" /> Export Report
             </button>
@@ -202,22 +202,22 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
       {isUnsupported ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left: Actual Document Uploaded Viewport */}
-          <div className="lg:col-span-6 bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-2xl flex flex-col justify-between">
+          <div className="lg:col-span-6 bg-white border border-slate-200 rounded-xl p-5 shadow-2xl flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between border-b border-[#182740] pb-3 mb-4">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4 text-red-400" />
-                  <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+                  <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
                     UPLOADED DOCUMENT FILE
                   </h3>
                 </div>
-                <span className="text-[10px] font-mono text-red-400 bg-red-950 px-2 py-0.5 rounded border border-red-900">
+                <span className="text-[10px] font-mono text-red-400 bg-red-50 px-2 py-0.5 rounded border border-red-200">
                   REJECTED AT STRUCTURAL GATE
                 </span>
               </div>
 
               {/* Viewport: Renders actual document/PDF uploaded */}
-              <div className="relative w-full aspect-[4/3] bg-[#070e1a] rounded-xl border border-[#142239] overflow-hidden flex items-center justify-center p-3 shadow-inner">
+              <div className="relative w-full aspect-[4/3] bg-slate-50 rounded-xl border border-slate-200 overflow-hidden flex items-center justify-center p-3 shadow-inner">
                 {currentSession.documentImageUrl?.startsWith('data:application/pdf') || currentSession.documentImageUrl?.endsWith('.pdf') ? (
                   <object
                     data={`${currentSession.documentImageUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
@@ -240,24 +240,24 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
               </div>
             </div>
 
-            <div className="text-xs font-mono text-slate-400 pt-3 border-t border-[#182740] mt-3 flex justify-between">
-              <span>File: <strong className="text-white">{currentSession.travelerName}</strong></span>
+            <div className="text-xs font-mono text-slate-400 pt-3 border-t border-slate-200 mt-3 flex justify-between">
+              <span>File: <strong className="text-slate-900">{currentSession.travelerName}</strong></span>
               <span className="text-red-400 font-bold">No Identity Metadata Extracted</span>
             </div>
           </div>
 
           {/* Right: Rejection Card matching Specification */}
           <div className="lg:col-span-6 space-y-4">
-            <div className="bg-[#1b141d] border-2 border-[#882233] rounded-xl p-6 shadow-2xl space-y-5">
+            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6 shadow-2xl space-y-5">
               <div className="flex items-start gap-4 border-b border-[#3b1219] pb-4">
-                <div className="p-3 bg-[#3b1219] text-[#f87171] border border-[#882233] rounded-xl shrink-0">
+                <div className="p-3 bg-red-50 text-red-700 border border-red-200 rounded-xl shrink-0">
                   <AlertOctagon className="w-8 h-8" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white tracking-wide font-sans">
+                  <h3 className="text-lg font-bold text-slate-900 tracking-wide font-sans">
                     ⚠ UNSUPPORTED DOCUMENT
                   </h3>
-                  <p className="text-xs text-slate-300 mt-1 leading-relaxed font-sans">
+                  <p className="text-xs text-slate-600 mt-1 leading-relaxed font-sans">
                     The uploaded document could not be identified as a supported identity or travel document.
                   </p>
                 </div>
@@ -265,7 +265,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
 
               {/* Classification Info Box */}
               <div className="grid grid-cols-2 gap-4 text-xs font-mono">
-                <div className="bg-[#070e1a] p-3 rounded-lg border border-[#182740]">
+                <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
                   <span className="text-[10px] text-slate-400 uppercase block mb-1">
                     DETECTED TYPE
                   </span>
@@ -274,30 +274,30 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                   </span>
                 </div>
 
-                <div className="bg-[#070e1a] p-3 rounded-lg border border-[#182740]">
+                <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
                   <span className="text-[10px] text-slate-400 uppercase block mb-1">
                     CLASSIFICATION CONFIDENCE
                   </span>
-                  <span className="text-sm font-bold text-white block">
+                  <span className="text-sm font-bold text-slate-900 block">
                     {currentSession.detectedClassificationConfidence || 96.8}%
                   </span>
                 </div>
               </div>
 
               {/* Structural Gating Findings */}
-              <div className="bg-[#070e1a] p-4 rounded-lg border border-[#182740] space-y-2 text-xs font-sans">
+              <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2 text-xs font-sans">
                 <span className="text-[10px] font-mono text-slate-400 uppercase font-bold block mb-1">
                   STRUCTURAL GATE EVIDENCE
                 </span>
-                <div className="flex items-center gap-2 text-slate-300">
+                <div className="flex items-center gap-2 text-slate-600">
                   <XCircle className="w-4 h-4 text-red-400 shrink-0" />
                   <span>No supported identity-document structure detected</span>
                 </div>
-                <div className="flex items-center gap-2 text-slate-300">
+                <div className="flex items-center gap-2 text-slate-600">
                   <XCircle className="w-4 h-4 text-red-400 shrink-0" />
                   <span>No passport MRZ detected</span>
                 </div>
-                <div className="flex items-center gap-2 text-slate-300">
+                <div className="flex items-center gap-2 text-slate-600">
                   <XCircle className="w-4 h-4 text-red-400 shrink-0" />
                   <span>Required identity-document fields absent</span>
                 </div>
@@ -309,25 +309,25 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                   SUPPORTED DOCUMENT FORMATS:
                 </span>
                 <div className="flex flex-wrap gap-2">
-                  <span className="px-2.5 py-1 bg-[#121f35] border border-[#223553] text-cyan-300 rounded font-mono text-xs">
+                  <span className="px-2.5 py-1 bg-white border border-slate-200 text-blue-700 rounded font-mono text-xs">
                     Passport
                   </span>
-                  <span className="px-2.5 py-1 bg-[#121f35] border border-[#223553] text-cyan-300 rounded font-mono text-xs">
+                  <span className="px-2.5 py-1 bg-white border border-slate-200 text-blue-700 rounded font-mono text-xs">
                     Visa
                   </span>
-                  <span className="px-2.5 py-1 bg-[#121f35] border border-[#223553] text-cyan-300 rounded font-mono text-xs">
+                  <span className="px-2.5 py-1 bg-white border border-slate-200 text-blue-700 rounded font-mono text-xs">
                     National ID
                   </span>
-                  <span className="px-2.5 py-1 bg-[#121f35] border border-[#223553] text-cyan-300 rounded font-mono text-xs">
+                  <span className="px-2.5 py-1 bg-white border border-slate-200 text-blue-700 rounded font-mono text-xs">
                     Driving Licence
                   </span>
-                  <span className="px-2.5 py-1 bg-[#121f35] border border-[#223553] text-cyan-300 rounded font-mono text-xs">
+                  <span className="px-2.5 py-1 bg-white border border-slate-200 text-blue-700 rounded font-mono text-xs">
                     Permit / Travel Authorization
                   </span>
                 </div>
               </div>
 
-              <div className="p-3.5 bg-[#2a0e14] border border-[#882233] rounded-lg text-xs text-[#fca5a5] font-mono">
+              <div className="p-3.5 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700 font-mono">
                 🛑 <strong>SCREENING NOT PERFORMED:</strong> No risk score or fabricated identity findings generated.
               </div>
             </div>
@@ -339,24 +339,24 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
         /* ========================================================================= */
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* LEFT COLUMN: DOCUMENT PREVIEW & INTERACTIVE EVIDENCE SURFACE */}
-          <div className="lg:col-span-6 bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-2xl flex flex-col justify-between">
+          <div className="lg:col-span-6 bg-white border border-slate-200 rounded-xl p-5 shadow-2xl flex flex-col justify-between">
             <div>
               {/* Document Header & Mode Controls */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#182740] pb-3 mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3 mb-4">
                 <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-cyan-400" />
-                  <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+                  <FileText className="w-4 h-4 text-blue-600" />
+                  <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
                     DOCUMENT PREVIEW
                   </h3>
                 </div>
 
                 {/* View Mode Switcher */}
-                <div className="flex items-center gap-1 bg-[#070e1a] p-1 rounded-lg border border-[#182740]">
+                <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-lg border border-slate-200">
                   <button
                     onClick={() => setViewMode('original')}
                     className={`px-2.5 py-1 text-[10px] font-mono font-bold uppercase rounded transition ${
                       viewMode === 'original'
-                        ? 'bg-[#182a47] text-white shadow'
+                        ? 'bg-blue-50 text-slate-900 shadow'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -366,7 +366,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                     onClick={() => setViewMode('ocr')}
                     className={`px-2.5 py-1 text-[10px] font-mono font-bold uppercase rounded transition ${
                       viewMode === 'ocr'
-                        ? 'bg-[#182a47] text-white shadow'
+                        ? 'bg-blue-50 text-slate-900 shadow'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -376,7 +376,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                     onClick={() => setViewMode('evidence')}
                     className={`px-2.5 py-1 text-[10px] font-mono font-bold uppercase rounded transition ${
                       viewMode === 'evidence'
-                        ? 'bg-[#182a47] text-white shadow'
+                        ? 'bg-blue-50 text-slate-900 shadow'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -386,7 +386,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                     onClick={() => setViewMode('forensic')}
                     className={`px-2.5 py-1 text-[10px] font-mono font-bold uppercase rounded transition ${
                       viewMode === 'forensic'
-                        ? 'bg-[#182a47] text-white shadow'
+                        ? 'bg-blue-50 text-slate-900 shadow'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -396,7 +396,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
               </div>
 
               {/* Document Interactive Surface Viewport */}
-              <div className="relative w-full aspect-[4/3] bg-[#070e1a] rounded-xl border border-[#142239] overflow-hidden flex items-center justify-center p-3 shadow-inner">
+              <div className="relative w-full aspect-[4/3] bg-slate-50 rounded-xl border border-slate-200 overflow-hidden flex items-center justify-center p-3 shadow-inner">
                 <div 
                   className="absolute inset-0 opacity-10 pointer-events-none"
                   style={{
@@ -449,7 +449,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                             height: `${box.height}%`,
                           }}
                         >
-                          <span className="absolute -top-4 left-0 bg-[#070e1a] text-cyan-300 border border-cyan-500 text-[8px] font-mono font-bold px-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-20">
+                          <span className="absolute -top-4 left-0 bg-slate-50 text-blue-700 border border-cyan-500 text-[8px] font-mono font-bold px-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-20">
                             {box.label}: {box.value}
                           </span>
                         </div>
@@ -481,8 +481,8 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                               height: `${bbox.height}%`,
                             }}
                           >
-                            <div className="absolute -top-6 left-0 bg-[#3b1219] text-[#fca5a5] border border-[#882233] text-[9px] font-mono font-bold px-1.5 py-0.5 rounded shadow-lg flex items-center gap-1 whitespace-nowrap">
-                              <AlertTriangle className="w-2.5 h-2.5 text-[#f87171]" />
+                            <div className="absolute -top-6 left-0 bg-red-50 text-red-700 border border-red-200 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded shadow-lg flex items-center gap-1 whitespace-nowrap">
+                              <AlertTriangle className="w-2.5 h-2.5 text-red-700" />
                               {finding.title}
                             </div>
                           </div>
@@ -507,25 +507,25 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
             </div>
 
             {/* Bottom Zoom & Layer Controls */}
-            <div className="flex items-center justify-between pt-3 border-t border-[#182740] mt-3 text-xs font-mono text-slate-400">
+            <div className="flex items-center justify-between pt-3 border-t border-slate-200 mt-3 text-xs font-mono text-slate-400">
               <div className="flex items-center gap-2">
                 <span className="text-[10px] text-slate-500 uppercase">ZOOM:</span>
                 <button
                   onClick={() => setZoomLevel(Math.max(0.8, zoomLevel - 0.1))}
-                  className="p-1 rounded bg-[#070e1a] border border-[#182740] hover:text-white transition"
+                  className="p-1 rounded bg-slate-50 border border-slate-200 hover:text-slate-900 transition"
                 >
                   <ZoomOut className="w-3.5 h-3.5" />
                 </button>
-                <span className="font-bold text-slate-300 px-1">{(zoomLevel * 100).toFixed(0)}%</span>
+                <span className="font-bold text-slate-600 px-1">{(zoomLevel * 100).toFixed(0)}%</span>
                 <button
                   onClick={() => setZoomLevel(Math.min(1.5, zoomLevel + 0.1))}
-                  className="p-1 rounded bg-[#070e1a] border border-[#182740] hover:text-white transition"
+                  className="p-1 rounded bg-slate-50 border border-slate-200 hover:text-slate-900 transition"
                 >
                   <ZoomIn className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => setZoomLevel(1)}
-                  className="p-1 rounded bg-[#070e1a] border border-[#182740] hover:text-white transition ml-1"
+                  className="p-1 rounded bg-slate-50 border border-slate-200 hover:text-slate-900 transition ml-1"
                   title="Reset zoom"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -533,7 +533,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
               </div>
 
               <div className="text-[11px] text-slate-400">
-                Confidence: <strong className="text-cyan-400">{currentSession.document_type_confidence || 96.5}%</strong>
+                Confidence: <strong className="text-blue-600">{currentSession.document_type_confidence || 96.5}%</strong>
               </div>
             </div>
           </div>
@@ -543,23 +543,23 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
             {/* Top Banner */}
             <div className={`border rounded-xl p-4 shadow-lg flex items-start gap-3.5 ${
               (currentSession.risk?.overallRiskScore ?? 0) > 50
-                ? 'bg-[#1b141d] border-[#882233]'
-                : 'bg-[#0e1e17] border-[#1d5236]'
+                ? 'bg-red-50 border-red-200'
+                : 'bg-emerald-50 border-emerald-200'
             }`}>
               <div className={`p-2 rounded-lg shrink-0 ${
                 (currentSession.risk?.overallRiskScore ?? 0) > 50
-                  ? 'bg-[#3b1219] text-[#f87171] border border-[#882233]'
-                  : 'bg-[#112419] text-[#4ade80] border border-[#1d5236]'
+                  ? 'bg-red-50 text-red-700 border border-red-200'
+                  : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
               }`}>
                 {(currentSession.risk?.overallRiskScore ?? 0) > 50 ? <AlertTriangle className="w-6 h-6" /> : <CheckCircle2 className="w-6 h-6" />}
               </div>
               <div className="min-w-0">
                 <h3 className={`text-base font-bold tracking-wide font-sans ${
-                  (currentSession.risk?.overallRiskScore ?? 0) > 50 ? 'text-[#f87171]' : 'text-[#4ade80]'
+                  (currentSession.risk?.overallRiskScore ?? 0) > 50 ? 'text-red-700' : 'text-emerald-700'
                 }`}>
                   {currentSession.risk?.reviewPriority || 'LOW REVIEW PRIORITY'}
                 </h3>
-                <p className="text-xs text-slate-300 mt-0.5 leading-relaxed font-sans">
+                <p className="text-xs text-slate-600 mt-0.5 leading-relaxed font-sans">
                   {currentSession.risk?.recommendedAction || 'Document screening completed.'}
                 </p>
               </div>
@@ -567,36 +567,36 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
 
             {/* DYNAMIC EVIDENCE FOCUS PANEL */}
             {activeFinding && (
-              <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-4 shadow-xl space-y-3">
-                <div className="flex items-center justify-between border-b border-[#182740] pb-2.5">
+              <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xl space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
                   <div className="flex items-center gap-2">
-                    <Target className="w-4 h-4 text-cyan-400" />
-                    <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+                    <Target className="w-4 h-4 text-blue-600" />
+                    <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
                       EVIDENCE FOCUS: {activeFinding.title}
                     </h4>
                   </div>
 
                   <span className={`px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded ${
                     activeFinding.severity === 'HIGH' || activeFinding.severity === 'CRITICAL'
-                      ? 'bg-[#3b1219] text-[#fca5a5] border border-[#882233]'
-                      : 'bg-[#112419] text-[#6ee7b7]'
+                      ? 'bg-red-50 text-red-700 border border-red-200'
+                      : 'bg-emerald-50 text-emerald-700'
                   }`}>
                     {activeFinding.severity} PRIORITY
                   </span>
                 </div>
 
                 <div className="space-y-2.5 text-xs font-sans">
-                  <p className="text-slate-300 leading-relaxed">
+                  <p className="text-slate-600 leading-relaxed">
                     {activeFinding.description}
                   </p>
 
                   {activeFinding.sources && activeFinding.sources.length > 0 && (
-                    <div className="bg-[#070e1a] p-3 rounded-lg border border-[#182740] space-y-1 font-mono text-[11px]">
+                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-1 font-mono text-[11px]">
                       <span className="text-slate-400 uppercase font-bold block mb-1">
                         AUTHENTICATED EVIDENCE SOURCES:
                       </span>
                       {activeFinding.sources.map((s, idx) => (
-                        <div key={idx} className="text-cyan-300 flex items-center gap-1.5">
+                        <div key={idx} className="text-blue-700 flex items-center gap-1.5">
                           <span>•</span>
                           <span><strong>{s.type}:</strong> {s.field ? `${s.field} -> ` : ''}{s.value || s.details}</span>
                         </div>
@@ -608,11 +608,11 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
             )}
 
             {/* DYNAMIC EXTRACTED FIELDS TABLE */}
-            <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-4 shadow-xl space-y-3">
-              <div className="flex items-center justify-between border-b border-[#182740] pb-2">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xl space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                 <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-cyan-400" />
-                  <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+                  <FileText className="w-4 h-4 text-blue-600" />
+                  <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
                     EXTRACTED FIELDS ({currentSession.fields.length})
                   </h4>
                 </div>
@@ -620,23 +620,23 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs font-sans">
-                  <thead className="text-[9px] font-mono text-slate-400 uppercase border-b border-[#182740]">
+                  <thead className="text-[9px] font-mono text-slate-400 uppercase border-b border-slate-200">
                     <tr>
                       <th className="py-1.5 px-2">FIELD</th>
                       <th className="py-1.5 px-2">EXTRACTED VALUE</th>
                       <th className="py-1.5 px-2 text-right">CONFIDENCE</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#15233a] font-sans text-xs">
+                  <tbody className="divide-y divide-slate-200 font-sans text-xs">
                     {currentSession.fields.map((f) => (
-                      <tr key={f.key} className={f.isTampered ? 'bg-[#2a0e14]/60' : ''}>
-                        <td className={`py-1.5 px-2 font-medium ${f.isTampered ? 'text-[#f87171] font-bold' : 'text-slate-400'}`}>
+                      <tr key={f.key} className={f.isTampered ? 'bg-red-50/60' : ''}>
+                        <td className={`py-1.5 px-2 font-medium ${f.isTampered ? 'text-red-700 font-bold' : 'text-slate-400'}`}>
                           {f.label}
                         </td>
-                        <td className={`py-1.5 px-2 font-mono ${f.isTampered ? 'text-[#f87171] font-bold' : 'text-white'}`}>
+                        <td className={`py-1.5 px-2 font-mono ${f.isTampered ? 'text-red-700 font-bold' : 'text-slate-900'}`}>
                           {f.value}
                         </td>
-                        <td className="py-1.5 px-2 text-right font-mono text-slate-300">
+                        <td className="py-1.5 px-2 text-right font-mono text-slate-600">
                           {f.confidence}%
                         </td>
                       </tr>
@@ -647,19 +647,19 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
 
               {/* Dynamic MRZ Status Sub-card */}
               {currentSession.mrzData && (
-                <div className="bg-[#070e1a] p-3 rounded-lg border border-[#182740] space-y-1.5 text-xs font-sans">
+                <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-1.5 text-xs font-sans">
                   <span className="text-[10px] font-mono text-slate-400 uppercase font-bold block">
                     MRZ STATUS: {currentSession.mrzData.status}
                   </span>
                   <div className={`flex items-center gap-1.5 font-medium ${
-                    currentSession.mrzData.isAllChecksumsValid ? 'text-[#4ade80]' : 'text-[#f87171]'
+                    currentSession.mrzData.isAllChecksumsValid ? 'text-emerald-700' : 'text-red-700'
                   }`}>
                     {currentSession.mrzData.isAllChecksumsValid ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
                     <span>MRZ Checksums: {currentSession.mrzData.isAllChecksumsValid ? 'Valid (All check digits passed)' : 'Checksum failure detected'}</span>
                   </div>
 
                   {currentSession.mrzData.vizMismatchDetected && (
-                    <div className="text-[11px] font-mono text-[#fbbf24] pl-5 space-y-0.5">
+                    <div className="text-[11px] font-mono text-amber-600 pl-5 space-y-0.5">
                       {currentSession.mrzData.vizMismatchDetails.map((det, i) => (
                         <div key={i}>⚠ {det}</div>
                       ))}
@@ -670,11 +670,11 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
             </div>
 
             {/* DYNAMIC EVIDENCE NAVIGATOR */}
-            <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-4 shadow-xl space-y-3">
-              <div className="flex items-center justify-between border-b border-[#182740] pb-2">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xl space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                 <div className="flex items-center gap-2">
-                  <ShieldAlert className="w-4 h-4 text-cyan-400" />
-                  <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+                  <ShieldAlert className="w-4 h-4 text-blue-600" />
+                  <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
                     EVIDENCE NAVIGATOR ({findingsList.length} FINDINGS)
                   </h4>
                 </div>
@@ -694,26 +694,26 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                       }}
                       className={`p-3 rounded-lg border transition cursor-pointer flex items-center justify-between ${
                         isSelected
-                          ? 'bg-[#182a47] border-cyan-400 ring-1 ring-cyan-400 shadow-md'
-                          : 'bg-[#070e1a] border-[#182740] hover:bg-[#101c30]'
+                          ? 'bg-blue-50 border-cyan-400 ring-1 ring-cyan-400 shadow-md'
+                          : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <div className={`p-2 rounded-md ${
-                          item.severity === 'HIGH' || item.severity === 'CRITICAL' ? 'bg-[#3b1219] text-[#f87171]' : 'bg-[#112419] text-[#4ade80]'
+                          item.severity === 'HIGH' || item.severity === 'CRITICAL' ? 'bg-red-50 text-red-700' : 'bg-emerald-50 text-emerald-700'
                         }`}>
                           {item.severity === 'HIGH' || item.severity === 'CRITICAL' ? <AlertTriangle className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
                         </div>
                         <div>
-                          <h5 className="text-xs font-bold text-white">{item.title}</h5>
+                          <h5 className="text-xs font-bold text-slate-900">{item.title}</h5>
                           <p className="text-[11px] text-slate-400 line-clamp-1">{item.description}</p>
                         </div>
                       </div>
 
                       <span className={`px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded ${
                         item.severity === 'HIGH' || item.severity === 'CRITICAL'
-                          ? 'bg-[#3b1219] text-[#fca5a5] border border-[#882233]'
-                          : 'bg-[#112419] text-[#6ee7b7] border border-[#1d5236]'
+                          ? 'bg-red-50 text-red-700 border border-red-200'
+                          : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                       }`}>
                         {item.severity}
                       </span>
@@ -724,11 +724,11 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
             </div>
 
             {/* OFFICER NOTES & DECISION */}
-            <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-4 shadow-xl space-y-3">
-              <div className="flex items-center justify-between border-b border-[#182740] pb-2">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xl space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                 <div className="flex items-center gap-2">
-                  <UserCheck className="w-4 h-4 text-cyan-400" />
-                  <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+                  <UserCheck className="w-4 h-4 text-blue-600" />
+                  <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
                     OFFICER NOTES &amp; DECISION
                   </h4>
                 </div>
@@ -745,19 +745,19 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                   placeholder="Add notes or forensic observations for this identity screening..."
                   value={investigatorNote}
                   onChange={(e) => setInvestigatorNote(e.target.value)}
-                  className="w-full bg-[#070e1a] border border-[#182740] rounded-md p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-sans"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-md p-2.5 text-xs text-slate-900 placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-sans"
                 />
 
                 <div className="flex items-center gap-2 text-slate-400 text-xs px-1">
-                  <button type="button" className="p-1 hover:text-white transition"><Bold className="w-3.5 h-3.5" /></button>
-                  <button type="button" className="p-1 hover:text-white transition"><Italic className="w-3.5 h-3.5" /></button>
-                  <button type="button" className="p-1 hover:text-white transition"><Underline className="w-3.5 h-3.5" /></button>
-                  <button type="button" className="p-1 hover:text-white transition"><List className="w-3.5 h-3.5" /></button>
-                  <button type="button" className="p-1 hover:text-white transition"><Link2 className="w-3.5 h-3.5" /></button>
+                  <button type="button" className="p-1 hover:text-slate-900 transition"><Bold className="w-3.5 h-3.5" /></button>
+                  <button type="button" className="p-1 hover:text-slate-900 transition"><Italic className="w-3.5 h-3.5" /></button>
+                  <button type="button" className="p-1 hover:text-slate-900 transition"><Underline className="w-3.5 h-3.5" /></button>
+                  <button type="button" className="p-1 hover:text-slate-900 transition"><List className="w-3.5 h-3.5" /></button>
+                  <button type="button" className="p-1 hover:text-slate-900 transition"><Link2 className="w-3.5 h-3.5" /></button>
                   <button
                     type="button"
                     onClick={handleSaveNotes}
-                    className="ml-auto px-2.5 py-0.5 bg-[#182a47] hover:bg-[#22395e] text-white text-[10px] font-mono font-bold uppercase rounded transition"
+                    className="ml-auto px-2.5 py-0.5 bg-blue-50 hover:bg-blue-100 text-slate-900 text-[10px] font-mono font-bold uppercase rounded transition"
                   >
                     Save Note
                   </button>
@@ -767,7 +767,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <button
                   onClick={handleSendForReview}
-                  className="w-full py-2.5 bg-transparent hover:bg-amber-950/40 text-[#f59e0b] border-2 border-[#f59e0b] font-bold text-xs uppercase tracking-wider rounded-lg transition flex items-center justify-center gap-2"
+                  className="w-full py-2.5 bg-transparent hover:bg-amber-50 text-amber-600 border-2 border-amber-600 font-bold text-xs uppercase tracking-wider rounded-lg transition flex items-center justify-center gap-2"
                 >
                   <AlertTriangle className="w-4 h-4 stroke-[2.5]" />
                   Send for Review
@@ -775,7 +775,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
 
                 <button
                   onClick={handleApprove}
-                  className="w-full py-2.5 bg-[#ef4444] hover:bg-[#dc2626] text-white font-bold text-xs uppercase tracking-wider rounded-lg transition flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-slate-900 font-bold text-xs uppercase tracking-wider rounded-lg transition flex items-center justify-center gap-2 shadow-sm"
                 >
                   <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
                   Approve &amp; Release

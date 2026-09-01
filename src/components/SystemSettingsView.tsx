@@ -90,14 +90,14 @@ export const SystemSettingsView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 pb-12 text-slate-200">
+    <div className="space-y-6 pb-12 text-slate-800">
       {/* Top Header matching Stitch Screenshot 3 */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-[#152238] pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <span className="text-[10px] font-mono font-bold tracking-widest text-cyan-400 uppercase block mb-1">
+          <span className="text-[10px] font-mono font-bold tracking-widest text-blue-600 uppercase block mb-1">
             ADMINISTRATOR ACCESS
           </span>
-          <h2 className="text-3xl font-bold text-white tracking-tight font-sans">
+          <h2 className="text-3xl font-bold text-slate-900 tracking-tight font-sans">
             Engine Configuration
           </h2>
           <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed font-sans">
@@ -109,7 +109,7 @@ export const SystemSettingsView: React.FC = () => {
           <button
             type="button"
             onClick={handleDiscard}
-            className="px-4 py-2 bg-[#0e192c] hover:bg-[#182a47] text-slate-300 border border-[#1b2b46] rounded-md text-xs font-mono font-bold uppercase transition"
+            className="px-4 py-2 bg-[#0e192c] hover:bg-slate-50 text-slate-600 border border-[#1b2b46] rounded-md text-xs font-mono font-bold uppercase transition"
           >
             DISCARD CHANGES
           </button>
@@ -126,7 +126,7 @@ export const SystemSettingsView: React.FC = () => {
       </div>
 
       {deployedSuccess && (
-        <div className="p-3 bg-emerald-950/80 border border-emerald-500/80 text-emerald-300 text-xs font-mono font-bold rounded-lg flex items-center gap-2 animate-in fade-in">
+        <div className="p-3 bg-slate-100merald-950/80 border border-slate-300merald-500/80 text-emerald-300 text-xs font-mono font-bold rounded-lg flex items-center gap-2 animate-in fade-in">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           Configuration deployed and cryptographically anchored to system cluster.
         </div>
@@ -135,17 +135,17 @@ export const SystemSettingsView: React.FC = () => {
       {/* Top Grid: AI Processing Thresholds (Left) & Security & Auth (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Card: AI Processing Thresholds */}
-        <div className="lg:col-span-8 bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-xl space-y-6">
-          <div className="flex items-center justify-between border-b border-[#182740] pb-3">
+        <div className="lg:col-span-8 bg-white border border-slate-200 rounded-xl p-5 shadow-xl space-y-6">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <div className="flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-cyan-400" />
-              <h3 className="text-sm font-bold text-white tracking-wide">
+              <Cpu className="w-4 h-4 text-blue-600" />
+              <h3 className="text-sm font-bold text-slate-900 tracking-wide">
                 AI Processing Thresholds
               </h3>
             </div>
 
-            <span className="px-2.5 py-0.5 rounded-full bg-[#070e1a] border border-[#15233a] text-cyan-400 text-[10px] font-mono font-bold flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]" />
+            <span className="px-2.5 py-0.5 rounded-full bg-slate-50 border border-[#15233a] text-blue-600 text-[10px] font-mono font-bold flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-100yan-400 shadow-[0_0_6px_#22d3ee]" />
               Model: v4.2.0-SENTINEL
             </span>
           </div>
@@ -155,7 +155,7 @@ export const SystemSettingsView: React.FC = () => {
             <div className="space-y-2">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h4 className="text-xs font-bold text-white">
+                  <h4 className="text-xs font-bold text-slate-900">
                     Facial Recognition Similarity
                   </h4>
                   <p className="text-[11px] text-slate-400 mt-0.5">
@@ -163,7 +163,7 @@ export const SystemSettingsView: React.FC = () => {
                   </p>
                 </div>
 
-                <span className="px-2.5 py-1 bg-[#070e1a] border border-[#182740] text-cyan-300 font-mono font-bold text-xs rounded-md">
+                <span className="px-2.5 py-1 bg-slate-50 border border-slate-200 text-blue-700 font-mono font-bold text-xs rounded-md">
                   {faceSimilarity.toFixed(1)}%
                 </span>
               </div>
@@ -189,7 +189,7 @@ export const SystemSettingsView: React.FC = () => {
             <div className="space-y-2">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h4 className="text-xs font-bold text-white">
+                  <h4 className="text-xs font-bold text-slate-900">
                     OCR Extraction Confidence
                   </h4>
                   <p className="text-[11px] text-slate-400 mt-0.5">
@@ -197,7 +197,7 @@ export const SystemSettingsView: React.FC = () => {
                   </p>
                 </div>
 
-                <span className="px-2.5 py-1 bg-[#070e1a] border border-[#182740] text-cyan-300 font-mono font-bold text-xs rounded-md">
+                <span className="px-2.5 py-1 bg-slate-50 border border-slate-200 text-blue-700 font-mono font-bold text-xs rounded-md">
                   {ocrConfidence.toFixed(1)}%
                 </span>
               </div>
@@ -222,19 +222,19 @@ export const SystemSettingsView: React.FC = () => {
         </div>
 
         {/* Right Card: Security & Auth */}
-        <div className="lg:col-span-4 bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-xl space-y-5">
-          <div className="flex items-center gap-2 border-b border-[#182740] pb-3">
-            <ShieldCheck className="w-4 h-4 text-[#f87171]" />
-            <h3 className="text-sm font-bold text-white tracking-wide">
+        <div className="lg:col-span-4 bg-white border border-slate-200 rounded-xl p-5 shadow-xl space-y-5">
+          <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+            <ShieldCheck className="w-4 h-4 text-red-700" />
+            <h3 className="text-sm font-bold text-slate-900 tracking-wide">
               Security &amp; Auth
             </h3>
           </div>
 
           <div className="space-y-4">
             {/* Setting 1: Strict JWT Validation */}
-            <div className="flex items-center justify-between p-3 bg-[#070e1a] rounded-lg border border-[#15233a]">
+            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-[#15233a]">
               <div>
-                <span className="text-xs font-bold text-white block">Strict JWT Validation</span>
+                <span className="text-xs font-bold text-slate-900 block">Strict JWT Validation</span>
                 <span className="text-[10px] text-slate-400 block font-mono">Enforce IP binding on tokens</span>
               </div>
               <button
@@ -253,9 +253,9 @@ export const SystemSettingsView: React.FC = () => {
             </div>
 
             {/* Setting 2: Verbose Audit Logging */}
-            <div className="flex items-center justify-between p-3 bg-[#070e1a] rounded-lg border border-[#15233a]">
+            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-[#15233a]">
               <div>
-                <span className="text-xs font-bold text-white block">Verbose Audit Logging</span>
+                <span className="text-xs font-bold text-slate-900 block">Verbose Audit Logging</span>
                 <span className="text-[10px] text-slate-400 block font-mono">Log read operations (high I/O)</span>
               </div>
               <button
@@ -275,7 +275,7 @@ export const SystemSettingsView: React.FC = () => {
 
             {/* Setting 3: Session Timeout */}
             <div className="space-y-1.5 pt-1">
-              <span className="text-xs font-bold text-slate-300 block">Session Timeout (Minutes)</span>
+              <span className="text-xs font-bold text-slate-600 block">Session Timeout (Minutes)</span>
               <div className="relative">
                 <Clock className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
@@ -284,7 +284,7 @@ export const SystemSettingsView: React.FC = () => {
                   max="120"
                   value={sessionTimeout}
                   onChange={(e) => setSessionTimeout(Number(e.target.value))}
-                  className="w-full bg-[#070e1a] border border-[#182740] rounded-md pl-9 pr-3 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-cyan-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-md pl-9 pr-3 py-1.5 text-xs text-slate-900 font-mono focus:outline-none focus:border-blue-400"
                 />
               </div>
             </div>
@@ -293,18 +293,18 @@ export const SystemSettingsView: React.FC = () => {
       </div>
 
       {/* Bottom Card: Document Validation Engine Table matching Screenshot 3 */}
-      <div className="bg-[#0b1424] border border-[#182740] rounded-xl overflow-hidden shadow-xl">
-        <div className="px-5 py-4 border-b border-[#182740] flex items-center justify-between">
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xl">
+        <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <FileCheck2 className="w-4 h-4 text-cyan-400" />
-            <h3 className="text-sm font-bold text-white tracking-wide">
+            <FileCheck2 className="w-4 h-4 text-blue-600" />
+            <h3 className="text-sm font-bold text-slate-900 tracking-wide">
               Document Validation Engine
             </h3>
           </div>
 
           <button
             onClick={() => setShowAddRuleModal(true)}
-            className="px-3 py-1.5 bg-[#121f35] hover:bg-[#182a47] text-slate-300 hover:text-white border border-[#223553] text-[11px] font-mono font-bold uppercase rounded transition flex items-center gap-1.5"
+            className="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 border border-slate-200 text-[11px] font-mono font-bold uppercase rounded transition flex items-center gap-1.5"
           >
             <Plus className="w-3.5 h-3.5" />
             Add Regional Rule
@@ -313,7 +313,7 @@ export const SystemSettingsView: React.FC = () => {
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-sans">
-            <thead className="bg-[#070e1a] text-slate-400 font-mono text-[10px] uppercase border-b border-[#182740]">
+            <thead className="bg-slate-50 text-slate-400 font-mono text-[10px] uppercase border-b border-slate-200">
               <tr>
                 <th className="py-3 px-5">Region Code</th>
                 <th className="py-3 px-5">Document Type</th>
@@ -322,13 +322,13 @@ export const SystemSettingsView: React.FC = () => {
                 <th className="py-3 px-5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#15233a] font-mono text-[11px]">
+            <tbody className="divide-y divide-slate-200 font-mono text-[11px]">
               {regionalRules.map((rule) => (
                 <tr key={rule.id} className="hover:bg-[#101b2f] transition">
-                  <td className="py-3 px-5 font-bold text-slate-300">
+                  <td className="py-3 px-5 font-bold text-slate-600">
                     {rule.regionCode}
                   </td>
-                  <td className="py-3 px-5 text-slate-200 font-sans">
+                  <td className="py-3 px-5 text-slate-800 font-sans">
                     {rule.documentType}
                   </td>
                   <td className="py-3 px-5">
@@ -336,7 +336,7 @@ export const SystemSettingsView: React.FC = () => {
                       {rule.securityFeatures.map((feat) => (
                         <span
                           key={feat}
-                          className="px-2 py-0.5 bg-[#070e1a] border border-[#182740] text-slate-300 text-[10px] rounded font-sans"
+                          className="px-2 py-0.5 bg-slate-50 border border-slate-200 text-slate-600 text-[10px] rounded font-sans"
                         >
                           {feat}
                         </span>
@@ -345,7 +345,7 @@ export const SystemSettingsView: React.FC = () => {
                   </td>
                   <td className="py-3 px-5">
                     <span className={`flex items-center gap-1.5 text-xs font-sans ${
-                      rule.status === 'Active' ? 'text-white' : 'text-slate-500'
+                      rule.status === 'Active' ? 'text-slate-900' : 'text-slate-500'
                     }`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${
                         rule.status === 'Active' ? 'bg-white shadow-[0_0_6px_#fff]' : 'bg-slate-500'
@@ -354,7 +354,7 @@ export const SystemSettingsView: React.FC = () => {
                     </span>
                   </td>
                   <td className="py-3 px-5 text-right">
-                    <button className="text-slate-400 hover:text-white p-1 transition">
+                    <button className="text-slate-400 hover:text-slate-900 p-1 transition">
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
                   </td>
@@ -367,44 +367,44 @@ export const SystemSettingsView: React.FC = () => {
 
       {/* Add Regional Rule Modal */}
       {showAddRuleModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-[#0b1424] border border-[#1e304f] rounded-xl p-5 max-w-md w-full shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#182740] pb-3 mb-4">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-50/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white border border-[#1e304f] rounded-xl p-5 max-w-md w-full shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
                 Add Regional Validation Rule
               </h3>
-              <button onClick={() => setShowAddRuleModal(false)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setShowAddRuleModal(false)} className="text-slate-400 hover:text-slate-900">
                 ✕
               </button>
             </div>
 
             <form onSubmit={handleAddRule} className="space-y-3 text-xs">
               <div>
-                <label className="text-slate-300 font-bold block mb-1">Region Code (ISO):</label>
+                <label className="text-slate-600 font-bold block mb-1">Region Code (ISO):</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. ISO-3166:IN"
                   value={newRule.regionCode || ''}
                   onChange={(e) => setNewRule({ ...newRule, regionCode: e.target.value })}
-                  className="w-full bg-[#070e1a] border border-[#182740] rounded-md p-2 text-white font-mono"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-md p-2 text-slate-900 font-mono"
                 />
               </div>
 
               <div>
-                <label className="text-slate-300 font-bold block mb-1">Document Type:</label>
+                <label className="text-slate-600 font-bold block mb-1">Document Type:</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Indian Diplomatic Passport"
                   value={newRule.documentType || ''}
                   onChange={(e) => setNewRule({ ...newRule, documentType: e.target.value })}
-                  className="w-full bg-[#070e1a] border border-[#182740] rounded-md p-2 text-white"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-md p-2 text-slate-900"
                 />
               </div>
 
               <div>
-                <label className="text-slate-300 font-bold block mb-1">Security Features (comma separated):</label>
+                <label className="text-slate-600 font-bold block mb-1">Security Features (comma separated):</label>
                 <input
                   type="text"
                   placeholder="UV Watermark, Guilloche Pattern, Optical Variable Ink"
@@ -414,21 +414,21 @@ export const SystemSettingsView: React.FC = () => {
                       securityFeatures: e.target.value.split(',').map((s) => s.trim()),
                     })
                   }
-                  className="w-full bg-[#070e1a] border border-[#182740] rounded-md p-2 text-white"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-md p-2 text-slate-900"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-[#182740]">
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setShowAddRuleModal(false)}
-                  className="px-3 py-1.5 text-slate-400 hover:text-white"
+                  className="px-3 py-1.5 text-slate-400 hover:text-slate-900"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-md font-bold"
+                  className="px-4 py-1.5 bg-slate-100yan-600 hover:bg-slate-100yan-500 text-slate-900 rounded-md font-bold"
                 >
                   Add Rule
                 </button>

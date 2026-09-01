@@ -1,29 +1,20 @@
 import React, { useState } from 'react';
-import { 
-  BarChart, 
-  Bar, 
-  AreaChart, 
-  Area, 
-  PieChart, 
-  Pie, 
-  Cell, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
-  ResponsiveContainer, 
-  CartesianGrid 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid
 } from 'recharts';
-import { 
-  Download, 
-  TrendingUp, 
-  AlertTriangle, 
-  ShieldAlert, 
-  FileText, 
-  Search, 
-  Eye, 
-  Activity, 
-  CheckCircle2,
-  Calendar
+import {
+  Download,
+  AlertTriangle,
+  FileText,
+  Search,
+  Eye,
+  ShieldAlert
 } from 'lucide-react';
 import { ScreeningSession } from '../types';
 
@@ -32,30 +23,38 @@ interface SystemAnalyticsViewProps {
   onSelectSession: (session: ScreeningSession) => void;
 }
 
-const THROUGHPUT_DATA = [
-  { time: '06:00', total: 142, cleared: 138, flagged: 4 },
-  { time: '08:00', total: 289, cleared: 275, flagged: 14 },
-  { time: '10:00', total: 412, cleared: 390, flagged: 22 },
-  { time: '12:00', total: 530, cleared: 504, flagged: 26 },
-  { time: '14:00', total: 478, cleared: 450, flagged: 28 },
-  { time: '16:00', total: 610, cleared: 575, flagged: 35 },
-  { time: '18:00', total: 520, cleared: 492, flagged: 28 },
-  { time: '20:00', total: 340, cleared: 326, flagged: 14 },
-];
-
-const FORGERY_TECHNIQUES = [
-  { name: 'Photo Splicing / Replacement', count: 48, fill: '#8b5cf6' },
-  { name: 'MRZ Checksum / DOB Mismatch', count: 36, fill: '#f59e0b' },
-  { name: 'Cloned / Forged Consular Stamp', count: 28, fill: '#ec4899' },
-  { name: 'Facial Biometric Impersonation', count: 22, fill: '#ef4444' },
-  { name: 'Interpol Red Notice / SLTD', count: 12, fill: '#dc2626' },
-];
-
 export const SystemAnalyticsView: React.FC<SystemAnalyticsViewProps> = ({
   sessions = [],
   onSelectSession,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // All metrics derived from actual session data
+  const totalScreenings = sessions.length;
+  const anomalyCount = sessions.filter(
+    (s) => s.risk?.findings?.some((f) => f.severity === 'HIGH' || f.severity === 'CRITICAL')
+  ).length;
+  const watchlistHits = sessions.filter(
+    (s) => s.risk?.findings?.some((f) => f.type === 'WATCHLIST_HIT')
+  ).length;
+
+  // Risk distribution from real data
+  const clearCount = sessions.filter((s) => (s.risk?.overallRiskScore ?? 0) < 26).length;
+  const reviewCount = sessions.filter(
+    (s) => (s.risk?.overallRiskScore ?? 0) >= 26 && (s.risk?.overallRiskScore ?? 0) < 60
+  ).length;
+  const enhancedCount = sessions.filter((s) => (s.risk?.overallRiskScore ?? 0) >= 60).length;
+
+  // Document type breakdown from real data
+  const docTypeCounts: Record<string, number> = {};
+  sessions.forEach((s) => {
+    const t = s.documentType || 'unknown';
+    docTypeCounts[t] = (docTypeCounts[t] || 0) + 1;
+  });
+  const docTypeData = Object.entries(docTypeCounts).map(([name, count]) => ({
+    name: name.replace(/_/g, ' '),
+    count,
+  }));
 
   const exportCSV = () => {
     const headers = ['Case ID,Timestamp,Traveler Name,Nationality,Passport No,Doc Type,Risk Score,Status'];
@@ -67,7 +66,7 @@ export const SystemAnalyticsView: React.FC<SystemAnalyticsViewProps> = ({
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `SENTINEL_ID_Analytics_Report_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `FIDSS_Report_${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
   };
 
@@ -78,207 +77,201 @@ export const SystemAnalyticsView: React.FC<SystemAnalyticsViewProps> = ({
   );
 
   return (
-    <div className="space-y-6 pb-12 text-slate-200">
-      {/* Top Header matching Stitch Screenshot 3 */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#152238] pb-5">
+    <div className="space-y-5 pb-12 text-slate-800">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">
-            System Analytics
-          </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Operational metric overview for current cycle.
+          <h2 className="text-xl font-semibold text-slate-900">Reports</h2>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Screening outcomes and document analysis summary for the current session.
           </p>
         </div>
-
         <button
           onClick={exportCSV}
-          className="px-4 py-2 bg-[#d4e4f7] hover:bg-white text-[#071326] font-bold text-xs uppercase tracking-wider rounded-md transition flex items-center gap-2 shadow-[0_0_15px_rgba(212,228,247,0.15)]"
+          className="px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 font-medium text-xs rounded-md transition flex items-center gap-2 border border-slate-200 shadow-sm"
         >
-          <Download className="w-4 h-4 stroke-[2.5]" />
-          GENERATE SUMMARY REPORT
+          <Download className="w-3.5 h-3.5" />
+          Export CSV
         </button>
       </div>
 
-      {/* 3 Metric Cards matching Screenshot 3 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Card 1: TOTAL SCREENINGS */}
-        <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-lg flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between text-slate-400 mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
-                TOTAL SCREENINGS
-              </span>
-              <Activity className="w-4 h-4 text-slate-400" />
-            </div>
-            <span className="text-4xl font-bold font-mono text-white tracking-tight block">
-              14,208
-            </span>
+      {/* KPI Row — all real data */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs text-slate-500">Total screenings</span>
+            <FileText className="w-3.5 h-3.5 text-slate-400" />
           </div>
-          <span className="text-xs font-mono text-cyan-400 font-semibold mt-4 flex items-center gap-1">
-            <TrendingUp className="w-3.5 h-3.5" /> +12.4% vs last week
-          </span>
+          <span className="text-3xl font-bold text-slate-900 font-mono">{totalScreenings}</span>
+          <p className="text-[10px] text-slate-500 mt-1.5">Current session only</p>
         </div>
 
-        {/* Card 2: DETECTED ANOMALIES */}
-        <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-lg flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between text-slate-400 mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#f59e0b]">
-                DETECTED ANOMALIES
-              </span>
-              <AlertTriangle className="w-4 h-4 text-[#f59e0b]" />
-            </div>
-            <span className="text-4xl font-bold font-mono text-[#f59e0b] tracking-tight block">
-              342
-            </span>
+        <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs text-slate-500">With anomaly findings</span>
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
           </div>
-          <span className="text-xs font-mono text-[#f59e0b] font-semibold mt-4">
-            → 2.4% anomaly rate
+          <span className={`text-3xl font-bold font-mono ${anomalyCount > 0 ? 'text-amber-600' : 'text-slate-900'}`}>
+            {anomalyCount}
           </span>
+          <p className="text-[10px] text-slate-500 mt-1.5">
+            {totalScreenings > 0
+              ? `${((anomalyCount / totalScreenings) * 100).toFixed(1)}% of screened documents`
+              : 'No data available'}
+          </p>
         </div>
 
-        {/* Card 3: WATCHLIST HITS */}
-        <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-lg flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between text-slate-400 mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#f87171]">
-                WATCHLIST HITS
-              </span>
-              <ShieldAlert className="w-4 h-4 text-[#f87171]" />
-            </div>
-            <span className="text-4xl font-bold font-mono text-[#f87171] tracking-tight block">
-              17
-            </span>
+        <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs text-slate-500">Watchlist matches</span>
+            <ShieldAlert className="w-3.5 h-3.5 text-red-500" />
           </div>
-          <span className="text-xs font-mono text-[#fca5a5] font-bold mt-4">
-            ! Immediate review required
+          <span className={`text-3xl font-bold font-mono ${watchlistHits > 0 ? 'text-red-600' : 'text-slate-900'}`}>
+            {watchlistHits}
           </span>
+          <p className="text-[10px] text-slate-500 mt-1.5">
+            {watchlistHits > 0 ? 'Requires immediate review' : 'No watchlist matches'}
+          </p>
         </div>
       </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Throughput Area Chart */}
-        <div className="lg:col-span-7 bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-xl">
-          <div className="flex items-center justify-between border-b border-[#182740] pb-3 mb-4">
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-200">
-              Screening Volume (Hourly)
+      {/* Charts Row — only shown when there is actual data */}
+      {sessions.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          {/* Risk distribution — real data */}
+          <div className="lg:col-span-5 bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+            <h3 className="text-sm font-semibold text-slate-800 border-b border-slate-100 pb-2.5 mb-3">
+              Risk distribution
             </h3>
-            <span className="text-xs font-mono text-slate-400">ICP-RAXAUL-04</span>
-          </div>
-
-          <div className="h-56">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={THROUGHPUT_DATA} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="analyticsGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#38bdf8" stopOpacity={0.0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#182740" />
-                <XAxis dataKey="time" stroke="#64748b" tick={{ fontSize: 10 }} />
-                <YAxis stroke="#64748b" tick={{ fontSize: 10 }} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#070e1a', borderColor: '#1e304f', borderRadius: '0.5rem', fontSize: '11px' }}
-                />
-                <Area type="monotone" dataKey="total" stroke="#38bdf8" strokeWidth={2} fill="url(#analyticsGrad)" name="Total Screened" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Forgery Distribution */}
-        <div className="lg:col-span-5 bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-xl flex flex-col justify-between">
-          <div className="border-b border-[#182740] pb-3 mb-3">
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-200">
-              Forgery Vectors Breakdown
-            </h3>
-          </div>
-
-          <div className="space-y-3">
-            {FORGERY_TECHNIQUES.map((tech) => (
-              <div key={tech.name} className="space-y-1">
-                <div className="flex justify-between text-xs font-sans">
-                  <span className="text-slate-300">{tech.name}</span>
-                  <span className="font-mono font-bold text-white">{tech.count}</span>
+            <div className="space-y-4 mt-2">
+              {[
+                { label: 'Clear', count: clearCount, color: 'bg-emerald-500', textColor: 'text-emerald-700' },
+                { label: 'Review required', count: reviewCount, color: 'bg-amber-500', textColor: 'text-amber-700' },
+                { label: 'Enhanced review', count: enhancedCount, color: 'bg-red-500', textColor: 'text-red-700' },
+              ].map((row) => (
+                <div key={row.label}>
+                  <div className="flex justify-between text-xs mb-1.5">
+                    <span className="text-slate-600">{row.label}</span>
+                    <span className={`font-semibold font-mono ${row.textColor}`}>
+                      {row.count}
+                      {totalScreenings > 0 && (
+                        <span className="text-slate-500 font-sans font-normal ml-1.5">
+                          ({((row.count / totalScreenings) * 100).toFixed(0)}%)
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${row.color}`}
+                      style={{ width: totalScreenings > 0 ? `${(row.count / totalScreenings) * 100}%` : '0%' }}
+                    />
+                  </div>
                 </div>
-                <div className="w-full h-1.5 bg-[#15233a] rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full"
-                    style={{ width: `${(tech.count / 48) * 100}%`, backgroundColor: tech.fill }}
-                  />
-                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Document type breakdown — real data */}
+          {docTypeData.length > 0 && (
+            <div className="lg:col-span-7 bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+              <h3 className="text-sm font-semibold text-slate-800 border-b border-slate-100 pb-2.5 mb-3">
+                Document types screened
+              </h3>
+              <div className="h-44">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={docTypeData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                    <XAxis dataKey="name" stroke="#64748b" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} dy={10} />
+                    <YAxis stroke="#64748b" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e2e8f0', borderRadius: '6px', fontSize: '11px', color: '#0f172a', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                      cursor={{ fill: '#f8fafc' }}
+                    />
+                    <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Count" maxBarSize={50} />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
-            ))}
-          </div>
-
-          <div className="pt-3 border-t border-[#182740] text-[10px] font-mono text-slate-400 flex justify-between">
-            <span>Primary Anomaly: Photo Splicing</span>
-            <span className="text-cyan-400 font-bold">146 Flags</span>
-          </div>
+            </div>
+          )}
         </div>
-      </div>
+      )}
 
-      {/* Searchable Case Log Table */}
-      <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-5 shadow-xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#182740] pb-3.5 mb-3.5">
-          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-200">
-            Case Audit Archive
-          </h3>
+      {sessions.length === 0 && (
+        <div className="bg-white border border-slate-200 rounded-lg p-10 text-center shadow-sm">
+          <p className="text-slate-600 text-sm font-medium">No report data available.</p>
+          <p className="text-slate-500 text-xs mt-1">Complete a screening to generate report data.</p>
+        </div>
+      )}
 
-          <div className="relative w-72">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+      {/* Case Log Table */}
+      <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 px-4 py-3 bg-slate-50/50">
+          <h3 className="text-sm font-semibold text-slate-800">Case archive</h3>
+          <div className="relative w-64">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search by name, ID, passport..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#070e1a] border border-[#182740] rounded-md pl-8 pr-3 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-sans"
+              className="w-full bg-white border border-slate-200 rounded-md pl-8 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
             />
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs font-sans">
-            <thead className="bg-[#070e1a] text-slate-400 font-mono text-[9px] uppercase border-b border-[#182740]">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 text-slate-500 text-[11px] border-b border-slate-200">
               <tr>
-                <th className="py-2.5 px-3">CASE ID</th>
-                <th className="py-2.5 px-3">TRAVELER NAME</th>
-                <th className="py-2.5 px-3">DOCUMENT NO</th>
-                <th className="py-2.5 px-3">NATIONALITY</th>
-                <th className="py-2.5 px-3 text-center">RISK</th>
-                <th className="py-2.5 px-3">STATUS</th>
-                <th className="py-2.5 px-3 text-right">ACTION</th>
+                <th className="py-2.5 px-4 font-medium">Case ID</th>
+                <th className="py-2.5 px-4 font-medium">Traveler name</th>
+                <th className="py-2.5 px-4 font-medium">Document no.</th>
+                <th className="py-2.5 px-4 font-medium">Nationality</th>
+                <th className="py-2.5 px-4 font-medium text-center">Risk score</th>
+                <th className="py-2.5 px-4 font-medium">Outcome</th>
+                <th className="py-2.5 px-4 font-medium text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#15233a] font-sans">
-              {filteredSessions.map((rec) => (
-                <tr key={rec.id} className="hover:bg-[#101b2f] transition">
-                  <td className="py-2.5 px-3 font-mono font-bold text-cyan-400">{rec.id}</td>
-                  <td className="py-2.5 px-3 font-medium text-white">{rec.travelerName}</td>
-                  <td className="py-2.5 px-3 font-mono text-slate-300">{rec.travelerPassportNumber}</td>
-                  <td className="py-2.5 px-3 font-mono text-slate-400">{rec.travelerNationality}</td>
-                  <td className="py-2.5 px-3 text-center font-mono font-bold">
-                    <span className={`px-2 py-0.5 rounded text-[10px] ${
-                      (rec.risk?.overallRiskScore ?? 0) > 65 ? 'bg-red-950 text-red-400' : 'bg-emerald-950 text-emerald-400'
-                    }`}>
-                      {rec.risk ? `${rec.risk.overallRiskScore}%` : '—'}
-                    </span>
-                  </td>
-                  <td className="py-2.5 px-3 font-mono uppercase text-[10px] text-slate-300">
-                    {rec.status}
-                  </td>
-                  <td className="py-2.5 px-3 text-right">
-                    <button
-                      onClick={() => onSelectSession(rec)}
-                      className="px-2.5 py-1 bg-cyan-950 text-cyan-300 hover:bg-cyan-900 border border-cyan-800 rounded text-[11px] font-bold transition inline-flex items-center gap-1"
-                    >
-                      <Eye className="w-3 h-3" /> Inspect
-                    </button>
+            <tbody className="divide-y divide-slate-100">
+              {filteredSessions.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-10 text-center text-slate-500 text-xs">
+                    {searchQuery ? `No results for "${searchQuery}".` : 'No screening records available.'}
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredSessions.map((rec) => {
+                  const score = rec.risk?.overallRiskScore ?? 0;
+                  const isHigh = score > 60;
+                  return (
+                    <tr key={rec.id} className="hover:bg-slate-50 transition">
+                      <td className="py-2.5 px-4 font-mono text-slate-500 text-[11px]">{rec.id}</td>
+                      <td className="py-2.5 px-4 font-medium text-slate-900">{rec.travelerName}</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-500">{rec.travelerPassportNumber || '—'}</td>
+                      <td className="py-2.5 px-4 text-slate-600">{rec.travelerNationality || '—'}</td>
+                      <td className="py-2.5 px-4 text-center">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-semibold font-mono ${
+                          isHigh ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                        }`}>
+                          {rec.risk ? `${rec.risk.overallRiskScore}` : '—'}
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-4 text-slate-600 text-[11px] capitalize">
+                        {rec.status?.toLowerCase().replace(/_/g, ' ') || '—'}
+                      </td>
+                      <td className="py-2.5 px-4 text-right">
+                        <button
+                          onClick={() => onSelectSession(rec)}
+                          className="px-2.5 py-1.5 bg-white text-blue-600 hover:bg-slate-50 border border-slate-200 rounded text-[11px] font-medium transition inline-flex items-center gap-1 shadow-sm"
+                        >
+                          <Eye className="w-3 h-3" /> View
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>

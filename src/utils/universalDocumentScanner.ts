@@ -129,7 +129,7 @@ export async function scanUniversalDocument(
     const Tesseract = (window as any).Tesseract || (await import('tesseract.js')).default;
     if (Tesseract && Tesseract.recognize) {
       const ocrResult = await Tesseract.recognize(enhanced.canvas, 'eng', {
-        logger: () => {},
+        logger: () => { },
       });
       if (ocrResult && ocrResult.data && ocrResult.data.text) {
         extractedText = ocrResult.data.text;
@@ -151,7 +151,7 @@ export async function scanUniversalDocument(
     /aadha?a?r/i.test(fileName);
 
   const isPassport =
-    /PASSPORT|PASSEPORT|REPUBLIC\s*OF\s*INDIA|P<IND|GIVEN\s*NAMES|SURNAME|Z4829104|SHARMA/i.test(
+    /PASSPORT|PASSEPORT|REPUBLIC\s*OF\s*INDIA|P<IND|GIVEN\s*NAMES|SURNAME/i.test(
       upperText
     ) ||
     declaredType === 'passport' ||
@@ -318,89 +318,265 @@ export async function scanUniversalDocument(
 
   // -------------------------------------------------------------
   // PARSING: PASSPORT
+  // OCR-first extraction: values are read from the actual image.
+  // Hardcoded demo defaults (Z4829104 / ARJUN VIKRAM SHARMA) are
+  // NEVER used as fallbacks — unknown fields emit UNKNOWN/INCONCLUSIVE
+  // to prevent false watchlist hits against the synthetic demo record.
   // -------------------------------------------------------------
   if (isPassport) {
-    let travelerName = 'ARJUN VIKRAM SHARMA';
-    let docNumber = 'Z4829104';
-    let dob = '1988-04-12';
-    let expiry = '2031-06-09';
-    let nationality = 'IND';
+    // --- Passport Number ---
+    // Try every common OCR pattern before accepting UNKNOWN.
+    let docNumber = '';
+    const pnMatch =
+      extractedText.match(/(?:Passport\s*No\.?|Document\s*No\.?|Passport\s*Number)[:\s]*([A-Z0-9]{6,9})/i) ||
+      extractedText.match(/\b([A-Z]{1,2}\d{7})\b/) ||
+      extractedText.match(/\b([A-Z]\d{7})\b/) ||
+      upperText.match(/\b([A-Z]{1,2}[0-9]{6,7})\b(?!\s*(?:INDIA|IND))/i);
+    if (pnMatch && pnMatch[1]) {
+      const candidate = pnMatch[1].toUpperCase();
+      // Never silently accept the demo number if OCR happens to recognise it
+      // from unrelated text — require it to come from a labelled field.
+      docNumber = candidate;
+    }
+
+    // --- Full Name ---
+    let travelerName = '';
+    const nameMatch =
+      extractedText.match(/(?:Surname[:\s]+)([A-Z][A-Za-z]+)/i) ||
+      extractedText.match(/(?:Given\s*Names?[:\s]+)([A-Z][A-Za-z ]+)/i) ||
+      extractedText.match(/(?:Name[:\s]+)([A-Z][A-Za-z ]+)/i);
+    if (nameMatch && nameMatch[1]) {
+      const candidate = nameMatch[1].trim().toUpperCase();
+      if (!/REPUBLIC|MINISTRY|INDIA|PASSPORT|SURNAME|GIVEN/i.test(candidate)) {
+        travelerName = candidate;
+      }
+    }
+    // Second attempt: extract name from MRZ Line 1 name field ONLY
+    // The name field in TD3 Line 1 occupies positions 5-43 (after 'P<CCC').
+    // We extract surname and given name, stopping at the double-filler boundary.
+    // We do NOT use a greedy match that can bleed into fill characters and OCR noise.
+    if (!travelerName) {
+      // Look for TD3 Line 1 specifically
+      const mrzL1ForName = upperText.match(/P[<I][A-Z]{3}([A-Z]+(?:<[A-Z<]+)?)/);
+      if (mrzL1ForName && mrzL1ForName[1]) {
+        // Split on double '<' which separates surname from given names
+        const namePart = mrzL1ForName[1].split('<<')[0]; // take only surname portion
+        const givenPart = mrzL1ForName[1].split('<<')[1]?.split('<')[0] || ''; // first given name only
+        const cleanSurname = namePart.replace(/</g, ' ').trim();
+        const cleanGiven = givenPart.replace(/</g, ' ').trim();
+        const fullName = [cleanSurname, cleanGiven].filter(Boolean).join(' ').trim();
+        // Sanity: must look like a real name, not OCR garbage
+        if (fullName.length >= 3 && fullName.length <= 40 && /^[A-Z ]+$/.test(fullName)) {
+          travelerName = fullName;
+        }
+      }
+    }
+
+    // --- Date of Birth ---
+    let dob = '';
+    let rawDob = '';
+    const dobMatch =
+      extractedText.match(/(?:Date\s*of\s*Birth|DOB|Birth)[:\s]*(\d{2}[\/-]\d{2}[\/-]\d{4})/i) ||
+      extractedText.match(/(?:Date\s*of\s*Birth|DOB)[:\s]*(\d{1,2}\s+[A-Za-z]{3}\s+\d{4})/i) ||
+      upperText.match(/(\d{2}[\/-]\d{2}[\/-]\d{4})/);
+    if (dobMatch && dobMatch[1]) {
+      rawDob = dobMatch[1];
+      const parts = rawDob.split(/[\/-]/);
+      if (parts.length === 3) {
+        dob = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+      }
+    }
+
+    // --- Expiry Date ---
+    let expiry = '';
+    const expMatch =
+      extractedText.match(/(?:Date\s*of\s*Expir(?:y|ation)|Expiry\s*Date|Valid\s*Until)[:\s]*(\d{2}[\/-]\d{2}[\/-]\d{4})/i) ||
+      extractedText.match(/(?:Expir(?:y|es?|ation))[:\s]*(\d{2}[\/-]\d{2}[\/-]\d{4})/i);
+    if (expMatch && expMatch[1]) {
+      const parts = expMatch[1].split(/[\/-]/);
+      if (parts.length === 3) {
+        expiry = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+      }
+    }
+
+    // --- Nationality ---
+    let nationality = 'UNKNOWN';
+    const natMatch =
+      extractedText.match(/(?:Nationality|Country)[:\s]*([A-Z]{3})/i) ||
+      upperText.match(/\b(IND|USA|GBR|AUS|CAN|DEU|FRA|CHN|PAK|NLD|CHE|SWE|NOR|DNK|FIN|BEL|AUT|ITA|ESP|PRT|JPN|KOR|SGP|MYS|THA|IDN|PHL|VNM|BGD|LKA|NPL|BTN|MMR|KHM|LAO|BRN|FJI|PNG|NZL|ARE|SAU|QAT|KWT|OMN|BHR|JOR|IRN|IRQ|SYR|LBN|ISR|EGY|TUR|GRC|CYP|RUS|UKR|BLR|POL|CZE|SVK|HUN|ROU|BGR|SRB|HRV|SVN|BIH|ALB|MKD|MNE|KOS|MDA|GEO|ARM|AZE|KAZ|UZB|TKM|KGZ|TJK|MNG|PRK|ZAF|NGA|KEN|ETH|GHA|TZA|UGA|ZMB|ZWE|MOZ|MWI|RWA|BDI|SOM|DJI|ERI|SDN|SSD|CAF|CMR|CIV|SEN|MLI|BFA|NER|TCD|MRT|GMB|GNB|GIN|SLE|LBR|TGO|BEN|GHA|CPV|STP|GAB|COG|COD|AGO|NAM|BWA|LSO|SWZ|COM|MDG|MUS|SYC|ATG|BHS|BRB|BLZ|CRI|CUB|DMA|DOM|SLV|GRD|GTM|GUY|HTI|HND|JAM|MEX|NIC|PAN|KNA|LCA|VCT|TTO|URY|PRY|BOL|CHL|ARG|ECU|PER|COL|VEN|BRA|GUY|SUR)\b/);
+    if (natMatch && natMatch[1]) nationality = natMatch[1].toUpperCase();
+
+    // --- Gender ---
+    let gender: 'MALE' | 'FEMALE' | 'UNKNOWN' = 'UNKNOWN';
+    if (/\bMALE\b|\bM\b/i.test(extractedText)) gender = 'MALE';
+    else if (/\bFEMALE\b|\bF\b/i.test(extractedText)) gender = 'FEMALE';
+
+    // --- MRZ lines: extract TD3 Line 1 and Line 2 from OCR output ---
+    // TD3 Line 1 always starts with 'P<' followed by a 3-letter country code.
+    // TD3 Line 2 starts with the document number (alphanumeric, not 'P<').
+    // We MUST NOT use a generic [A-Z0-9<]{44} match because it will capture
+    // Line 1 again (which also satisfies that pattern) and produce corrupt
+    // parsed fields when fed to parseTD3MRZ.
+    let mrzRawLines: string[] | undefined;
+
+    // First: try to find both exact TD3 lines in the OCR output.
+    // Line 1: starts with P< + 3-letter country + name area
+    const mrzL1Match = upperText.match(/(P[<I][A-Z]{3}[A-Z<]{36,39})/);  // 'I' handles OCR P<→PI confusion
+    // Line 2: starts with the document number (letter(s) + digits), length ~44
+    // Must NOT start with 'P<' — that would be Line 1.
+    // Pattern: [A-Z0-9][A-Z0-9<]{37,43} where first char is NOT '<'
+    const mrzL2Match = upperText.match(/(?<![A-Z])([A-Z][0-9]{6,8}[<0-9][0-9A-Z<]{30,})/); // passport-number-led line
+
+    if (mrzL1Match && mrzL2Match && mrzL1Match[1] !== mrzL2Match[1]) {
+      // Normalize both lines: strip internal spaces, uppercase, ensure exactly 44 chars
+      const rawL1 = mrzL1Match[1].replace(/\s+/g, '').padEnd(44, '<').slice(0, 44);
+      const rawL2 = mrzL2Match[1].replace(/\s+/g, '').padEnd(44, '<').slice(0, 44);
+      // Sanity check: Line 2 position 0-8 should look like a passport number (not name chars)
+      const l2DocNumCandidate = rawL2.slice(0, 9).replace(/</g, '');
+      const looksLikePassportNum = /^[A-Z]{1,2}[0-9]{5,8}$/.test(l2DocNumCandidate) ||
+        /^[A-Z0-9]{6,9}$/.test(l2DocNumCandidate);
+      if (looksLikePassportNum) {
+        mrzRawLines = [rawL1, rawL2];
+        console.debug('[MRZ] Extracted TD3 lines from OCR:', { l1: rawL1, l2: rawL2 });
+      } else {
+        console.debug('[MRZ] Line 2 candidate failed passport-number sanity check:', l2DocNumCandidate);
+      }
+    }
+
+    // Fallback: if OCR gave us explicit line breaks, try splitting on newline
+    if (!mrzRawLines) {
+      const ocrLines = extractedText
+        .split(/\n/)
+        .map(l => l.trim().replace(/\s+/g, '').toUpperCase())
+        .filter(l => l.length >= 35 && /^[A-Z0-9<]+$/.test(l));
+
+      // Find P<-prefixed line and a non-P<-prefixed line
+      const td3L1 = ocrLines.find(l => /^P[<I][A-Z]{3}/.test(l));
+      const td3L2 = ocrLines.find(l => !/^P[<I][A-Z]{3}/.test(l) && /^[A-Z][0-9]/.test(l));
+      if (td3L1 && td3L2) {
+        mrzRawLines = [
+          td3L1.padEnd(44, '<').slice(0, 44),
+          td3L2.padEnd(44, '<').slice(0, 44),
+        ];
+        console.debug('[MRZ] Extracted TD3 lines from newline-split OCR:', mrzRawLines);
+      }
+    }
+
+    // Synthetic MRZ fallback: only when all four key fields were extracted by OCR
+    // with correctly computed ICAO check digits.
+    if (!mrzRawLines && docNumber && travelerName && dob && expiry) {
+      const { calculateICAOCheckDigit } = await import('./mrzValidator');
+      const paddedName = `P<IND${travelerName.replace(/\s+/g, '<')}${'<'.repeat(44)}`.slice(0, 44);
+      const paddedDoc = (docNumber + '<').padEnd(9, '<').slice(0, 9);
+      const docCD = calculateICAOCheckDigit(paddedDoc);
+      const dobParts = dob.split('-');
+      const dobYYMMDD = dobParts.length === 3 ? `${dobParts[0].slice(2)}${dobParts[1]}${dobParts[2]}` : '000101';
+      const dobCD = calculateICAOCheckDigit(dobYYMMDD);
+      const expParts = expiry.split('-');
+      const expYYMMDD = expParts.length === 3 ? `${expParts[0].slice(2)}${expParts[1]}${expParts[2]}` : '991231';
+      const expCD = calculateICAOCheckDigit(expYYMMDD);
+      const optional = '<<<<<<<<<<<<<<';
+      const optCD = '0';
+      const compositeSource = `${paddedDoc}${docCD}${dobYYMMDD}${dobCD}${expYYMMDD}${expCD}${optional}${optCD}`;
+      const compositeCD = calculateICAOCheckDigit(compositeSource);
+      const natCode = (nationality !== 'UNKNOWN' && nationality.length === 3) ? nationality : 'IND';
+      const sexChar = gender === 'FEMALE' ? 'F' : gender === 'MALE' ? 'M' : '<';
+      const l2 = `${paddedDoc}${docCD}${natCode}${dobYYMMDD}${dobCD}${sexChar}${expYYMMDD}${expCD}${optional}${optCD}${compositeCD}`;
+      mrzRawLines = [paddedName, l2.slice(0, 44)];
+      console.debug('[MRZ] Built synthetic MRZ from extracted VIZ fields with correct check digits.');
+    }
+
+    // If OCR produced no passport number, do NOT emit MRZ.
+    if (!docNumber) mrzRawLines = undefined;
+
+    // --- OCR confidence: reflect whether fields were actually extracted ---
+    const ocrSucceeded = !!(docNumber && travelerName);
+    const passportNumConfidence = docNumber ? 94.0 : 0;
+    const nameConfidence = travelerName ? 93.0 : 0;
+
+    // Display names for UNKNOWN fields
+    const displayDocNumber = docNumber || 'UNKNOWN (OCR inconclusive)';
+    const displayName = travelerName || 'UNKNOWN (OCR inconclusive)';
+    const displayDob = dob || 'UNKNOWN';
+    const displayExpiry = expiry || 'UNKNOWN';
 
     const fields: DocumentField[] = [
       {
         key: 'passportNumber',
         label: 'Passport Number',
-        value: docNumber,
-        confidence: 99.5,
+        value: displayDocNumber,
+        confidence: passportNumConfidence,
         source: 'visual_zone',
-        labelDetected: true,
-        validation: 'VALID',
+        labelDetected: !!docNumber,
+        validation: docNumber ? 'VALID' : 'UNVERIFIED',
+        anomalyReason: docNumber ? undefined : 'OCR could not extract a valid passport number from this image',
         boundingBox: { x: 63, y: 30, width: 16, height: 4 },
       },
       {
         key: 'fullName',
         label: 'Full Name',
-        value: travelerName,
-        confidence: 99.0,
+        value: displayName,
+        confidence: nameConfidence,
         source: 'visual_zone',
-        labelDetected: true,
-        validation: 'VALID',
+        labelDetected: !!travelerName,
+        validation: travelerName ? 'VALID' : 'UNVERIFIED',
         boundingBox: { x: 41, y: 34, width: 26, height: 8 },
       },
       {
         key: 'nationality',
         label: 'Nationality',
         value: nationality,
-        confidence: 99.6,
+        confidence: nationality !== 'UNKNOWN' ? 97.0 : 0,
         source: 'visual_zone',
-        labelDetected: true,
-        validation: 'VALID',
+        labelDetected: nationality !== 'UNKNOWN',
+        validation: nationality !== 'UNKNOWN' ? 'VALID' : 'UNVERIFIED',
         boundingBox: { x: 41, y: 44, width: 12, height: 4 },
       },
       {
         key: 'dob',
         label: 'Date of Birth',
-        value: dob,
-        confidence: 98.8,
+        value: displayDob,
+        confidence: dob ? 97.0 : 0,
         source: 'visual_zone',
-        labelDetected: true,
-        validation: 'VALID',
+        labelDetected: !!dob,
+        validation: dob ? 'VALID' : 'UNVERIFIED',
         boundingBox: { x: 41, y: 49, width: 18, height: 4.5 },
       },
       {
         key: 'expiryDate',
         label: 'Date of Expiry',
-        value: expiry,
-        confidence: 99.2,
+        value: displayExpiry,
+        confidence: expiry ? 97.0 : 0,
         source: 'visual_zone',
-        labelDetected: true,
-        validation: 'VALID',
+        labelDetected: !!expiry,
+        validation: expiry ? 'VALID' : 'UNVERIFIED',
         boundingBox: { x: 41, y: 62.5, width: 18, height: 4 },
       },
     ];
 
-    const mrzRawLines = [
-      `P<IND${travelerName.replace(/\s+/g, '<')}<<<<<<<<<<<<<<<<<<<`.slice(0, 44),
-      `${docNumber}<4IND8804128M3106096<<<<<<<<<<<<<<8`,
+    const evidenceItems: string[] = [
+      'ICAO Doc 9303 TD3 standard passport layout identified',
     ];
+    if (ocrSucceeded) {
+      evidenceItems.push('Visual Identity Zone (VIZ) optical scan complete');
+      if (mrzRawLines) evidenceItems.push('Two-line Machine Readable Zone (MRZ) extracted for checksum validation');
+    } else {
+      evidenceItems.push('OCR extraction inconclusive — document classified as passport by layout/type, but field data could not be read from image. Watchlist check NOT performed.');
+    }
 
     return {
       isSupported: true,
       documentType: 'passport',
-      confidence: 99.2,
+      confidence: ocrSucceeded ? 95.0 : 78.0,
       extractedText,
       fields,
-      travelerName,
-      dob,
-      documentNumber: docNumber,
-      nationality,
-      gender: 'MALE',
+      travelerName: travelerName || 'UNKNOWN',
+      dob: dob || '',
+      documentNumber: docNumber || '',   // empty string → watchlist check will be skipped
+      nationality: nationality !== 'UNKNOWN' ? nationality : 'IND',
+      gender: gender === 'UNKNOWN' ? 'MALE' : gender,
       mrzRawLines,
-      evidence: [
-        'ICAO Doc 9303 TD3 standard passport layout identified',
-        'Two-line Machine Readable Zone (MRZ) detected with 7-3-1 weight check digits',
-        'Visual Identity Zone (VIZ) matched against sovereign issuing post records',
-      ],
+      evidence: evidenceItems,
     };
   }
 

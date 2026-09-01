@@ -161,62 +161,107 @@ export function calculateCompositeRisk(
   }
 
   // 3. ICAO MRZ & Checksum Parity
+  // IMPORTANT: Only treat MRZ failures as high-severity fraud evidence if the
+  // MRZ was reliably extracted from the document. If the MRZ data was produced
+  // from a synthetic fallback (built from VIZ fields), checksums will always
+  // pass. If it came from OCR with uncertain quality, failures are inconclusive.
   if (mrzData) {
+    // Consider MRZ reliable if checksums are being evaluated on real extracted data.
+    // The status field indicates what was actually done.
+    const mrzIsReliable = mrzData.status === 'CHECKSUM_VALID' || mrzData.status === 'CHECKSUM_INVALID';
+    const mrzAllFailed = mrzData.checksumList.every(c => !c.isValid); // all failed = likely parser error
+    const mrzPartialFail = !mrzData.isAllChecksumsValid && !mrzAllFailed; // some fail = more credible
+
     if (!mrzData.isAllChecksumsValid) {
-      computedRisk += 35;
-      mrzScore = 35;
       const failedChecks = mrzData.checksumList.filter(c => !c.isValid).map(c => c.field).join(', ');
-      keyRiskFactors.push(`MRZ Checksum Failure: ${failedChecks}`);
-      findings.push({
-        id: `f-mrz-cs`,
-        finding_id: 'mrz_checksum_failure',
-        type: 'MRZ_CHECKSUM_FAILURE',
-        category: 'MRZ_CHECKSUM',
-        code: 'ICAO_CHECKSUM_MISMATCH',
-        severity: 'HIGH',
-        title: 'ICAO 9303 MRZ Checksum Failure',
-        description: `Mathematical 7-3-1 Modulo-10 checksum validation failed for: ${failedChecks}`,
-        boundingBox: { x: 22, y: 70, width: 58, height: 9.5 },
-        sources: [
-          { type: 'MRZ_FIELD', field: 'MRZ Line 2', value: mrzData.rawLines[1] },
-        ],
-      });
+
+      // If ALL checks fail simultaneously, this almost certainly means the MRZ
+      // was not correctly extracted (parser fed wrong data), not genuine fraud.
+      if (mrzAllFailed) {
+        // OCR/parser quality issue — add LOW finding, do not escalate risk
+        computedRisk += 8;
+        mrzScore = 60;
+        keyRiskFactors.push(`MRZ Validation Incomplete (OCR quality issue): ${failedChecks}`);
+        findings.push({
+          id: `f-mrz-cs`,
+          finding_id: 'mrz_ocr_quality',
+          type: 'MRZ_CHECKSUM_FAILURE',
+          category: 'MRZ_CHECKSUM',
+          code: 'MRZ_OCR_QUALITY_ISSUE',
+          severity: 'LOW',
+          title: 'MRZ Validation Incomplete (OCR Quality)',
+          description: `MRZ could not be reliably parsed from this image — all check digits unverifiable. This indicates an OCR extraction issue, not necessarily a document anomaly. Manual inspection recommended for: ${failedChecks}`,
+          boundingBox: { x: 22, y: 70, width: 58, height: 9.5 },
+          sources: [
+            { type: 'MRZ_FIELD', field: 'MRZ Quality', value: 'OCR_INSUFFICIENT' },
+          ],
+        });
+      } else {
+        // Partial failure: some checks pass, some fail — more credible finding
+        computedRisk += 35;
+        mrzScore = 35;
+        keyRiskFactors.push(`MRZ Checksum Failure: ${failedChecks}`);
+        findings.push({
+          id: `f-mrz-cs`,
+          finding_id: 'mrz_checksum_failure',
+          type: 'MRZ_CHECKSUM_FAILURE',
+          category: 'MRZ_CHECKSUM',
+          code: 'ICAO_CHECKSUM_MISMATCH',
+          severity: 'HIGH',
+          title: 'ICAO 9303 MRZ Checksum Failure',
+          description: `Mathematical 7-3-1 Modulo-10 checksum validation failed for: ${failedChecks}`,
+          boundingBox: { x: 22, y: 70, width: 58, height: 9.5 },
+          sources: [
+            { type: 'MRZ_FIELD', field: 'MRZ Line 2', value: mrzData.rawLines[1] },
+          ],
+        });
+      }
+    } else {
+      positiveFactors.push('ICAO 9303 MRZ check digits validated — all checksums pass');
     }
 
     if (mrzData.vizMismatchDetected) {
-      computedRisk += 40;
-      keyRiskFactors.push(...mrzData.vizMismatchDetails);
+      // VIZ mismatches are only meaningful if MRZ checksums also passed
+      // (meaning the MRZ was correctly parsed). If checksums all failed,
+      // the mismatch is a side-effect of the parser failure, not real fraud.
+      if (mrzAllFailed) {
+        // Do not add VIZ mismatch finding — it's a cascade from OCR failure
+        keyRiskFactors.push('VIZ/MRZ comparison inconclusive: MRZ could not be reliably parsed from image');
+      } else {
+        computedRisk += 40;
+        keyRiskFactors.push(...mrzData.vizMismatchDetails);
 
-      const isDobIssue = mrzData.vizMismatchDetails.some(d => d.includes('Date of Birth'));
-      const dobField = fields.find(f => f.key === 'dob');
+        const isDobIssue = mrzData.vizMismatchDetails.some(d => d.includes('Date of Birth'));
+        const dobField = fields.find(f => f.key === 'dob');
 
-      findings.push({
-        id: `f-mrz-viz`,
-        finding_id: 'dob_mismatch',
-        type: 'DOB_MISMATCH',
-        category: 'CONSISTENCY',
-        code: 'MRZ_VIZ_DOB_MISMATCH',
-        severity: 'HIGH',
-        title: 'Date of Birth Consistency Discrepancy',
-        description: isDobIssue
-          ? `Visual DOB (${dobField?.value || 'N/A'}) does not match MRZ decoded date (${mrzData.birthDateFormatted}).`
-          : mrzData.vizMismatchDetails.join('; '),
-        boundingBox: dobField?.boundingBox || { x: 41, y: 49, width: 18, height: 4.5 },
-        sources: [
-          {
-            type: 'OCR_FIELD',
-            field: 'date_of_birth',
-            value: dobField?.value || 'N/A',
-            boundingBox: dobField?.boundingBox,
-          },
-          {
-            type: 'MRZ_FIELD',
-            field: 'date_of_birth',
-            value: mrzData.birthDateFormatted,
-            boundingBox: { x: 22, y: 70, width: 58, height: 9.5 },
-          },
-        ],
-      });
+        findings.push({
+          id: `f-mrz-viz`,
+          finding_id: 'dob_mismatch',
+          type: 'DOB_MISMATCH',
+          category: 'CONSISTENCY',
+          code: 'MRZ_VIZ_DOB_MISMATCH',
+          severity: 'HIGH',
+          title: 'Date of Birth Consistency Discrepancy',
+          description: isDobIssue
+            ? `Visual DOB (${dobField?.value || 'N/A'}) does not match MRZ decoded date (${mrzData.birthDateFormatted}).`
+            : mrzData.vizMismatchDetails.join('; '),
+          boundingBox: dobField?.boundingBox || { x: 41, y: 49, width: 18, height: 4.5 },
+          sources: [
+            {
+              type: 'OCR_FIELD',
+              field: 'date_of_birth',
+              value: dobField?.value || 'N/A',
+              boundingBox: dobField?.boundingBox,
+            },
+            {
+              type: 'MRZ_FIELD',
+              field: 'date_of_birth',
+              value: mrzData.birthDateFormatted,
+              boundingBox: { x: 22, y: 70, width: 58, height: 9.5 },
+            },
+          ],
+        });
+      }
     }
   }
 

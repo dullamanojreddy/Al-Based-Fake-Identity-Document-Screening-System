@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Users, 
-  Search, 
-  AlertOctagon, 
-  Plus, 
-  ShieldAlert, 
-  Trash2, 
-  CheckCircle2, 
-  Eye, 
-  Globe 
-} from 'lucide-react';
+import { Search, Plus, Trash2, AlertOctagon, Filter, ChevronDown } from 'lucide-react';
 
 interface WatchlistEntry {
   id: string;
@@ -34,10 +24,10 @@ const INITIAL_WATCHLIST: WatchlistEntry[] = [
     dob: '1981-05-19',
     passportNum: 'A77192083',
     noticeType: 'INTERPOL_RED_NOTICE',
-    category: 'Transnational Syndicate Fraud & Identity Laundering',
+    category: 'Transnational Syndicate Fraud',
     issuedDate: '2025-08-14',
     status: 'ACTIVE_WARRANT',
-    summary: 'Wanted by Austrian Federal Criminal Police & Europol for forging 40+ diplomatic travel passports.',
+    summary: 'Wanted for forging 40+ diplomatic travel passports.',
   },
   {
     id: 'WL-SSB-2026-042',
@@ -47,10 +37,10 @@ const INITIAL_WATCHLIST: WatchlistEntry[] = [
     dob: '1979-11-03',
     passportNum: 'PA8829104',
     noticeType: 'SSB_BLACKLIST',
-    category: 'Cross-Border Smuggling & Counterfeit Visa Distribution',
+    category: 'Counterfeit Visa Distribution',
     issuedDate: '2026-01-10',
     status: 'ACTIVE_WARRANT',
-    summary: 'Flagged by MHA Police II Division for operating illegal cross-border counterfeit permit network.',
+    summary: 'Operating illegal cross-border counterfeit permit network.',
   },
   {
     id: 'WL-SLTD-2026-109',
@@ -60,10 +50,10 @@ const INITIAL_WATCHLIST: WatchlistEntry[] = [
     dob: '1989-05-20',
     passportNum: '928104712',
     noticeType: 'INTERPOL_SLTD',
-    category: 'Stolen and Lost Travel Documents (SLTD)',
+    category: 'Stolen and Lost Travel Documents',
     issuedDate: '2026-02-01',
     status: 'UNDER_SURVEILLANCE',
-    summary: 'Document reported lost/stolen in transit; automated border interception required upon presentation.',
+    summary: 'Document reported lost/stolen in transit.',
   },
 ];
 
@@ -80,7 +70,8 @@ export const WatchlistDatabaseView: React.FC = () => {
     (item) =>
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.passportNum.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.aliases.some((a) => a.toLowerCase().includes(searchQuery.toLowerCase()))
+      item.aliases.some((a) => a.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      item.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleAdd = (e: React.FormEvent) => {
@@ -111,205 +102,218 @@ export const WatchlistDatabaseView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 pb-12 text-slate-200">
+    <div className="space-y-5 pb-12 text-slate-800">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#152238] pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">
-            Interpol &amp; National Watchlist
-          </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Active Red Notices, Stolen &amp; Lost Travel Documents (SLTD), and SSB Fugitive Database.
+          <h2 className="text-xl font-semibold text-slate-900">Watchlist Records</h2>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Active Interpol Red Notices, SLTD records, and National Fugitive Database.
           </p>
         </div>
 
         <button
           onClick={() => setShowAddModal(true)}
-          className="px-4 py-2 bg-[#d4e4f7] hover:bg-white text-[#071326] font-bold text-xs uppercase tracking-wider rounded-md transition flex items-center gap-2 shadow-[0_0_15px_rgba(212,228,247,0.15)]"
+          className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-md transition flex items-center gap-2 shadow-sm"
         >
-          <Plus className="w-4 h-4 stroke-[2.5]" />
-          REGISTER NEW ALERT
+          <Plus className="w-3.5 h-3.5" />
+          Add Record
         </button>
       </div>
 
-      {/* Search Bar */}
-      <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-4 shadow-lg flex items-center gap-3">
-        <Search className="w-4 h-4 text-slate-400" />
-        <input
-          type="text"
-          placeholder="Search suspects by name, alias, passport number, or notice ID..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-transparent text-xs text-white placeholder-slate-500 focus:outline-none font-sans"
-        />
-      </div>
-
-      {/* Watchlist Suspect Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filtered.map((item) => {
-          const isRedNotice = item.noticeType === 'INTERPOL_RED_NOTICE';
-          const isBlacklist = item.noticeType === 'SSB_BLACKLIST';
-
-          return (
-            <div
-              key={item.id}
-              className={`bg-[#0b1424] border rounded-xl p-5 shadow-xl flex flex-col justify-between transition-all ${
-                isRedNotice
-                  ? 'border-[#882233] bg-[#0b1424]'
-                  : isBlacklist
-                  ? 'border-[#784d12] bg-[#0b1424]'
-                  : 'border-[#182740]'
-              }`}
-            >
-              <div>
-                <div className="flex items-start justify-between gap-2 mb-3">
-                  <div>
-                    <span
-                      className={`text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded block w-fit mb-1.5 ${
-                        isRedNotice
-                          ? 'bg-[#3b1219] text-[#fca5a5] border border-[#882233]'
-                          : isBlacklist
-                          ? 'bg-[#291e11] text-[#fbbf24] border border-[#784d12]'
-                          : 'bg-[#112419] text-[#6ee7b7]'
-                      }`}
-                    >
-                      {item.noticeType.replace(/_/g, ' ')}
-                    </span>
-                    <h3 className="text-base font-bold text-white tracking-wide">{item.name}</h3>
-                  </div>
-
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="text-slate-500 hover:text-red-400 p-1 transition"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                <div className="space-y-1.5 text-xs font-mono mb-4 bg-[#070e1a] p-3 rounded-lg border border-[#15233a]">
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Passport / ID:</span>
-                    <span className="font-bold text-white">{item.passportNum}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Nationality:</span>
-                    <span className="text-slate-200">{item.nationality}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Date of Birth:</span>
-                    <span className="text-slate-200">{item.dob}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Known Aliases:</span>
-                    <span className="text-cyan-300 font-sans text-[11px] truncate max-w-[140px]">
-                      {item.aliases.join(', ')}
-                    </span>
-                  </div>
-                </div>
-
-                <p className="text-xs text-slate-300 font-sans leading-relaxed mb-4">
-                  {item.summary}
-                </p>
-              </div>
-
-              <div className="pt-3 border-t border-[#182740] flex items-center justify-between text-[10px] font-mono text-slate-400">
-                <span>Ref: {item.id}</span>
-                <span className="text-red-400 font-bold flex items-center gap-1">
-                  <AlertOctagon className="w-3 h-3" /> ACTIVE LEVEL-1
-                </span>
-              </div>
+      {/* Database Container */}
+      <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+        {/* Toolbar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 px-4 py-3 bg-slate-50/50">
+          <div className="flex items-center gap-3">
+            <div className="relative w-72">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search by name, alias, ID, or notice..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-white border border-slate-200 rounded-md pl-8 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+              />
             </div>
-          );
-        })}
+            <button className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 rounded-md text-xs text-slate-600 bg-white hover:bg-slate-50 transition-colors">
+              <Filter className="w-3.5 h-3.5" />
+              Filter <ChevronDown className="w-3.5 h-3.5 opacity-50" />
+            </button>
+          </div>
+          <span className="text-xs text-slate-500 font-medium">
+            {filtered.length} active records
+          </span>
+        </div>
+
+        {/* Watchlist Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 text-slate-500 text-[11px] border-b border-slate-200">
+              <tr>
+                <th className="py-2.5 px-4 font-medium">Record ID</th>
+                <th className="py-2.5 px-4 font-medium">Name & Aliases</th>
+                <th className="py-2.5 px-4 font-medium">Document Info</th>
+                <th className="py-2.5 px-4 font-medium">Source / Notice Type</th>
+                <th className="py-2.5 px-4 font-medium">Status</th>
+                <th className="py-2.5 px-4 font-medium text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-12 text-center text-slate-500 text-xs">
+                    No watchlist records found.
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((item) => {
+                  const isRedNotice = item.noticeType === 'INTERPOL_RED_NOTICE';
+                  const isBlacklist = item.noticeType === 'SSB_BLACKLIST';
+                  
+                  return (
+                    <tr key={item.id} className="hover:bg-slate-50 transition group">
+                      <td className="py-3 px-4 align-top">
+                        <span className="font-mono text-slate-500 text-[11px]">{item.id}</span>
+                        <div className="text-[10px] text-slate-400 mt-1">Added: {item.issuedDate}</div>
+                      </td>
+                      <td className="py-3 px-4 align-top">
+                        <div className="font-semibold text-slate-900">{item.name}</div>
+                        {item.aliases.length > 0 && (
+                          <div className="text-[10px] text-slate-500 mt-0.5 max-w-[200px] truncate" title={item.aliases.join(', ')}>
+                            AKA: {item.aliases.join(', ')}
+                          </div>
+                        )}
+                      </td>
+                      <td className="py-3 px-4 align-top">
+                        <div className="font-mono text-slate-700">{item.passportNum}</div>
+                        <div className="text-[10px] text-slate-500 mt-0.5">
+                          {item.nationality} • DOB: {item.dob}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 align-top">
+                        <div className="font-medium text-slate-700 text-[11px]">
+                          {item.noticeType.replace(/_/g, ' ')}
+                        </div>
+                        <div className="text-[10px] text-slate-500 mt-0.5 max-w-[220px] truncate" title={item.summary}>
+                          {item.category}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 align-top">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold ${
+                          isRedNotice ? 'bg-red-50 text-red-700 border border-red-100' :
+                          isBlacklist ? 'bg-amber-50 text-amber-700 border border-amber-100' :
+                          'bg-blue-50 text-blue-700 border border-blue-100'
+                        }`}>
+                          {item.status.replace(/_/g, ' ')}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 align-top text-right">
+                        <button
+                          onClick={() => handleDelete(item.id)}
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-md transition opacity-0 group-hover:opacity-100"
+                          title="Remove Record"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Add Alert Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-[#0b1424] border border-[#1e304f] rounded-xl p-5 max-w-lg w-full shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#182740] pb-3 mb-4">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                Register National Security Watchlist Alert
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+          <div className="bg-white border border-slate-200 rounded-lg p-5 max-w-lg w-full shadow-xl">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+              <h3 className="text-sm font-semibold text-slate-900">
+                Register New Watchlist Record
               </h3>
-              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-700">
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleAdd} className="space-y-3 text-xs font-sans">
+            <form onSubmit={handleAdd} className="space-y-4 text-xs">
               <div>
-                <label className="text-slate-300 font-bold block mb-1">Full Legal Name:</label>
+                <label className="text-slate-700 font-medium block mb-1.5">Full Legal Name</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. ARMAN KHAN"
                   value={newEntry.name || ''}
                   onChange={(e) => setNewEntry({ ...newEntry, name: e.target.value })}
-                  className="w-full bg-[#070e1a] border border-[#182740] rounded-md p-2 text-white font-mono"
+                  className="w-full bg-white border border-slate-300 rounded-md p-2 text-slate-900 font-sans focus:outline-none focus:border-blue-500"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-slate-300 font-bold block mb-1">Passport / ID Number:</label>
+                  <label className="text-slate-700 font-medium block mb-1.5">Passport / ID Number</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Z9920194"
                     value={newEntry.passportNum || ''}
                     onChange={(e) => setNewEntry({ ...newEntry, passportNum: e.target.value })}
-                    className="w-full bg-[#070e1a] border border-[#182740] rounded-md p-2 text-white font-mono"
+                    className="w-full bg-white border border-slate-300 rounded-md p-2 text-slate-900 font-mono focus:outline-none focus:border-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="text-slate-300 font-bold block mb-1">Nationality:</label>
+                  <label className="text-slate-700 font-medium block mb-1.5">Nationality</label>
                   <input
                     type="text"
                     placeholder="e.g. IND"
                     value={newEntry.nationality || ''}
                     onChange={(e) => setNewEntry({ ...newEntry, nationality: e.target.value })}
-                    className="w-full bg-[#070e1a] border border-[#182740] rounded-md p-2 text-white font-mono"
+                    className="w-full bg-white border border-slate-300 rounded-md p-2 text-slate-900 font-mono focus:outline-none focus:border-blue-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-slate-300 font-bold block mb-1">Alert Classification:</label>
+                <label className="text-slate-700 font-medium block mb-1.5">Alert Source / Type</label>
                 <select
                   value={newEntry.noticeType}
                   onChange={(e: any) => setNewEntry({ ...newEntry, noticeType: e.target.value })}
-                  className="w-full bg-[#070e1a] border border-[#182740] rounded-md p-2 text-white font-sans"
+                  className="w-full bg-white border border-slate-300 rounded-md p-2 text-slate-900 font-sans focus:outline-none focus:border-blue-500"
                 >
                   <option value="INTERPOL_RED_NOTICE">INTERPOL RED NOTICE (Critical Arrest)</option>
                   <option value="SSB_BLACKLIST">SSB NATIONAL BLACKLIST (Border Intercept)</option>
                   <option value="INTERPOL_SLTD">INTERPOL SLTD (Stolen / Lost Document)</option>
+                  <option value="FRAUD_SUSPECT">FRAUD SUSPECT (Surveillance)</option>
                 </select>
               </div>
 
               <div>
-                <label className="text-slate-300 font-bold block mb-1">Summary of Offense / Directives:</label>
+                <label className="text-slate-700 font-medium block mb-1.5">Summary of Record / Directives</label>
                 <textarea
                   rows={3}
                   placeholder="Reason for warrant, intelligence details..."
                   value={newEntry.summary || ''}
                   onChange={(e) => setNewEntry({ ...newEntry, summary: e.target.value })}
-                  className="w-full bg-[#070e1a] border border-[#182740] rounded-md p-2 text-white font-sans"
+                  className="w-full bg-white border border-slate-300 rounded-md p-2 text-slate-900 font-sans focus:outline-none focus:border-blue-500"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-[#182740]">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-3 py-1.5 text-slate-400 hover:text-white"
+                  className="px-3.5 py-1.5 text-slate-600 border border-slate-300 rounded-md hover:bg-slate-50 font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-md font-bold"
+                  className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium shadow-sm"
                 >
-                  Save Alert
+                  Save Record
                 </button>
               </div>
             </form>

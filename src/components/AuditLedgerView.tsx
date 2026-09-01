@@ -107,11 +107,11 @@ export const AuditLedgerView: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6 pb-12 text-slate-200">
+    <div className="space-y-6 pb-12 text-slate-800">
       {/* Top Header matching Stitch Screenshot 2 */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-[#152238] pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <h2 className="text-3xl font-bold text-white tracking-tight font-sans">
+          <h2 className="text-3xl font-bold text-slate-900 tracking-tight font-sans">
             Cryptographic Audit Chain
           </h2>
           <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
@@ -122,7 +122,7 @@ export const AuditLedgerView: React.FC = () => {
         <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={handleToggleTamper}
-            className="px-3 py-2 bg-[#121f35] hover:bg-[#1a2c4d] text-slate-300 border border-[#223553] text-xs font-mono font-bold uppercase rounded-md transition"
+            className="px-3 py-2 bg-white hover:bg-[#1a2c4d] text-slate-600 border border-slate-200 text-xs font-mono font-bold uppercase rounded-md transition"
           >
             {events.some((e) => e.isTampered) ? 'Fix Tampered Block' : 'Simulate Hash Break'}
           </button>
@@ -139,7 +139,7 @@ export const AuditLedgerView: React.FC = () => {
       </div>
 
       {/* Filter Toolbar & Last Verification Timestamp */}
-      <div className="bg-[#0b1424] border border-[#182740] rounded-xl px-4 py-3 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-slate-200 rounded-xl px-4 py-3 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3">
           {/* Search Box */}
           <div className="relative w-64">
@@ -149,18 +149,18 @@ export const AuditLedgerView: React.FC = () => {
               placeholder="Search Hash or Event ID"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#070e1a] border border-[#182740] rounded-md pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-sans"
+              className="w-full bg-slate-50 border border-slate-200 rounded-md pl-8 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-500 focus:outline-none focus:border-blue-400 font-sans"
             />
           </div>
 
           {/* Filter Pills */}
-          <div className="flex items-center gap-1.5 bg-[#070e1a] p-1 rounded-md border border-[#182740]">
+          <div className="flex items-center gap-1.5 bg-slate-50 p-1 rounded-md border border-slate-200">
             <button
               onClick={() => setFilterTab('ALL')}
               className={`px-3 py-1 text-[11px] font-mono font-bold uppercase rounded transition ${
                 filterTab === 'ALL'
-                  ? 'bg-[#182a47] text-white shadow'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-blue-50 text-slate-900 shadow'
+                  : 'text-slate-400 hover:text-slate-800'
               }`}
             >
               ALL EVENTS
@@ -169,8 +169,8 @@ export const AuditLedgerView: React.FC = () => {
               onClick={() => setFilterTab('SCREENINGS')}
               className={`px-3 py-1 text-[11px] font-mono font-bold uppercase rounded transition ${
                 filterTab === 'SCREENINGS'
-                  ? 'bg-[#182a47] text-white shadow'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-blue-50 text-slate-900 shadow'
+                  : 'text-slate-400 hover:text-slate-800'
               }`}
             >
               SCREENINGS
@@ -179,8 +179,8 @@ export const AuditLedgerView: React.FC = () => {
               onClick={() => setFilterTab('WATCHLIST')}
               className={`px-3 py-1 text-[11px] font-mono font-bold uppercase rounded transition ${
                 filterTab === 'WATCHLIST'
-                  ? 'bg-[#182a47] text-white shadow'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-blue-50 text-slate-900 shadow'
+                  : 'text-slate-400 hover:text-slate-800'
               }`}
             >
               WATCHLIST
@@ -190,15 +190,15 @@ export const AuditLedgerView: React.FC = () => {
 
         <div className="text-xs font-mono text-slate-400 flex items-center gap-1.5">
           <span>Last Verification:</span>
-          <span className="text-slate-200 font-bold">2023-10-27T14:32:01Z</span>
+          <span className="text-slate-800 font-bold">2023-10-27T14:32:01Z</span>
         </div>
       </div>
 
       {/* Audit Ledger Table matching Screenshot 2 */}
-      <div className="bg-[#0b1424] border border-[#182740] rounded-xl overflow-hidden shadow-xl">
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-sans">
-            <thead className="bg-[#070e1a] text-slate-400 font-mono text-[10px] uppercase border-b border-[#182740]">
+            <thead className="bg-slate-50 text-slate-400 font-mono text-[10px] uppercase border-b border-slate-200">
               <tr>
                 <th className="py-3 px-4">#</th>
                 <th className="py-3 px-4">EVENT TIMESTAMP (UTC)</th>
@@ -208,7 +208,7 @@ export const AuditLedgerView: React.FC = () => {
                 <th className="py-3 px-4 text-right">INTEGRITY</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#15233a] font-mono text-[11px]">
+            <tbody className="divide-y divide-slate-200 font-mono text-[11px]">
               {filteredEvents.map((evt) => {
                 const isTampered = evt.isTampered;
 
@@ -217,33 +217,33 @@ export const AuditLedgerView: React.FC = () => {
                     key={evt.seq}
                     className={`transition-colors ${
                       isTampered
-                        ? 'bg-[#2a0e14]/80 text-[#fca5a5] hover:bg-[#38131b]'
-                        : 'hover:bg-[#101b2f] text-slate-300'
+                        ? 'bg-red-50/80 text-red-700 hover:bg-[#38131b]'
+                        : 'hover:bg-[#101b2f] text-slate-600'
                     }`}
                   >
                     {/* Seq */}
-                    <td className={`py-3.5 px-4 font-bold ${isTampered ? 'text-[#f87171]' : 'text-slate-400'}`}>
+                    <td className={`py-3.5 px-4 font-bold ${isTampered ? 'text-red-700' : 'text-slate-400'}`}>
                       {evt.seq}
                     </td>
 
                     {/* Timestamp */}
-                    <td className={`py-3.5 px-4 ${isTampered ? 'text-[#fca5a5] font-bold' : 'text-slate-300'}`}>
+                    <td className={`py-3.5 px-4 ${isTampered ? 'text-red-700 font-bold' : 'text-slate-600'}`}>
                       {evt.timestamp}
                     </td>
 
                     {/* Event Type & Details */}
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-2.5">
-                        {evt.iconType === 'login' && <LogIn className="w-4 h-4 text-cyan-400 shrink-0" />}
-                        {evt.iconType === 'screening' && <FileText className="w-4 h-4 text-cyan-400 shrink-0" />}
-                        {evt.iconType === 'override' && <AlertTriangle className="w-4 h-4 text-[#f87171] shrink-0" />}
-                        {evt.iconType === 'completed' && <FileText className="w-4 h-4 text-cyan-400 shrink-0" />}
+                        {evt.iconType === 'login' && <LogIn className="w-4 h-4 text-blue-600 shrink-0" />}
+                        {evt.iconType === 'screening' && <FileText className="w-4 h-4 text-blue-600 shrink-0" />}
+                        {evt.iconType === 'override' && <AlertTriangle className="w-4 h-4 text-red-700 shrink-0" />}
+                        {evt.iconType === 'completed' && <FileText className="w-4 h-4 text-blue-600 shrink-0" />}
 
                         <div>
-                          <span className={`font-bold block font-sans ${isTampered ? 'text-[#f87171]' : 'text-white'}`}>
+                          <span className={`font-bold block font-sans ${isTampered ? 'text-red-700' : 'text-slate-900'}`}>
                             {evt.eventType}
                           </span>
-                          <span className={`text-[10px] block font-mono ${isTampered ? 'text-[#fca5a5]' : 'text-slate-400'}`}>
+                          <span className={`text-[10px] block font-mono ${isTampered ? 'text-red-700' : 'text-slate-400'}`}>
                             {evt.eventDetails}
                           </span>
                         </div>
@@ -251,25 +251,25 @@ export const AuditLedgerView: React.FC = () => {
                     </td>
 
                     {/* Officer / System */}
-                    <td className={`py-3.5 px-4 ${isTampered ? 'text-[#f87171] font-bold' : 'text-slate-300'}`}>
+                    <td className={`py-3.5 px-4 ${isTampered ? 'text-red-700 font-bold' : 'text-slate-600'}`}>
                       {evt.officer}
                     </td>
 
                     {/* Cryptographic Hash */}
-                    <td className={`py-3.5 px-4 font-mono select-all ${isTampered ? 'text-[#f87171] line-through' : 'text-slate-400'}`}>
+                    <td className={`py-3.5 px-4 font-mono select-all ${isTampered ? 'text-red-700 line-through' : 'text-slate-400'}`}>
                       {evt.hash}
                     </td>
 
                     {/* Integrity Badge */}
                     <td className="py-3.5 px-4 text-right">
                       {isTampered ? (
-                        <span className="px-2.5 py-1 rounded bg-[#dc2626] text-white text-[10px] font-mono font-bold uppercase inline-flex items-center gap-1.5 shadow-[0_0_12px_rgba(220,38,38,0.4)]">
+                        <span className="px-2.5 py-1 rounded bg-[#dc2626] text-slate-900 text-[10px] font-mono font-bold uppercase inline-flex items-center gap-1.5 shadow-[0_0_12px_rgba(220,38,38,0.4)]">
                           <XCircle className="w-3 h-3" />
                           CHAIN BROKEN
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 rounded bg-[#0e271d] text-[#4ade80] border border-[#1e5238] text-[10px] font-mono font-bold uppercase inline-flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3 text-[#4ade80]" />
+                        <span className="px-2 py-0.5 rounded bg-[#0e271d] text-emerald-700 border border-[#1e5238] text-[10px] font-mono font-bold uppercase inline-flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-700" />
                           VERIFIED
                         </span>
                       )}
@@ -282,14 +282,14 @@ export const AuditLedgerView: React.FC = () => {
         </div>
 
         {/* Table Footer with Pagination */}
-        <div className="px-5 py-3 border-t border-[#182740] flex items-center justify-between text-xs text-slate-400 font-mono">
+        <div className="px-5 py-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-400 font-mono">
           <span>Showing 1-4 of 1,249 Events</span>
 
           <div className="flex items-center gap-2">
-            <button className="p-1 rounded bg-[#070e1a] border border-[#182740] hover:text-white transition">
+            <button className="p-1 rounded bg-slate-50 border border-slate-200 hover:text-slate-900 transition">
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
-            <button className="p-1 rounded bg-[#070e1a] border border-[#182740] hover:text-white transition">
+            <button className="p-1 rounded bg-slate-50 border border-slate-200 hover:text-slate-900 transition">
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
