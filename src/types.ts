@@ -336,6 +336,9 @@ export interface ScreeningSession {
   processingTimeMs: number;
   unsupportedReason?: string;
   detectedClassificationConfidence?: number;
+  decisionState?: string;
+  ruleResults?: any[];
+  rawOcr?: any;
 }
 
 export interface FieldConsistencyCheck {
