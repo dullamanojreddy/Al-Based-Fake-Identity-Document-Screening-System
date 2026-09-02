@@ -62,6 +62,42 @@ export async function generateELACanvas(
         let totalDiff = 0;
         let highVariancePixelCount = 0;
 
+        // -----------------------------------------------------------------
+        // Statistical baseline for re-compression noise (real-photo tolerant).
+        //
+        // Genuine photos of documents (phone captures, scanned prints) contain
+        // uniform JPEG re-encoding noise across the entire substrate - camera
+        // compression, lighting gradients, paper grain. Flagging every pixel above
+        // an absolute threshold makes AUTHENTIC documents look "tampered".
+        //
+        // Real forgery (photo splicing / pasted zones) leaves LOCALIZED regions
+        // whose compression history deviates strongly from the surrounding
+        // substrate. We therefore flag only pixels whose re-compression residual
+        // exceeds a statistical outlier bound derived from the image itself.
+        // -----------------------------------------------------------------
+        const sampleStep = 4;
+        let diffSum = 0;
+        let diffSqSum = 0;
+        let sampledDiffs = 0;
+        for (let i = 0; i < origData.data.length; i += sampleStep * 4) {
+          const rDiff = Math.abs(origData.data[i] - compData.data[i]);
+          const gDiff = Math.abs(origData.data[i + 1] - compData.data[i + 1]);
+          const bDiff = Math.abs(origData.data[i + 2] - compData.data[i + 2]);
+          const avgDiff = (rDiff + gDiff + bDiff) / 3;
+          diffSum += avgDiff;
+          diffSqSum += avgDiff * avgDiff;
+          sampledDiffs++;
+        }
+        const diffMean = sampledDiffs > 0 ? diffSum / sampledDiffs : 4;
+        const diffVar = sampledDiffs > 0
+          ? Math.max(0.001, diffSqSum / sampledDiffs - diffMean * diffMean)
+          : 1;
+        const diffStd = Math.sqrt(diffVar);
+
+        // Anomalous pixel = residual > 4.5 sigma above the image-wide baseline
+        // (with a small absolute floor so clean flat scans don't over-trigger).
+        const anomalyThreshold = Math.max(6, diffMean + 4.5 * diffStd);
+
         for (let i = 0; i < origData.data.length; i += 4) {
           const rDiff = Math.abs(origData.data[i] - compData.data[i]);
           const gDiff = Math.abs(origData.data[i + 1] - compData.data[i + 1]);
@@ -76,7 +112,7 @@ export async function generateELACanvas(
           const amplifiedG = Math.min(255, gDiff * scaleGain);
           const amplifiedB = Math.min(255, bDiff * (scaleGain + 5));
 
-          if (avgDiff * scaleGain > 140) {
+          if (avgDiff > anomalyThreshold) {
             highVariancePixelCount++;
             // High error level -> highlight with vibrant forensic tint
             diffData.data[i] = Math.min(255, amplifiedR + 40);     // Red
@@ -93,11 +129,16 @@ export async function generateELACanvas(
         diffCtx.putImageData(diffData, 0, 0);
 
         const totalPixels = width * height;
-        const anomalyPercentage = Math.min(100, Math.round((highVariancePixelCount / (totalPixels * 0.15)) * 100));
+        // Localized forensic outliers are the true signal: a spliced photo zone
+        // typically spans 1-3% of the substrate pixels. Uniform 4.5-sigma re-encode
+        // noise on an authentic capture stays well below 0.5% of pixels.
+        const outlierRatio = totalPixels > 0 ? highVariancePixelCount / totalPixels : 0;
+        let anomalyScore = Math.round((outlierRatio / 0.012) * 100);
+        anomalyScore = Math.min(90, Math.max(0, anomalyScore));
 
         resolve({
           elaDataUrl: diffCanvas.toDataURL('image/png'),
-          anomalyScore: anomalyPercentage,
+          anomalyScore,
         });
       };
       compImg.src = compressedDataUrl;

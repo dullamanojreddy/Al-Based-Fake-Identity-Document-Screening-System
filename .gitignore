@@ -28,3 +28,9 @@ server/uploads/
 Thumbs.db
 .vscode/
 .idea/
+
+# Local PDF Dossiers (Not for remote repo)
+*.pdf
+SIH_2026_SENTINEL_ID_COMPLETE_DOSSIER.pdf
+testfile.txt
+

@@ -8,7 +8,15 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test:documents": "tsx tests/runner/testRunner.ts",
+    "test:golden": "tsx tests/runner/testRunner.ts --golden",
+    "test:documents:report": "tsx tests/runner/testRunner.ts",
+    "test:documents:passport": "tsx tests/runner/testRunner.ts --category=PASSPORT",
+    "test:documents:visa": "tsx tests/runner/testRunner.ts --category=VISA",
+    "test:documents:aadhaar": "tsx tests/runner/testRunner.ts --category=AADHAAR",
+    "test:documents:dl": "tsx tests/runner/testRunner.ts --category=DRIVING_LICENCE",
+    "test:documents:permit": "tsx tests/runner/testRunner.ts --category=PERMIT"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

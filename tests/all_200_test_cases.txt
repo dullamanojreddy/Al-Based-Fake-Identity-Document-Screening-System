@@ -1,0 +1,1506 @@
+====================================================================================
+SENTINEL-ID COMPLETE 200-CASE AUTOMATED VERIFICATION TEST FIXTURE EXECUTION MANIFEST
+====================================================================================
+Generated: 2026-09-01T16:42:51.121Z
+Total Test Cases: 200 | Passed: 200 | Failed: 0 | Pass Rate: 100.00%
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-001 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-002 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-003 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-004 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-005 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-006 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-007 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-008 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-009 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-010 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-011 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-012 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-013 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-014 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-015 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-016 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-017 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-018 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-019 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-TRUE-020 | CATEGORY: PASSPORT | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-001 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 85] | Actual Risk: 30
+Modifications: [FIELD_MISMATCH] Visual DOB altered
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-002 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 85] | Actual Risk: 60
+Modifications: [FIELD_MISMATCH] Visual Passport number altered
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-003 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 85] | Actual Risk: 30
+Modifications: [FIELD_MISMATCH] Visual Expiry date altered
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-004 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [45, 100] | Actual Risk: 45
+Modifications: [CHECKSUM_CORRUPTION] Corrupted document number check digit
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-005 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [45, 100] | Actual Risk: 45
+Modifications: [MULTIPLE_CHECKSUM_CORRUPTION] Multiple check digit failures
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-006 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [45, 100] | Actual Risk: 45
+Modifications: [MRZ_SYNTAX_CORRUPTION] Corrupted MRZ checksum
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-007 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [70, 100] | Actual Risk: 90
+Modifications: [DATE_CHRONOLOGY_ERROR] Future Date of Birth
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-008 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [45, 85] | Actual Risk: 68
+Modifications: [DATE_ORDER_ERROR] Issue Date exceeds Expiry Date
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-009 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 85] | Actual Risk: 60
+Modifications: [NATIONALITY_MISMATCH] Nationality disparity
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-010 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 85] | Actual Risk: 30
+Modifications: [NAME_MISMATCH] MRZ names differ from visual zone
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-011 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 85] | Actual Risk: 64
+Modifications: [PHOTO_SPLICING] Portrait compression disparity & splicing edge
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-012 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [70, 100] | Actual Risk: 100
+Modifications: [COPY_MOVE] Duplicated pixel region detected
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-013 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [70, 100] | Actual Risk: 100
+Modifications: [DIGIT_ALTERATION] Font morphology mismatch in document number
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-014 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [70, 100] | Actual Risk: 90
+Modifications: [DATE_TAMPERING] Visual expiry manipulated
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-015 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [70, 100] | Actual Risk: 100
+Modifications: [SYNTAX_TAMPERING] Passport number truncated
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-016 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [70, 100] | Actual Risk: 100
+Modifications: [COMPRESSION_ANOMALY] Double quantization noise detected
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-017 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [70, 100] | Actual Risk: 100
+Modifications: [MULTIPLE_PARITY_FAILS] DOB, Number, and Expiry mismatch MRZ
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-018 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [80, 100] | Actual Risk: 100
+Modifications: [COMPOUND_FRAUD] Checksum corruption + Photo tampering
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-019 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [70, 100] | Actual Risk: 100
+Modifications: [MULTI_FORENSIC_TAMPERING] Photo splicing, copy-move, and font alteration
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: P-FAKE-020 | CATEGORY: PASSPORT | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: EXPIRED | Actual Decision: EXPIRED
+Expected Risk Range: [5, 45] | Actual Risk: 8
+Modifications: [EXPIRED_CREDENTIAL] Document validity expired
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-001 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-002 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-003 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-004 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-005 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-006 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-007 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-008 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-009 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-010 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-011 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-012 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-013 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-014 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-015 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-016 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-017 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-018 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-019 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-TRUE-020 | CATEGORY: VISA | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-001 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [PASSPORT_LINK_ERROR] Passport number on visa does not match holder
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-002 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [NAME_MISMATCH] Holder name altered
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-003 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [SYNTAX_ERROR] Visa number fails consular regex
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-004 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: EXPIRED | Actual Decision: EXPIRED
+Expected Risk Range: [5, 45] | Actual Risk: 8
+Modifications: [EXPIRED_CREDENTIAL] Visa validity period expired
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-005 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 38
+Modifications: [DATE_ORDER_ERROR] Start date after expiry
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-006 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [FUTURE_START_DATE] Start date in far future
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-007 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: EXPIRED | Actual Decision: EXPIRED
+Expected Risk Range: [5, 45] | Actual Risk: 8
+Modifications: [EXPIRED_CREDENTIAL] Lapsed visa
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-008 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [DURATION_MISMATCH] Permitted stay exceeds validity window
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-009 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [ENTRY_RESTRICTION_ERROR] Entries conflict with vignette type
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-010 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [NATIONALITY_DISPARITY] Nationality conflict
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-011 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [BARCODE_MISMATCH] 2D barcode payload disagrees with visual text
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-012 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [VIGNETTE_MRZ_MISMATCH] MRV-A band checksum failure
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-013 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [DATE_TAMPERING] Expiry year artificially increased
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-014 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [PASSPORT_LINK_TAMPERED] Passport link altered
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-015 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [35, 85] | Actual Risk: 64
+Modifications: [PHOTO_SPLICING] Splicing boundary in portrait zone
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-016 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 90] | Actual Risk: 30
+Modifications: [MULTIPLE_INCONSISTENCIES] Name and Passport link altered
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-017 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [STRUCTURAL_ANOMALY] Missing sovereign consular header
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-018 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [35, 85] | Actual Risk: 64
+Modifications: [FORENSIC_ANOMALY] ELA high energy variance
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-019 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [65, 100] | Actual Risk: 100
+Modifications: [COMPOUND_TAMPERING] Expired + Tampered photo
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: V-FAKE-020 | CATEGORY: VISA | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=MEDIUM, Res=MEDIUM
+Expected Decision: UNABLE_TO_VERIFY | Actual Decision: UNABLE_TO_VERIFY
+Expected Risk Range: [0, 80] | Actual Risk: 68
+Modifications: [IMAGE_CORRUPTION] High blur / unreadable
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-001 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-002 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-003 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-004 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-005 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-006 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-007 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-008 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-009 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-010 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-011 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-012 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-013 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-014 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-015 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-016 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-017 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-018 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-019 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-TRUE-020 | CATEGORY: AADHAAR | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-001 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [45, 100] | Actual Risk: 75
+Modifications: [CHECKSUM_FAILURE] Fails Verhoeff D5 algorithm
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-002 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [45, 100] | Actual Risk: 75
+Modifications: [PROHIBITED_LEADING_DIGIT] Starts with 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-003 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [45, 100] | Actual Risk: 45
+Modifications: [QR_NAME_MISMATCH] QR encoded name conflicts with visual name
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-004 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [45, 100] | Actual Risk: 45
+Modifications: [QR_DOB_MISMATCH] QR encoded DOB conflicts with visual DOB
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-005 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [45, 100] | Actual Risk: 45
+Modifications: [QR_GENDER_MISMATCH] QR encoded gender conflicts
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-006 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [45, 100] | Actual Risk: 45
+Modifications: [QR_ID_MISMATCH] QR number disagrees with visual number
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-007 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [45, 100] | Actual Risk: 45
+Modifications: [IDENTIFIER_ALTERED] Random 12-digit number failing Verhoeff
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-008 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 85] | Actual Risk: 30
+Modifications: [FUTURE_DOB] DOB in the future
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-009 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 85] | Actual Risk: 30
+Modifications: [NAME_SYNTAX_ERROR] Name contains invalid characters
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-010 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 85] | Actual Risk: 30
+Modifications: [HEADER_TRUNCATION] Header 'GOVERNMENT OF ' is missing sovereign territory 'INDIA'
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-011 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [45, 100] | Actual Risk: 79
+Modifications: [PHOTO_TAMPERING] Portrait boundary anomaly
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-012 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: REVIEW | Actual Decision: REVIEW
+Expected Risk Range: [5, 40] | Actual Risk: 8
+Modifications: [STRUCTURAL_ANOMALY] Official UIDAI headers completely absent
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-013 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 85] | Actual Risk: 30
+Modifications: [MULTI_FIELD_ERROR] DOB and Gender fail profile regex
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-014 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [45, 100] | Actual Risk: 79
+Modifications: [COPY_MOVE] Cloned security guilloche
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-015 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [45, 100] | Actual Risk: 45
+Modifications: [FONT_MISALIGNMENT] Inconsistent font typography
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-016 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [70, 100] | Actual Risk: 79
+Modifications: [SEVERE_TAMPERING] Photo splicing + Verhoeff failure
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-017 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [45, 100] | Actual Risk: 75
+Modifications: [INVALID_LENGTH] 10-digit number
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-018 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [70, 100] | Actual Risk: 100
+Modifications: [MULTI_MATH_FAILURE] Prohibited leading digit + Future DOB
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-019 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [70, 100] | Actual Risk: 100
+Modifications: [COMPOUND_FRAUD] Truncated header + Spliced photo
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: A-FAKE-020 | CATEGORY: AADHAAR | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: UNABLE_TO_VERIFY | Actual Decision: UNABLE_TO_VERIFY
+Expected Risk Range: [0, 100] | Actual Risk: 76
+Modifications: [BLANK_IMAGE] Zero detectable text or edges
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-001 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-002 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-003 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-004 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-005 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-006 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-007 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-008 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-009 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-010 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-011 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-012 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-013 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-014 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-015 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-016 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-017 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-018 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-019 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-TRUE-020 | CATEGORY: DRIVING_LICENCE | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-001 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 60
+Modifications: [SYNTAX_ERROR] DL Number does not match Sarathi regex
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-002 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [UNRECOGNIZED_JURISDICTION] State code 'XX' unrecognized
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-003 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [NAME_MISMATCH] Name non-alphabetic
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-004 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [FUTURE_DOB] DOB in the future
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-005 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 38
+Modifications: [DATE_ORDER_ERROR] Issue exceeds Expiry
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-006 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: EXPIRED | Actual Decision: EXPIRED
+Expected Risk Range: [5, 45] | Actual Risk: 8
+Modifications: [EXPIRED_CREDENTIAL] Licence expired
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-007 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: EXPIRED | Actual Decision: EXPIRED
+Expected Risk Range: [5, 45] | Actual Risk: 8
+Modifications: [EXPIRED_CREDENTIAL] Licence validity expired
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-008 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [ENDORSEMENT_ERROR] Hazardous endorsement conflict
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-009 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 60
+Modifications: [QR_MISMATCH] Smart card chip QR payload mismatch
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-010 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 60
+Modifications: [DATE_TAMPERING] Expiry year artificially inflated
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-011 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 60
+Modifications: [NUMBER_TAMPERING] Invalid serial format
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-012 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [DOB_ANOMALY] Impossible birth date
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-013 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [65, 100] | Actual Risk: 94
+Modifications: [PHOTO_SPLICING] Portrait edge anomaly
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-014 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [65, 100] | Actual Risk: 94
+Modifications: [SIGNATURE_ANOMALY] Missing officer signature
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-015 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 68
+Modifications: [STRUCTURAL_ANOMALY] Statutory transport headers absent
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-016 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 90] | Actual Risk: 60
+Modifications: [MULTI_FIELD_ERROR] Name and Number fail regex
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-017 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [65, 100] | Actual Risk: 94
+Modifications: [FORENSIC_ANOMALY] ELA high energy variance
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-018 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [65, 100] | Actual Risk: 94
+Modifications: [MULTI_FORENSIC_TAMPERING] Photo splicing + Cloned seal
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-019 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CRITICAL | Actual Decision: CRITICAL
+Expected Risk Range: [70, 100] | Actual Risk: 94
+Modifications: [SEVERE_FRAUD] Unrecognized state + Spliced photo
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: D-FAKE-020 | CATEGORY: DRIVING_LICENCE | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=MEDIUM, Res=MEDIUM
+Expected Decision: UNABLE_TO_VERIFY | Actual Decision: UNABLE_TO_VERIFY
+Expected Risk Range: [0, 80] | Actual Risk: 68
+Modifications: [UNREADABLE_IMAGE] Severe blur and blankness
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-001 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-002 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-003 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-004 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-005 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-006 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-007 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-008 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-009 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-010 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-011 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-012 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-013 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-014 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-015 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-016 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-017 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-018 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-019 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-TRUE-020 | CATEGORY: PERMIT | TRUTH: VALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: CLEAR | Actual Decision: CLEAR
+Expected Risk Range: [0, 20] | Actual Risk: 0
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-001 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [SYNTAX_ERROR] Permit number fails standard format
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-002 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: EXPIRED | Actual Decision: EXPIRED
+Expected Risk Range: [5, 45] | Actual Risk: 8
+Modifications: [EXPIRED_CREDENTIAL] Permit validity lapsed
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-003 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [FUTURE_START_DATE] Permit start date in distant future
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-004 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 38
+Modifications: [DATE_ORDER_ERROR] Start date exceeds Expiry date
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-005 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [NAME_MISMATCH] Holder name non-alphabetic
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-006 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [NATIONALITY_DISPARITY] Prohibited nationality
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-007 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [UNAUTHORIZED_AREA] Restricted military sector
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-008 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [ROUTE_MISMATCH] Unapproved transit corridor
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-009 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [PURPOSE_MISMATCH] Commercial vehicle on pedestrian permit
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-010 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: EXPIRED | Actual Decision: EXPIRED
+Expected Risk Range: [5, 45] | Actual Risk: 8
+Modifications: [EXPIRED_CREDENTIAL] Permit expired
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-011 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [QR_PAYLOAD_MISMATCH] QR data conflicts with printed text
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-012 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [BARCODE_MISMATCH] Barcode checksum mismatch
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-013 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 38
+Modifications: [ISSUER_MISMATCH] Unrecognized issuing command
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-014 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 64
+Modifications: [PHOTO_TAMPERING] Portrait edge anomaly
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-015 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 64
+Modifications: [STAMP_FORGERY] Cloned authority stamp
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-016 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 60] | Actual Risk: 38
+Modifications: [STRUCTURAL_ANOMALY] Statutory SSB headers absent
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-017 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=NORMAL, Dist=CLOSE, Angle=SLIGHT, Blur=LOW, Res=MEDIUM
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 80] | Actual Risk: 30
+Modifications: [DATE_TAMPERING] Expiry year artificially inflated
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-018 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=LOW, Dist=FAR, Angle=MODERATE, Blur=MEDIUM, Res=LOW
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 90] | Actual Risk: 30
+Modifications: [MULTI_FIELD_ERROR] Permit number and Name altered
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-019 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=BRIGHT, Dist=NORMAL, Angle=STRAIGHT, Blur=NONE, Res=HIGH
+Expected Decision: HIGH_RISK | Actual Decision: HIGH_RISK
+Expected Risk Range: [25, 95] | Actual Risk: 64
+Modifications: [FORENSIC_TAMPERING] Spliced photo and cloned seal
+Status: PASSED
+
+------------------------------------------------------------------------------------
+[PASS] TEST CASE: R-FAKE-020 | CATEGORY: PERMIT | TRUTH: INVALID
+Image Variant: Lighting=GLARE, Dist=CLOSE, Angle=SLIGHT, Blur=MEDIUM, Res=MEDIUM
+Expected Decision: UNABLE_TO_VERIFY | Actual Decision: UNABLE_TO_VERIFY
+Expected Risk Range: [0, 80] | Actual Risk: 68
+Modifications: [UNREADABLE_IMAGE] Severe degradation
+Status: PASSED
+

@@ -9,6 +9,7 @@ import {
   DocumentField,
   ScreeningFinding,
   EvidenceSource,
+  RuleResult,
 } from '../types';
 import { checkDuplicateIdentities } from './duplicateIdentityDetector';
 
@@ -17,7 +18,8 @@ export function calculateCompositeRisk(
   mrzData?: MRZData | null,
   tampering?: TamperingForensics | null,
   biometrics?: BiometricVerification | null,
-  watchlist?: WatchlistResult | null
+  watchlist?: WatchlistResult | null,
+  ruleResults?: RuleResult[]
 ): CompositeRiskAssessment {
   const keyRiskFactors: string[] = [];
   const positiveFactors: string[] = [];
@@ -31,6 +33,33 @@ export function calculateCompositeRisk(
 
   let computedRisk = 0;
 
+  // Integrate Rule Engine Findings
+  if (ruleResults && ruleResults.length > 0) {
+    const failedOrWarn = ruleResults.filter(r => r.status === 'FAIL' || r.status === 'WARN');
+    failedOrWarn.forEach((r, idx) => {
+      if (r.status === 'FAIL') {
+        computedRisk += r.severity === 'CRITICAL' ? 45 : r.severity === 'HIGH' ? 30 : 15;
+        keyRiskFactors.push(`[Rule ${r.ruleId}] ${r.explanation}`);
+        findings.push({
+          id: `f-rule-${r.ruleId.toLowerCase()}-${idx}`,
+          finding_id: r.ruleId,
+          type: r.ruleName,
+          category: r.category === 'PASSPORT' || r.category === 'VISA' ? 'CONSISTENCY' : r.category === 'AADHAAR' ? 'OCR_INTEGRITY' : 'TAMPERING',
+          code: r.ruleName,
+          severity: r.severity === 'CRITICAL' ? 'CRITICAL' : r.severity === 'HIGH' ? 'HIGH' : 'MEDIUM',
+          title: `Rule ${r.ruleId} — ${r.ruleName.replace(/_/g, ' ')}`,
+          description: r.explanation,
+          boundingBox: r.affectedRegion,
+          sources: [
+            { type: r.source === 'MRZ' ? 'MRZ_FIELD' : 'OCR_FIELD', field: r.affectedField, details: r.explanation }
+          ],
+        });
+      } else if (r.status === 'WARN') {
+        computedRisk += r.severity === 'HIGH' ? 15 : 8;
+        keyRiskFactors.push(`[Notice ${r.ruleId}] ${r.explanation}`);
+      }
+    });
+  }
   // 0. Duplicate Identity & Credential Recycling Check
   const travelerNameField = fields.find(f => f.key === 'fullName' || f.key === 'name' || f.key === 'surname')?.value || '';
   const docNumField = fields.find(f => f.key === 'passportNumber' || f.key === 'documentNumber' || f.key === 'aadhaarNumber')?.value || '';

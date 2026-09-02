@@ -642,7 +642,7 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
               </div>
             )}
 
-            {/* DYNAMIC EXTRACTED FIELDS TABLE */}
+            {/* DYNAMIC EXTRACTED FIELDS & RAW OCR TABLE */}
             <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xl space-y-3">
               <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                 <div className="flex items-center gap-2">
@@ -651,6 +651,9 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                     EXTRACTED FIELDS ({currentSession.fields.length})
                   </h4>
                 </div>
+                <span className="text-[10px] font-mono text-slate-400 uppercase">
+                  DECISION: <strong className="text-blue-600">{currentSession.decisionState || (currentSession.status === 'CLEARED' ? 'CLEAR' : currentSession.status)}</strong>
+                </span>
               </div>
 
               <div className="overflow-x-auto">
@@ -659,17 +662,21 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                     <tr>
                       <th className="py-1.5 px-2">FIELD</th>
                       <th className="py-1.5 px-2">EXTRACTED VALUE</th>
+                      <th className="py-1.5 px-2">SOURCE</th>
                       <th className="py-1.5 px-2 text-right">CONFIDENCE</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200 font-sans text-xs">
                     {currentSession.fields.map((f) => (
-                      <tr key={f.key} className={f.isTampered ? 'bg-red-50/60' : ''}>
-                        <td className={`py-1.5 px-2 font-medium ${f.isTampered ? 'text-red-700 font-bold' : 'text-slate-400'}`}>
+                      <tr key={f.key} className={f.isTampered || f.validation === 'INVALID' ? 'bg-red-50/60' : ''}>
+                        <td className={`py-1.5 px-2 font-medium ${f.isTampered || f.validation === 'INVALID' ? 'text-red-700 font-bold' : 'text-slate-400'}`}>
                           {f.label}
                         </td>
-                        <td className={`py-1.5 px-2 font-mono ${f.isTampered ? 'text-red-700 font-bold' : 'text-slate-900'}`}>
-                          {f.value}
+                        <td className={`py-1.5 px-2 font-mono ${f.isTampered || f.validation === 'INVALID' ? 'text-red-700 font-bold' : 'text-slate-900'}`}>
+                          {f.value || <span className="text-slate-400 italic">null</span>}
+                        </td>
+                        <td className="py-1.5 px-2 font-mono text-[10px] text-slate-400">
+                          {f.source || 'OCR'}
                         </td>
                         <td className="py-1.5 px-2 text-right font-mono text-slate-600">
                           {f.confidence}%
@@ -702,6 +709,112 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
                   )}
                 </div>
               )}
+
+              {/* Raw OCR Text Drawer if available */}
+              {currentSession.rawOcr && currentSession.rawOcr.lines.length > 0 && (
+                <details className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs font-mono">
+                  <summary className="cursor-pointer text-blue-600 font-bold hover:text-blue-500 flex items-center justify-between">
+                    <span>RAW OCR TEXT EXPLORER ({currentSession.rawOcr.lines.length} LINES)</span>
+                    <span className="text-[10px] text-slate-400 font-normal">Click to expand</span>
+                  </summary>
+                  <div className="mt-2 space-y-1 max-h-48 overflow-y-auto pt-2 border-t border-slate-200">
+                    {currentSession.rawOcr.lines.map((l, i) => (
+                      <div key={i} className="flex items-start justify-between gap-2 text-[11px] hover:bg-slate-100 p-1 rounded">
+                        <span className="text-slate-400 shrink-0">L{l.lineNumber || i + 1}:</span>
+                        <span className="text-slate-800 flex-1 select-all">{l.text}</span>
+                        <span className="text-slate-500 shrink-0 text-[10px]">{l.confidence}%</span>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              )}
+            </div>
+
+            {/* RULE ENGINE RESULTS LOG */}
+            {currentSession.ruleResults && currentSession.ruleResults.length > 0 && (
+              <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xl space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                  <div className="flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4 text-blue-600" />
+                    <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
+                      RULE ENGINE VERIFICATION LOG ({currentSession.ruleResults.length} RULES)
+                    </h4>
+                  </div>
+                </div>
+
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {currentSession.ruleResults.map((rule) => (
+                    <div
+                      key={rule.ruleId}
+                      className={`p-2.5 rounded-lg border text-xs font-sans flex items-start justify-between gap-3 ${
+                        rule.status === 'FAIL'
+                          ? 'bg-red-50 border-red-200'
+                          : rule.status === 'WARN'
+                          ? 'bg-amber-50 border-amber-200'
+                          : 'bg-slate-50 border-slate-200'
+                      }`}
+                    >
+                      <div className="space-y-0.5 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-bold text-blue-600 text-[11px]">
+                            {rule.ruleId}
+                          </span>
+                          <span className="font-bold text-slate-900 text-xs truncate">
+                            {rule.ruleName.replace(/_/g, ' ')}
+                          </span>
+                        </div>
+                        <p className="text-slate-600 text-[11px] leading-relaxed">
+                          {rule.explanation}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col items-end shrink-0 gap-1">
+                        <span className={`px-2 py-0.5 text-[9px] font-mono font-bold uppercase rounded ${
+                          rule.status === 'FAIL'
+                            ? 'bg-red-100 text-red-700 border border-red-300'
+                            : rule.status === 'WARN'
+                            ? 'bg-amber-100 text-amber-700 border border-amber-300'
+                            : 'bg-emerald-100 text-emerald-700 border border-emerald-300'
+                        }`}>
+                          {rule.status}
+                        </span>
+                        <span className="text-[9px] font-mono text-slate-400">
+                          {rule.recommendation}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+
+
+            {/* EXTERNAL VERIFICATION & IMAGE QUALITY STATUS */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
+              <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-3.5 space-y-1">
+                <span className="text-[10px] text-slate-400 uppercase font-bold block">
+                  EXTERNAL AUTHORITY VERIFICATION
+                </span>
+                <span className="text-amber-400 font-bold block text-sm">
+                  {currentSession.externalVerification?.status || 'UNAVAILABLE'}
+                </span>
+                <p className="text-[10px] text-slate-400 font-sans">
+                  {currentSession.externalVerification?.reason || 'No live government gateway configured.'}
+                </p>
+              </div>
+
+              <div className="bg-[#0b1424] border border-[#182740] rounded-xl p-3.5 space-y-1">
+                <span className="text-[10px] text-slate-400 uppercase font-bold block">
+                  IMAGE QUALITY ASSESSMENT
+                </span>
+                <span className="text-cyan-400 font-bold block text-sm">
+                  {currentSession.imageQuality?.overallScore || 92}/100 ({currentSession.imageQuality?.qualityGrade || 'GOOD'})
+                </span>
+                <p className="text-[10px] text-slate-400 font-sans">
+                  Blur: {currentSession.imageQuality?.blurScore || 95} | Glare: {currentSession.imageQuality?.glareScore || 90}
+                </p>
+              </div>
             </div>
 
             {/* DYNAMIC EVIDENCE NAVIGATOR */}

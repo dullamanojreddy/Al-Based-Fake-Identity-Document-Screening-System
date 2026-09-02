@@ -228,20 +228,19 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
       } catch (elaErr) {
         console.warn('ELA processing error:', elaErr);
       }
-
-      // Parse MRZ only when actual MRZ lines were extracted by OCR.
-      // NEVER fabricate a synthetic MRZ with a hardcoded passport number —
-      // that would cause a false watchlist match via the demo record Z4829104.
-      // If scanResult.mrzRawLines were built by universalDocumentScanner using
-      // correctly-computed ICAO check digits, they are safe to parse.
+      // Parse MRZ ONLY when a real machine-readable zone was OCR-detected.
+      // Genuine passports whose MRZ band could not be captured/OCR'd are treated as
+      // "MRZ not scanned" so the ICAO 7-3-1 checksum layer does not penalize a real
+      // document for data that was never read.
       let mrzResult = null;
       if (scanResult.mrzRawLines && scanResult.mrzRawLines.length >= 2) {
         mrzResult = parseMRZ(scanResult.mrzRawLines.join('\n'), scanResult.fields);
+      } else if (scanResult.documentType === 'passport') {
+        console.warn('Passport MRZ zone not OCR-detected; screening via Visual Inspection Zone only.');
       }
-      // If no MRZ lines, mrzResult stays null → no MRZ checksum findings are raised. 
 
       const isAadhaarInvalid = scanResult.fields.some(
-        f => f.key === 'aadhaarNumber' && f.validation === 'INVALID'
+        f => f.key === 'aadhaarNumber' && f.value.trim() && f.validation === 'INVALID'
       );
 
       const computedTamperScore = isAadhaarInvalid ? 45 : Math.max(4, elaCanvasData.anomalyScore || 4);
@@ -306,7 +305,8 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
         mrzResult,
         dynamicTampering,
         biometricsResult,
-        watchlistResult
+        watchlistResult,
+        scanResult.ruleResults
       );
 
       const newSession: ScreeningSession = {
@@ -332,7 +332,21 @@ export const NewScreeningWorkstation: React.FC<NewScreeningWorkstationProps> = (
         biometrics: biometricsResult,
         watchlist: watchlistResult,
         risk: calculatedRisk,
-        status: calculatedRisk.overallRiskScore > 60 ? 'DETAINED' : calculatedRisk.overallRiskScore > 25 ? 'SECONDARY_INSPECTION' : 'CLEARED',
+        ruleResults: scanResult.ruleResults,
+        imageQuality: scanResult.imageQuality,
+        rawOcr: scanResult.rawOcr,
+        externalVerification: {
+          status: 'VERIFICATION_UNAVAILABLE',
+          providerName: 'National Gateway (IVFRT / UIDAI / Sarathi)',
+          reason: 'Authenticated authority provider not configured. Local verification executed.',
+          timestamp: new Date().toISOString(),
+        },
+        decisionState: scanResult.decisionState,
+        status: scanResult.decisionState === 'CRITICAL' || calculatedRisk.overallRiskScore >= 66
+          ? 'DETAINED'
+          : scanResult.decisionState === 'HIGH_RISK' || calculatedRisk.overallRiskScore > 25
+          ? 'SECONDARY_INSPECTION'
+          : 'CLEARED',
         processingTimeMs: 1650,
       };
 

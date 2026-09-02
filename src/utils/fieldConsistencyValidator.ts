@@ -16,8 +16,8 @@ const DOC_NUMBER_PATTERNS: Record<string, { pattern: RegExp; description: string
     description: 'Driving licence numbers follow the state-code + RTO + serial convention.',
   },
   national_id: {
-    pattern: /^[2-9]\d{3}[\s-]?\d{4}[\s-]?\d{4}$/,
-    description: 'Aadhaar numbers are 12 digits (first digit 2-9), printed as 4-4-4 groups.',
+    pattern: /^[2-9X][0-9X]{3}[\s-]*[0-9X]{4}[\s-]*\d{4}$/i,
+    description: 'Aadhaar numbers are 12 digits (first digit 2-9), printed as 4-4-4 groups. UIDAI masked e-Aadhaar (e.g. "XXXX XXXX 1234") is also accepted.',
   },
 };
 

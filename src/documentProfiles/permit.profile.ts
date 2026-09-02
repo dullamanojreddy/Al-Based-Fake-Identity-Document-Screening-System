@@ -1,0 +1,93 @@
+import { DocumentProfile } from './passport.profile';
+
+export const PermitProfile: DocumentProfile = {
+  documentType: 'border_permit',
+  displayName: 'Border Transit / Special Entry Permit',
+  issuingJurisdiction: 'MINISTRY OF HOME AFFAIRS (SSB / POLICE II)',
+  expectedAspectRatios: [1.2, 1.6],
+  expectedHeaders: [
+    'SASHASTRA SEEMA BAL', 'SSB BORDER PERMIT', 'BORDER TRANSIT PASS',
+    'SPECIAL ENTRY PERMIT', 'CROSSING AUTHORIZATION', 'ICP TRANSIT PASS'
+  ],
+  fieldDefinitions: [
+    {
+      key: 'permitNumber',
+      label: 'Permit / Authorization Number',
+      required: true,
+      regexPattern: /^(?:SSB|BP|TR|ICP)[-\s]?[A-Z0-9-]{4,20}$/i,
+      labelPatterns: [/PERMIT\s*(?:NO|NUMBER)/i, /PASS\s*(?:NO|NUMBER)/i, /AUTH\s*NO/i],
+      defaultBoundingBox: { x: 55, y: 18, width: 35, height: 6 },
+      formatHelp: 'Permit ID starting with SSB/BP/TR/ICP (e.g. SSB-ICP-2026-8892)',
+    },
+    {
+      key: 'fullName',
+      label: 'Permit Holder Name',
+      required: true,
+      regexPattern: /^[A-Z\s.-]{3,40}$/i,
+      labelPatterns: [/NAME/i, /HOLDER/i, /APPLICANT/i],
+      defaultBoundingBox: { x: 30, y: 30, width: 40, height: 6 },
+      formatHelp: 'Full citizen name',
+    },
+    {
+      key: 'permittedArea',
+      label: 'Authorized Checkpoint / Sector',
+      required: true,
+      regexPattern: /^(?:INDO-NEPAL|RAXAUL|PANITANKI|SONAULI|BANBASA|JOGBANI|BHITHAMORE|RUPAIDIAHA|KANKARBHITTA)[-\s\w]*$/i,
+      labelPatterns: [/SECTOR/i, /AREA/i, /CHECKPOINT/i, /ICP/i, /ROUTE/i],
+      defaultBoundingBox: { x: 30, y: 42, width: 45, height: 6 },
+      formatHelp: 'Designated ICP or border sector (e.g. Indo-Nepal Sector 4, Raxaul ICP)',
+    },
+    {
+      key: 'nationality',
+      label: 'Nationality',
+      required: true,
+      regexPattern: /^(?:IND|INDIAN|NPL|NEPALESE|NEPALI)$/i,
+      labelPatterns: [/NATIONALITY/i, /CITIZENSHIP/i],
+      defaultBoundingBox: { x: 30, y: 48, width: 25, height: 5 },
+      formatHelp: 'IND, NPL, INDIAN, or NEPALESE',
+    },
+    {
+      key: 'issueDate',
+      label: 'Date of Issue',
+      required: true,
+      regexPattern: /^\d{2}[-/]\d{2}[-/]\d{4}$|^\d{4}[-/]\d{2}[-/]\d{2}$/i,
+      labelPatterns: [/DATE\s*OF\s*ISSUE/i, /ISSUED\s*ON/i, /ISSUE/i],
+      defaultBoundingBox: { x: 30, y: 54, width: 22, height: 5 },
+      formatHelp: 'DD/MM/YYYY',
+    },
+    {
+      key: 'expiryDate',
+      label: 'Valid Until (Permit Expiry)',
+      required: true,
+      regexPattern: /^\d{2}[-/]\d{2}[-/]\d{4}$|^\d{4}[-/]\d{2}[-/]\d{2}$/i,
+      labelPatterns: [/VALID\s*UNTIL/i, /EXPIRY/i, /VALID\s*UPTO/i],
+      defaultBoundingBox: { x: 55, y: 54, width: 22, height: 5 },
+      formatHelp: 'DD/MM/YYYY (typically 7 to 90 days)',
+    },
+  ],
+  dateRules: {
+    hasDob: false,
+    hasIssueDate: true,
+    hasExpiryDate: true,
+    maxValidityYears: 1,
+    allowNoExpiry: false,
+  },
+  securityFeatures: [
+    { name: 'SSB Official Stamp & Seal', description: 'Circular sovereign border authority seal with ink bleed', criticality: 'HIGH' },
+    { name: 'Authorized Transit Checkpoint Match', description: 'Verification of transit area vs active ICP terminal ID', criticality: 'HIGH' },
+    { name: 'Officer Signature Region', description: 'Authorized signing commandant signature zone', criticality: 'MEDIUM' },
+  ],
+  jurisdictionRules: {
+    recognizedIssuingStates: ['IND', 'NPL', 'BTN'],
+    documentNumberRegex: /^(?:SSB|BP|TR|ICP)[-\s]?[A-Z0-9]{5,12}$/i,
+  },
+  riskWeights: {
+    cryptographicFailure: 90,
+    checksumFailure: 80,
+    crossMismatch: 80,
+    forensicAnomaly: 70,
+    structuralAnomaly: 55,
+    ocrUncertainty: 25,
+    metadataAnomaly: 15,
+  },
+};

@@ -302,6 +302,34 @@ export function classifyDocument(
     };
   }
 
+  // ACCEPTANCE RULE 4: Officer-declared supported identity type
+  // Genuine documents are frequently photographed at angles / under lighting where
+  // the OCR engine (eng+hin) cannot tokenize the printed text - Devanagari, Bengali,
+  // Urdu, and guilloche-embossed serial blocks are particularly OCR-hostile. When the
+  // screening officer explicitly declares a supported credential type on the
+  // workstation, accept the submission so the field-level forensics (format checks,
+  // checksums, ELA) can evaluate it, instead of silently rejecting a real ID. Clear
+  // non-identity documents (memos, invoices, resumes...) are still rejected below.
+  if (
+    declaredType &&
+    ['passport', 'national_id', 'driving_license', 'visa', 'border_permit'].includes(declaredType) &&
+    triggeredNonIdentity.length === 0
+  ) {
+    return {
+      isSupported: true,
+      detectedType: declaredType,
+      confidence: 88.0,
+      detectedFeatures: ['Officer-declared identity credential substrate'],
+      rejectionReasons: [],
+      mrzDetected: hasGenericMrz,
+      mrzStatus: mrzStatus,
+      structureValid: true,
+      evidence: [
+        'Document type declared by screening officer; proceeding with field-level forensic pipeline.',
+      ],
+    };
+  }
+
   // Fallback: If not enough evidence to verify document type safely
   return {
     isSupported: false,

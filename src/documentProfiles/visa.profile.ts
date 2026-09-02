@@ -1,0 +1,98 @@
+import { DocumentProfile } from './passport.profile';
+
+export const VisaProfile: DocumentProfile = {
+  documentType: 'visa',
+  displayName: 'Consular Visa Vignette (ICAO MRV-A / MRV-B)',
+  issuingJurisdiction: 'CONSULAR / IMMIGRATION AUTHORITIES',
+  expectedAspectRatios: [1.3, 1.6],
+  expectedHeaders: [
+    'VISA', 'ENTRY PERMIT', 'CONSULAR VISA', 'SCHENGEN VISA', 'REPUBLIC VISA',
+    'IMMIGRATION AND CHECKPOINTS', 'ENTRY CLEARANCE'
+  ],
+  fieldDefinitions: [
+    {
+      key: 'visaNumber',
+      label: 'Visa / Document Control Number',
+      required: true,
+      regexPattern: /^[A-Z0-9]{7,12}$/i,
+      labelPatterns: [/VISA\s*(?:NO|NUMBER)/i, /CONTROL\s*(?:NO|NUMBER)/i, /DOCUMENT\s*NUMBER/i, /V\d+/i],
+      defaultBoundingBox: { x: 60, y: 15, width: 25, height: 5 },
+      formatHelp: 'Alphanumeric consular control number (e.g. V8892104)',
+    },
+    {
+      key: 'fullName',
+      label: 'Bearer / Holder Name',
+      required: true,
+      regexPattern: /^[A-Z\s.-]{3,40}$/i,
+      labelPatterns: [/NAME/i, /BEARER/i, /HOLDER/i, /SURNAME/i],
+      defaultBoundingBox: { x: 30, y: 30, width: 40, height: 6 },
+      formatHelp: 'Full traveler name matching passport',
+    },
+    {
+      key: 'passportNumber',
+      label: 'Linked Passport Number',
+      required: true,
+      regexPattern: /^[A-Z][0-9]{7,8}$/i,
+      labelPatterns: [/PASSPORT\s*(?:NO|NUMBER)/i, /TRAVEL\s*DOC/i, /DOC\s*NO/i],
+      defaultBoundingBox: { x: 30, y: 40, width: 25, height: 5 },
+      formatHelp: 'Must match linked passport credential (e.g. Z4829104)',
+    },
+    {
+      key: 'validFrom',
+      label: 'Valid From (Issue / Start Date)',
+      required: true,
+      regexPattern: /^\d{2}[-/]\d{2}[-/]\d{4}$|^\d{4}[-/]\d{2}[-/]\d{2}$/i,
+      labelPatterns: [/VALID\s*FROM/i, /FROM/i, /DATE\s*OF\s*ISSUE/i],
+      defaultBoundingBox: { x: 30, y: 50, width: 20, height: 5 },
+      formatHelp: 'DD/MM/YYYY',
+    },
+    {
+      key: 'expiryDate',
+      label: 'Valid Until (Expiry Date)',
+      required: true,
+      regexPattern: /^\d{2}[-/]\d{2}[-/]\d{4}$|^\d{4}[-/]\d{2}[-/]\d{2}$/i,
+      labelPatterns: [/VALID\s*UNTIL/i, /UNTIL/i, /EXPIRY/i, /EXPIRATION/i],
+      defaultBoundingBox: { x: 55, y: 50, width: 20, height: 5 },
+      formatHelp: 'DD/MM/YYYY',
+    },
+    {
+      key: 'entries',
+      label: 'Number of Entries',
+      required: false,
+      regexPattern: /^1$|^2$|^01$|^02$|^MULT$|^MULTIPLE$/i,
+      labelPatterns: [/ENTRIES/i, /NO\s*OF\s*ENTRIES/i],
+      defaultBoundingBox: { x: 30, y: 60, width: 15, height: 5 },
+      formatHelp: '1, 2, or MULT',
+    },
+  ],
+  dateRules: {
+    hasDob: false,
+    hasIssueDate: true,
+    hasExpiryDate: true,
+    maxValidityYears: 10,
+    allowNoExpiry: false,
+  },
+  mrzRules: {
+    supportedFormats: ['TD2', 'TD3'],
+    checkDigits: ['documentNumber', 'expiry'],
+    weights: [7, 3, 1],
+  },
+  securityFeatures: [
+    { name: 'Consular Vignette Intaglio Substrate', description: 'Tactile ink security printing and rainbow gradient', criticality: 'HIGH' },
+    { name: 'MRV Machine Readable Code', description: 'ICAO Doc 9303 Part 7 Format A or B MRV band', criticality: 'HIGH' },
+    { name: 'Linked Passport Association', description: 'Cross-check against primary passport bio-page', criticality: 'HIGH' },
+  ],
+  jurisdictionRules: {
+    recognizedIssuingStates: ['IND', 'USA', 'GBR', 'SGP', 'EUR', 'CAN', 'AUS', 'ARE'],
+    documentNumberRegex: /^[A-Z0-9]{7,12}$/i,
+  },
+  riskWeights: {
+    cryptographicFailure: 95,
+    checksumFailure: 85,
+    crossMismatch: 85,
+    forensicAnomaly: 65,
+    structuralAnomaly: 55,
+    ocrUncertainty: 25,
+    metadataAnomaly: 15,
+  },
+};

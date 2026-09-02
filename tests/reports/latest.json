@@ -1,0 +1,2921 @@
+{
+  "timestamp": "2026-09-01T16:42:51.120Z",
+  "overall": {
+    "category": "OVERALL",
+    "total": 200,
+    "validCount": 100,
+    "invalidCount": 100,
+    "validPassed": 100,
+    "invalidPassed": 100,
+    "passed": 200,
+    "failed": 0,
+    "accuracy": 100,
+    "precision": 100,
+    "recall": 100,
+    "f1Score": 100,
+    "truePositives": 100,
+    "falsePositives": 0,
+    "trueNegatives": 100,
+    "falseNegatives": 0,
+    "averageRisk": 25
+  },
+  "byCategory": {
+    "PASSPORT": {
+      "category": "PASSPORT",
+      "total": 40,
+      "validCount": 20,
+      "invalidCount": 20,
+      "validPassed": 20,
+      "invalidPassed": 20,
+      "passed": 40,
+      "failed": 0,
+      "accuracy": 100,
+      "precision": 100,
+      "recall": 100,
+      "f1Score": 100,
+      "truePositives": 20,
+      "falsePositives": 0,
+      "trueNegatives": 20,
+      "falseNegatives": 0,
+      "averageRisk": 34
+    },
+    "VISA": {
+      "category": "VISA",
+      "total": 40,
+      "validCount": 20,
+      "invalidCount": 20,
+      "validPassed": 20,
+      "invalidPassed": 20,
+      "passed": 40,
+      "failed": 0,
+      "accuracy": 100,
+      "precision": 100,
+      "recall": 100,
+      "f1Score": 100,
+      "truePositives": 20,
+      "falsePositives": 0,
+      "trueNegatives": 20,
+      "falseNegatives": 0,
+      "averageRisk": 19
+    },
+    "AADHAAR": {
+      "category": "AADHAAR",
+      "total": 40,
+      "validCount": 20,
+      "invalidCount": 20,
+      "validPassed": 20,
+      "invalidPassed": 20,
+      "passed": 40,
+      "failed": 0,
+      "accuracy": 100,
+      "precision": 100,
+      "recall": 100,
+      "f1Score": 100,
+      "truePositives": 20,
+      "falsePositives": 0,
+      "trueNegatives": 20,
+      "falseNegatives": 0,
+      "averageRisk": 28
+    },
+    "DRIVING_LICENCE": {
+      "category": "DRIVING_LICENCE",
+      "total": 40,
+      "validCount": 20,
+      "invalidCount": 20,
+      "validPassed": 20,
+      "invalidPassed": 20,
+      "passed": 40,
+      "failed": 0,
+      "accuracy": 100,
+      "precision": 100,
+      "recall": 100,
+      "f1Score": 100,
+      "truePositives": 20,
+      "falsePositives": 0,
+      "trueNegatives": 20,
+      "falseNegatives": 0,
+      "averageRisk": 28
+    },
+    "PERMIT": {
+      "category": "PERMIT",
+      "total": 40,
+      "validCount": 20,
+      "invalidCount": 20,
+      "validPassed": 20,
+      "invalidPassed": 20,
+      "passed": 40,
+      "failed": 0,
+      "accuracy": 100,
+      "precision": 100,
+      "recall": 100,
+      "f1Score": 100,
+      "truePositives": 20,
+      "falsePositives": 0,
+      "trueNegatives": 20,
+      "falseNegatives": 0,
+      "averageRisk": 18
+    }
+  },
+  "results": [
+    {
+      "id": "P-TRUE-001",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-002",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-003",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-004",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-005",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-006",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-007",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-008",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-009",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-010",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-011",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-012",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-013",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-014",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-015",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-016",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-017",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-018",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-019",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-TRUE-020",
+      "category": "PASSPORT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-001",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 85
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-002",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 85
+      },
+      "actualRiskScore": 60,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-003",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 85
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-004",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 100
+      },
+      "actualRiskScore": 45,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-005",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 100
+      },
+      "actualRiskScore": 45,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-006",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 100
+      },
+      "actualRiskScore": 45,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-007",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 70,
+        "max": 100
+      },
+      "actualRiskScore": 90,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-008",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 85
+      },
+      "actualRiskScore": 68,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-009",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 85
+      },
+      "actualRiskScore": 60,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-010",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 85
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-011",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 85
+      },
+      "actualRiskScore": 64,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-012",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 70,
+        "max": 100
+      },
+      "actualRiskScore": 100,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-013",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 70,
+        "max": 100
+      },
+      "actualRiskScore": 100,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-014",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 70,
+        "max": 100
+      },
+      "actualRiskScore": 90,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-015",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 70,
+        "max": 100
+      },
+      "actualRiskScore": 100,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-016",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 70,
+        "max": 100
+      },
+      "actualRiskScore": 100,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-017",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 70,
+        "max": 100
+      },
+      "actualRiskScore": 100,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-018",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 80,
+        "max": 100
+      },
+      "actualRiskScore": 100,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-019",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 70,
+        "max": 100
+      },
+      "actualRiskScore": 100,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "P-FAKE-020",
+      "category": "PASSPORT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "EXPIRED",
+      "actualDecision": "EXPIRED",
+      "expectedRiskRange": {
+        "min": 5,
+        "max": 45
+      },
+      "actualRiskScore": 8,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-001",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-002",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-003",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-004",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-005",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-006",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-007",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-008",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-009",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-010",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-011",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-012",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-013",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-014",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-015",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-016",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-017",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-018",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-019",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-TRUE-020",
+      "category": "VISA",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-001",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-002",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-003",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-004",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "EXPIRED",
+      "actualDecision": "EXPIRED",
+      "expectedRiskRange": {
+        "min": 5,
+        "max": 45
+      },
+      "actualRiskScore": 8,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-005",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 38,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-006",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-007",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "EXPIRED",
+      "actualDecision": "EXPIRED",
+      "expectedRiskRange": {
+        "min": 5,
+        "max": 45
+      },
+      "actualRiskScore": 8,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-008",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-009",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-010",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-011",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-012",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-013",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-014",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-015",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 35,
+        "max": 85
+      },
+      "actualRiskScore": 64,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-016",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 90
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-017",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-018",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 35,
+        "max": 85
+      },
+      "actualRiskScore": 64,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-019",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 65,
+        "max": 100
+      },
+      "actualRiskScore": 100,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "V-FAKE-020",
+      "category": "VISA",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "UNABLE_TO_VERIFY",
+      "actualDecision": "UNABLE_TO_VERIFY",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 80
+      },
+      "actualRiskScore": 68,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-001",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-002",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-003",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-004",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-005",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-006",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-007",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-008",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-009",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-010",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-011",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-012",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-013",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-014",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-015",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-016",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-017",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-018",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-019",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-TRUE-020",
+      "category": "AADHAAR",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-001",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 100
+      },
+      "actualRiskScore": 75,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-002",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 100
+      },
+      "actualRiskScore": 75,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-003",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 100
+      },
+      "actualRiskScore": 45,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-004",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 100
+      },
+      "actualRiskScore": 45,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-005",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 100
+      },
+      "actualRiskScore": 45,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-006",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 100
+      },
+      "actualRiskScore": 45,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-007",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 100
+      },
+      "actualRiskScore": 45,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-008",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 85
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-009",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 85
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-010",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 85
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-011",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 100
+      },
+      "actualRiskScore": 79,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-012",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "REVIEW",
+      "actualDecision": "REVIEW",
+      "expectedRiskRange": {
+        "min": 5,
+        "max": 40
+      },
+      "actualRiskScore": 8,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-013",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 85
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-014",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 100
+      },
+      "actualRiskScore": 79,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-015",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 100
+      },
+      "actualRiskScore": 45,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-016",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 70,
+        "max": 100
+      },
+      "actualRiskScore": 79,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-017",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 45,
+        "max": 100
+      },
+      "actualRiskScore": 75,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-018",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 70,
+        "max": 100
+      },
+      "actualRiskScore": 100,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-019",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 70,
+        "max": 100
+      },
+      "actualRiskScore": 100,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "A-FAKE-020",
+      "category": "AADHAAR",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "UNABLE_TO_VERIFY",
+      "actualDecision": "UNABLE_TO_VERIFY",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 100
+      },
+      "actualRiskScore": 76,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-001",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-002",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-003",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-004",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-005",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-006",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-007",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-008",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-009",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-010",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-011",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-012",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-013",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-014",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-015",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-016",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-017",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-018",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-019",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-TRUE-020",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-001",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 60,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-002",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-003",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-004",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-005",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 38,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-006",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "EXPIRED",
+      "actualDecision": "EXPIRED",
+      "expectedRiskRange": {
+        "min": 5,
+        "max": 45
+      },
+      "actualRiskScore": 8,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-007",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "EXPIRED",
+      "actualDecision": "EXPIRED",
+      "expectedRiskRange": {
+        "min": 5,
+        "max": 45
+      },
+      "actualRiskScore": 8,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-008",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-009",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 60,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-010",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 60,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-011",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 60,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-012",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-013",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 65,
+        "max": 100
+      },
+      "actualRiskScore": 94,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-014",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 65,
+        "max": 100
+      },
+      "actualRiskScore": 94,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-015",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 68,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-016",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 90
+      },
+      "actualRiskScore": 60,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-017",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 65,
+        "max": 100
+      },
+      "actualRiskScore": 94,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-018",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 65,
+        "max": 100
+      },
+      "actualRiskScore": 94,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-019",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "CRITICAL",
+      "actualDecision": "CRITICAL",
+      "expectedRiskRange": {
+        "min": 70,
+        "max": 100
+      },
+      "actualRiskScore": 94,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "D-FAKE-020",
+      "category": "DRIVING_LICENCE",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "UNABLE_TO_VERIFY",
+      "actualDecision": "UNABLE_TO_VERIFY",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 80
+      },
+      "actualRiskScore": 68,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-001",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-002",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-003",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-004",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-005",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-006",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-007",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-008",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-009",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-010",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-011",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-012",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-013",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-014",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-015",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-016",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-017",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-018",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-019",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-TRUE-020",
+      "category": "PERMIT",
+      "expectedTruth": "VALID",
+      "expectedDecision": "CLEAR",
+      "actualDecision": "CLEAR",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 20
+      },
+      "actualRiskScore": 0,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-001",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-002",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "EXPIRED",
+      "actualDecision": "EXPIRED",
+      "expectedRiskRange": {
+        "min": 5,
+        "max": 45
+      },
+      "actualRiskScore": 8,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-003",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-004",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 38,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-005",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-006",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-007",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-008",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-009",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-010",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "EXPIRED",
+      "actualDecision": "EXPIRED",
+      "expectedRiskRange": {
+        "min": 5,
+        "max": 45
+      },
+      "actualRiskScore": 8,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-011",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-012",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-013",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 38,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-014",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 64,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-015",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 64,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-016",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 60
+      },
+      "actualRiskScore": 38,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-017",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 80
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-018",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 90
+      },
+      "actualRiskScore": 30,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-019",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "HIGH_RISK",
+      "actualDecision": "HIGH_RISK",
+      "expectedRiskRange": {
+        "min": 25,
+        "max": 95
+      },
+      "actualRiskScore": 64,
+      "passed": true,
+      "mismatches": []
+    },
+    {
+      "id": "R-FAKE-020",
+      "category": "PERMIT",
+      "expectedTruth": "INVALID",
+      "expectedDecision": "UNABLE_TO_VERIFY",
+      "actualDecision": "UNABLE_TO_VERIFY",
+      "expectedRiskRange": {
+        "min": 0,
+        "max": 80
+      },
+      "actualRiskScore": 68,
+      "passed": true,
+      "mismatches": []
+    }
+  ]
+}

@@ -63,6 +63,12 @@ export function parseTD3MRZ(line1: string, line2: string, vizFields?: DocumentFi
   const docType = cleanL1.slice(0, 2).replace(/</g, '');
   const countryCode = cleanL1.slice(2, 5).replace(/</g, '');
   
+  // Line 1 name parsing (format: P<CTYSURNAME<<GIVEN<NAMES<<<<)
+  const nameSection = cleanL1.slice(5).replace(/<+$/, '');
+  const nameParts = nameSection.split('<<');
+  const surname = (nameParts[0] || '').replace(/</g, ' ').trim();
+  const givenNames = (nameParts[1] || '').replace(/</g, ' ').trim();
+  
   // Line 2 parsing
   const docNumber = cleanL2.slice(0, 9).replace(/</g, '');
   const docNumberCheckDigit = cleanL2.slice(9, 10);
@@ -206,6 +212,8 @@ export function parseTD3MRZ(line1: string, line2: string, vizFields?: DocumentFi
     rawLines: [cleanL1, cleanL2],
     documentType: docType || 'P',
     countryCode,
+    surname: surname || undefined,
+    givenNames: givenNames || undefined,
     documentNumber: docNumber,
     documentNumberCheckDigit: docNumberCheckDigit,
     nationality,
@@ -480,7 +488,7 @@ export function parseMRZ(rawText: string, vizFields?: DocumentField[]): MRZData 
   const td3L1Candidates = mrzCandidates.filter(l => /^P[<I][A-Z]{3}/.test(l) && l.length >= 38);
   // Line 2 criterion: does NOT start with P< (that's Line 1), starts with letter+digits
   const td3L2Candidates = mrzCandidates.filter(
-    l => !/^P[<I][A-Z]/.test(l) && /^[A-Z][0-9]/.test(l) && l.length >= 38
+    l => !/^P[<I][A-Z]/.test(l) && /^[A-Z0-9]/.test(l) && l.length >= 38
   );
 
   if (td3L1Candidates.length >= 1 && td3L2Candidates.length >= 1) {
@@ -499,6 +507,10 @@ export function parseMRZ(rawText: string, vizFields?: DocumentField[]): MRZData 
     const l2idx = mrzCandidates.findIndex((l, i) => i !== l1idx && !/^P[<I][A-Z]/.test(l) && l.length >= 38);
     if (l1idx >= 0 && l2idx >= 0) {
       return parseTD3MRZ(mrzCandidates[l1idx], mrzCandidates[l2idx], vizFields);
+    }
+    // Standard 2 lines TD3 check
+    if (mrzCandidates[0].length >= 38 && mrzCandidates[1].length >= 38 && mrzCandidates[0] !== mrzCandidates[1]) {
+      return parseTD3MRZ(mrzCandidates[0], mrzCandidates[1], vizFields);
     }
   }
 

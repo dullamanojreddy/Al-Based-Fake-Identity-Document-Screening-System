@@ -58,6 +58,8 @@ export interface MRZData {
   rawLines: string[];
   documentType: string;
   countryCode: string;
+  surname?: string;
+  givenNames?: string;
   documentNumber: string;
   documentNumberCheckDigit: string;
   nationality: string;
@@ -329,6 +331,13 @@ export interface ScreeningSession {
   biometrics?: BiometricVerification | null;
   watchlist?: WatchlistResult | null;
   
+  // Rule Engine & Multi-Layer Evaluation
+  ruleResults?: RuleResult[];
+  imageQuality?: ImageQualityAssessment | null;
+  rawOcr?: RawOcrDocument | null;
+  externalVerification?: ExternalVerificationResult | null;
+  decisionState?: DecisionState;
+  
   // Composite Evaluation (Null if screening not performed)
   risk?: CompositeRiskAssessment | null;
   
@@ -336,9 +345,6 @@ export interface ScreeningSession {
   processingTimeMs: number;
   unsupportedReason?: string;
   detectedClassificationConfidence?: number;
-  decisionState?: string;
-  ruleResults?: any[];
-  rawOcr?: any;
 }
 
 export interface FieldConsistencyCheck {
@@ -384,22 +390,141 @@ export interface TypographyAnalysisResult {
   details: string;
 }
 
-export type QRPayloadFormat = 'UIDAI_XML' | 'NUMERIC_COMPRESSED' | 'PLAIN_TEXT' | 'NONE' | 'UNKNOWN';
+export type DecisionState = 
+  | 'VERIFIED'
+  | 'CLEAR'
+  | 'REVIEW'
+  | 'ENHANCED_REVIEW'
+  | 'HIGH_RISK'
+  | 'CRITICAL'
+  | 'EXPIRED'
+  | 'UNSUPPORTED_DOCUMENT'
+  | 'UNABLE_TO_VERIFY';
+
+export type RuleSeverity = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+
+export type RuleStatus = 'PASS' | 'WARN' | 'FAIL' | 'NOT_APPLICABLE' | 'UNVERIFIED';
+
+export type RuleRecommendation = 
+  | 'APPROVE' 
+  | 'REVIEW' 
+  | 'ENHANCED_REVIEW' 
+  | 'REJECT_HOLD' 
+  | 'VERIFY_SOURCE_DOCUMENT' 
+  | 'REQUEST_ADDITIONAL_ID';
+
+export type RuleCategory = 
+  | 'GLOBAL' 
+  | 'PASSPORT' 
+  | 'VISA' 
+  | 'AADHAAR' 
+  | 'DRIVING_LICENCE' 
+  | 'PERMIT' 
+  | 'EXTERNAL';
+
+export type RuleSource = 
+  | 'OCR' 
+  | 'MRZ' 
+  | 'QR' 
+  | 'BARCODE' 
+  | 'EXTERNAL' 
+  | 'IMAGE_QUALITY' 
+  | 'FORENSICS' 
+  | 'METADATA' 
+  | 'GEOMETRY' 
+  | 'INFERRED';
+
+export interface RuleResult {
+  ruleId: string;
+  ruleName: string;
+  category: RuleCategory;
+  status: RuleStatus;
+  severity: RuleSeverity;
+  explanation: string;
+  affectedField?: string;
+  affectedRegion?: BoundingBoxCoordinates;
+  evidence?: string;
+  source: RuleSource;
+  confidence: number; // 0 - 100%
+  recommendation: RuleRecommendation;
+}
+
+export interface ImageQualityAssessment {
+  width: number;
+  height: number;
+  blurScore: number; // 0 - 100 (higher = sharper)
+  glareScore: number; // 0 - 100 (higher = less glare)
+  exposureScore: number; // 0 - 100 (higher = balanced exposure)
+  perspectiveScore: number; // 0 - 100 (higher = less distortion)
+  documentCoverage: number; // 0 - 100%
+  overallScore: number; // 0 - 100%
+  isBlank: boolean;
+  isExcessiveBlur: boolean;
+  isExcessiveGlare: boolean;
+  qualityGrade: 'GOOD' | 'ACCEPTABLE' | 'POOR' | 'UNUSABLE';
+}
+
+export interface RawOcrLine {
+  text: string;
+  confidence: number;
+  bbox: BoundingBoxCoordinates;
+  lineNumber: number;
+}
+
+export interface RawOcrToken {
+  text: string;
+  confidence: number;
+  bbox: BoundingBoxCoordinates;
+}
+
+export interface RawOcrDocument {
+  fullText: string;
+  lines: RawOcrLine[];
+  tokens: RawOcrToken[];
+  averageConfidence: number;
+}
+
+export type ExternalVerificationStatus = 
+  | 'VERIFIED_BY_AUTHORITY' 
+  | 'RECORD_MATCH' 
+  | 'RECORD_MISMATCH' 
+  | 'NOT_FOUND' 
+  | 'VERIFICATION_UNAVAILABLE';
+
+export interface ExternalVerificationResult {
+  status: ExternalVerificationStatus;
+  providerName: string;
+  reason?: string;
+  timestamp: string;
+  isSimulated?: boolean;
+}
+
+export type QRPayloadFormat = 'UIDAI_XML' | 'UIDAI_SECURE_QR' | 'SARATHI_DL' | 'ICAO_BARCODE' | 'RAW_TEXT' | 'NUMERIC_COMPRESSED' | 'PLAIN_TEXT' | 'NONE' | 'UNKNOWN';
 
 export interface QRPayloadField {
   key: string;
+  label?: string;
   value: string;
+  matchesVisual?: boolean;
+  visualValue?: string;
 }
 
 export interface QRValidationResult {
-  qrDetected: boolean;
-  decoded: boolean;
-  payloadFormat: QRPayloadFormat;
+  qrDetected?: boolean;
+  detected?: boolean;
+  decoded?: boolean;
+  format?: QRPayloadFormat;
+  payloadFormat?: QRPayloadFormat;
+  rawPayload?: string;
   rawPayloadPreview?: string;
-  payloadFields: QRPayloadField[];
-  matches: string[];
-  mismatches: string[];
-  consistencyScore: number;
-  details: string;
+  payloadFields?: QRPayloadField[];
+  parsedFields?: QRPayloadField[];
+  signatureVerified?: boolean;
+  visualMatchStatus?: 'MATCHED' | 'DISCREPANCY_DETECTED' | 'NOT_APPLICABLE';
+  matches?: string[];
+  mismatches?: string[];
+  discrepancies?: string[];
+  consistencyScore?: number;
+  details?: string;
 }
 
