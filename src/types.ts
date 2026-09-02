@@ -399,7 +399,8 @@ export type DecisionState =
   | 'CRITICAL'
   | 'EXPIRED'
   | 'UNSUPPORTED_DOCUMENT'
-  | 'UNABLE_TO_VERIFY';
+  | 'UNABLE_TO_VERIFY'
+  | 'APPROVE_AND_RELEASE';
 
 export type RuleSeverity = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 
