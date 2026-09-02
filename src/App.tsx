@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { MissionControlDashboard } from './components/MissionControlDashboard';
@@ -12,6 +12,8 @@ import { LiveWebcamModal } from './components/LiveWebcamModal';
 import { Login } from './components/Login';
 import { SAMPLE_SCREENING_CASES } from './data/sampleScreenings';
 import { ScreeningSession } from './types';
+import { INITIAL_WATCHLIST, WatchlistEntry } from './data/watchlistEntries';
+import { createAuditBlock, getInitialAuditLedger } from './utils/auditLedger';
 
 export function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -21,6 +23,10 @@ export function App() {
 
   const [currentSession, setCurrentSession] = useState<ScreeningSession>(SAMPLE_SCREENING_CASES[0]);
   const [allSessions, setAllSessions] = useState<ScreeningSession[]>(SAMPLE_SCREENING_CASES);
+  const [watchlistEntries, setWatchlistEntries] = useState<WatchlistEntry[]>(INITIAL_WATCHLIST);
+  const [auditLedger, setAuditLedger] = useState(() => getInitialAuditLedger());
+  const reviewScreeningIds = useRef(new Set<string>());
+  const approvedScreeningIds = useRef(new Set<string>());
   const [isCameraModalOpen, setIsCameraModalOpen] = useState<boolean>(false);
   const [liveCapturedFaceUrl, setLiveCapturedFaceUrl] = useState<string | undefined>(undefined);
 
@@ -48,6 +54,80 @@ export function App() {
     setAllSessions((prev) => [newSession, ...prev]);
     setCurrentSession(newSession);
     setActiveTab('screenings');
+  };
+
+  const isKnownValue = (value?: string) => Boolean(value && !/^(unknown|not detected|not available|n\/a)$/i.test(value.trim()));
+  const extractedValue = (session: ScreeningSession, labels: RegExp, fallback: string) =>
+    session.fields.find((field) => labels.test(`${field.key} ${field.label}`) && isKnownValue(field.value))?.value ||
+    (isKnownValue(fallback) ? fallback : 'UNKNOWN');
+  const withOfficerNotes = (session: ScreeningSession, officerNotes: string, finalDecision: 'CLEARED' | 'SECONDARY_INSPECTION') => ({
+    ...session,
+    risk: session.risk ? {
+      ...session.risk,
+      officerReview: {
+        confirmedFindingIds: session.risk.officerReview?.confirmedFindingIds || [],
+        dismissedFindingIds: session.risk.officerReview?.dismissedFindingIds || [],
+        officerNotes,
+        secondaryInspectionRequested: finalDecision === 'SECONDARY_INSPECTION',
+        finalDecision,
+        reviewedAt: new Date().toISOString(),
+        officerBadge: session.officerBadge,
+        officerName: session.officerName,
+      },
+    } : session.risk,
+  });
+
+  const handleSendForReview = (session: ScreeningSession, officerNotes: string) => {
+    const alreadyUnderReview = reviewScreeningIds.current.has(session.id) || watchlistEntries.some((entry) => entry.sourceCaseId === session.id);
+    if (!alreadyUnderReview) {
+      reviewScreeningIds.current.add(session.id);
+      const name = extractedValue(session, /name/i, session.travelerName);
+      const documentNumber = extractedValue(session, /(passport|document|id).*number|number.*(passport|document|id)/i, session.travelerPassportNumber);
+      const dob = extractedValue(session, /birth|dob/i, session.travelerDob);
+      setWatchlistEntries((entries) => entries.some((entry) => entry.sourceCaseId === session.id) ? entries : [{
+        id: `WL-REVIEW-${session.id}`,
+        name,
+        aliases: [],
+        nationality: extractedValue(session, /nationality/i, session.travelerNationality),
+        dob,
+        passportNum: documentNumber,
+        noticeType: 'ENHANCED_REVIEW',
+        category: 'Officer Review',
+        issuedDate: new Date().toISOString().slice(0, 10),
+        status: 'PENDING_REVIEW',
+        summary: officerNotes.trim() || 'Sent for manual officer review.',
+        sourceCaseId: session.id,
+        riskScore: session.risk?.overallRiskScore,
+      }, ...entries]);
+    }
+    handleUpdateSession({ ...withOfficerNotes(session, officerNotes, 'SECONDARY_INSPECTION'), status: 'SECONDARY_INSPECTION' });
+    return !alreadyUnderReview;
+  };
+
+  const handleApproveAndRelease = (session: ScreeningSession, officerNotes: string) => {
+    if (session.decisionState === 'APPROVE_AND_RELEASE' || approvedScreeningIds.current.has(session.id)) return false;
+    approvedScreeningIds.current.add(session.id);
+    const documentNumber = extractedValue(session, /(passport|document|id).*number|number.*(passport|document|id)/i, session.travelerPassportNumber);
+    const updated = { ...withOfficerNotes(session, officerNotes, 'CLEARED'), status: 'CLEARED' as const, decisionState: 'APPROVE_AND_RELEASE' };
+    handleUpdateSession(updated);
+    setAuditLedger((ledger) => [...ledger, createAuditBlock(
+      ledger,
+      session.officerBadge,
+      'APPROVE_AND_RELEASE',
+      'OFFICER_REVIEW',
+      session.id,
+      {
+        screeningId: session.id,
+        documentType: session.documentType,
+        documentNumber,
+        officerName: session.officerName,
+        decision: 'CLEARED',
+        reviewPriority: session.risk?.reviewPriority || 'NOT AVAILABLE',
+        riskScore: session.risk?.overallRiskScore ?? 'NOT AVAILABLE',
+        officerNotes: officerNotes.trim() || 'NOT AVAILABLE',
+      }
+    )]);
+    return true;
   };
 
   const handleFaceCaptured = (faceUrl: string) => {
@@ -116,10 +196,13 @@ export function App() {
                 currentSession={currentSession}
                 onSelectSampleCase={handleSelectSession}
                 onUpdateSession={handleUpdateSession}
+                onSendForReview={handleSendForReview}
+                onApproveAndRelease={handleApproveAndRelease}
+                isUnderReview={watchlistEntries.some((entry) => entry.sourceCaseId === currentSession.id)}
               />
             )}
 
-            {activeTab === 'watchlist' && <WatchlistDatabaseView />}
+            {activeTab === 'watchlist' && <WatchlistDatabaseView watchlist={watchlistEntries} onUpdateWatchlist={setWatchlistEntries} />}
 
             {activeTab === 'reports' && (
               <SystemAnalyticsView
@@ -128,7 +211,7 @@ export function App() {
               />
             )}
 
-            {activeTab === 'audit' && <AuditLedgerView />}
+            {activeTab === 'audit' && <AuditLedgerView ledger={auditLedger} />}
 
             {activeTab === 'settings' && <SystemSettingsView />}
           </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   ShieldAlert, 
   Eye, 
@@ -43,12 +43,18 @@ interface ScreeningDetailViewProps {
   currentSession: ScreeningSession;
   onSelectSampleCase: (session: ScreeningSession) => void;
   onUpdateSession: (updated: ScreeningSession) => void;
+  onSendForReview: (session: ScreeningSession, officerNotes: string) => boolean;
+  onApproveAndRelease: (session: ScreeningSession, officerNotes: string) => boolean;
+  isUnderReview: boolean;
 }
 
 export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
   currentSession,
   onSelectSampleCase,
   onUpdateSession,
+  onSendForReview,
+  onApproveAndRelease,
+  isUnderReview,
 }) => {
   const isUnsupported = currentSession.status === 'UNSUPPORTED_DOCUMENT' || currentSession.documentType === 'unsupported_document';
 
@@ -68,6 +74,12 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
     currentSession.risk?.officerReview?.officerNotes || ''
   );
   const [noteSavedToast, setNoteSavedToast] = useState<boolean>(false);
+  const [actionToast, setActionToast] = useState<string>('');
+
+  useEffect(() => {
+    setInvestigatorNote(currentSession.risk?.officerReview?.officerNotes || '');
+    setActionToast('');
+  }, [currentSession.id, currentSession.risk?.officerReview?.officerNotes]);
 
   // Derive dynamic bounding boxes from extracted fields and findings
   const boundingBoxes = isUnsupported ? [] : [
@@ -126,14 +138,39 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
   };
 
   const handleApprove = () => {
-    onUpdateSession({ ...currentSession, status: 'CLEARED' });
+    if (currentSession.decisionState === 'APPROVE_AND_RELEASE') {
+      setActionToast('This screening has already been approved and released.');
+      return;
+    }
+    if (!window.confirm('Approve and release this screening? This records a final officer action in the audit ledger.')) return;
+    if (onApproveAndRelease(currentSession, investigatorNote)) {
+      setActionToast('Screening approved and released. Audit event recorded.');
+    }
   };
 
   const handleSendForReview = () => {
-    onUpdateSession({ ...currentSession, status: 'SECONDARY_INSPECTION' });
+    const added = onSendForReview(currentSession, investigatorNote);
+    setActionToast(added ? 'Screening sent for manual review and added to Watchlist.' : 'This screening is already under review.');
   };
 
   const handleSaveNotes = () => {
+    const existingReview = currentSession.risk?.officerReview;
+    onUpdateSession({
+      ...currentSession,
+      risk: currentSession.risk ? {
+        ...currentSession.risk,
+        officerReview: {
+          confirmedFindingIds: existingReview?.confirmedFindingIds || [],
+          dismissedFindingIds: existingReview?.dismissedFindingIds || [],
+          officerNotes: investigatorNote,
+          secondaryInspectionRequested: existingReview?.secondaryInspectionRequested || false,
+          finalDecision: existingReview?.finalDecision || (currentSession.status === 'CLEARED' ? 'CLEARED' : 'SECONDARY_INSPECTION'),
+          reviewedAt: new Date().toISOString(),
+          officerBadge: currentSession.officerBadge,
+          officerName: currentSession.officerName,
+        },
+      } : currentSession.risk,
+    });
     setNoteSavedToast(true);
     setTimeout(() => setNoteSavedToast(false), 2000);
   };
@@ -765,20 +802,23 @@ export const ScreeningDetailView: React.FC<ScreeningDetailViewProps> = ({
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <button
                   onClick={handleSendForReview}
-                  className="w-full py-2.5 bg-transparent hover:bg-amber-50 text-amber-600 border-2 border-amber-600 font-bold text-xs uppercase tracking-wider rounded-lg transition flex items-center justify-center gap-2"
+                  disabled={isUnderReview}
+                  className="w-full py-2.5 bg-transparent hover:bg-amber-50 disabled:cursor-not-allowed disabled:opacity-60 text-amber-600 border-2 border-amber-600 font-bold text-xs uppercase tracking-wider rounded-lg transition flex items-center justify-center gap-2"
                 >
                   <AlertTriangle className="w-4 h-4 stroke-[2.5]" />
-                  Send for Review
+                  {isUnderReview ? 'Under Review' : 'Send for Review'}
                 </button>
 
                 <button
                   onClick={handleApprove}
-                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-slate-900 font-bold text-xs uppercase tracking-wider rounded-lg transition flex items-center justify-center gap-2 shadow-sm"
+                  disabled={currentSession.decisionState === 'APPROVE_AND_RELEASE'}
+                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 text-slate-900 font-bold text-xs uppercase tracking-wider rounded-lg transition flex items-center justify-center gap-2 shadow-sm"
                 >
                   <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
-                  Approve &amp; Release
+                  {currentSession.decisionState === 'APPROVE_AND_RELEASE' ? 'Approved & Released' : 'Approve & Release'}
                 </button>
               </div>
+              {actionToast && <p className="pt-2 text-xs font-medium text-emerald-700" role="status">{actionToast}</p>}
             </div>
           </div>
         </div>
