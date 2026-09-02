@@ -1,64 +1,13 @@
 import React, { useState } from 'react';
 import { Search, Plus, Trash2, AlertOctagon, Filter, ChevronDown } from 'lucide-react';
+import { WatchlistEntry } from '../data/watchlistEntries';
 
-interface WatchlistEntry {
-  id: string;
-  name: string;
-  aliases: string[];
-  nationality: string;
-  dob: string;
-  passportNum: string;
-  noticeType: 'INTERPOL_RED_NOTICE' | 'INTERPOL_SLTD' | 'SSB_BLACKLIST' | 'FRAUD_SUSPECT';
-  category: string;
-  issuedDate: string;
-  status: 'ACTIVE_WARRANT' | 'UNDER_SURVEILLANCE' | 'DETAINED';
-  summary: string;
+interface WatchlistDatabaseViewProps {
+  watchlist: WatchlistEntry[];
+  onUpdateWatchlist: React.Dispatch<React.SetStateAction<WatchlistEntry[]>>;
 }
 
-const INITIAL_WATCHLIST: WatchlistEntry[] = [
-  {
-    id: 'WL-INT-2025-001',
-    name: 'VLADIMIR IVANOV',
-    aliases: ['Maximilian Weber', 'Klaus Weber', 'V. Groznyi'],
-    nationality: 'AUT / RUS',
-    dob: '1981-05-19',
-    passportNum: 'A77192083',
-    noticeType: 'INTERPOL_RED_NOTICE',
-    category: 'Transnational Syndicate Fraud',
-    issuedDate: '2025-08-14',
-    status: 'ACTIVE_WARRANT',
-    summary: 'Wanted for forging 40+ diplomatic travel passports.',
-  },
-  {
-    id: 'WL-SSB-2026-042',
-    name: 'TARIQ AHMED MIRZA',
-    aliases: ['T. A. Mirza', 'Ahmed Khan'],
-    nationality: 'PAK',
-    dob: '1979-11-03',
-    passportNum: 'PA8829104',
-    noticeType: 'SSB_BLACKLIST',
-    category: 'Counterfeit Visa Distribution',
-    issuedDate: '2026-01-10',
-    status: 'ACTIVE_WARRANT',
-    summary: 'Operating illegal cross-border counterfeit permit network.',
-  },
-  {
-    id: 'WL-SLTD-2026-109',
-    name: 'SARAH ELIZABETH JENKINS',
-    aliases: ['Sarah Jenkins'],
-    nationality: 'USA',
-    dob: '1989-05-20',
-    passportNum: '928104712',
-    noticeType: 'INTERPOL_SLTD',
-    category: 'Stolen and Lost Travel Documents',
-    issuedDate: '2026-02-01',
-    status: 'UNDER_SURVEILLANCE',
-    summary: 'Document reported lost/stolen in transit.',
-  },
-];
-
-export const WatchlistDatabaseView: React.FC = () => {
-  const [watchlist, setWatchlist] = useState<WatchlistEntry[]>(INITIAL_WATCHLIST);
+export const WatchlistDatabaseView: React.FC<WatchlistDatabaseViewProps> = ({ watchlist, onUpdateWatchlist }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [newEntry, setNewEntry] = useState<Partial<WatchlistEntry>>({
@@ -83,22 +32,22 @@ export const WatchlistDatabaseView: React.FC = () => {
       name: newEntry.name.toUpperCase(),
       aliases: (newEntry.aliases as any) || [],
       nationality: newEntry.nationality?.toUpperCase() || 'UNKNOWN',
-      dob: newEntry.dob || '1985-01-01',
+      dob: newEntry.dob || 'UNKNOWN',
       passportNum: newEntry.passportNum.toUpperCase(),
       noticeType: newEntry.noticeType || 'INTERPOL_RED_NOTICE',
       category: newEntry.category || 'Identity Fraud Suspect',
       issuedDate: new Date().toISOString().slice(0, 10),
-      status: 'ACTIVE_WARRANT',
-      summary: newEntry.summary || 'Added to national watch registry.',
+      status: newEntry.status || 'PENDING_REVIEW',
+      summary: newEntry.summary || 'Manual watchlist record.',
     };
 
-    setWatchlist([created, ...watchlist]);
+    onUpdateWatchlist((entries) => [created, ...entries]);
     setShowAddModal(false);
     setNewEntry({ noticeType: 'INTERPOL_RED_NOTICE', status: 'ACTIVE_WARRANT' });
   };
 
   const handleDelete = (id: string) => {
-    setWatchlist(watchlist.filter((w) => w.id !== id));
+    onUpdateWatchlist((entries) => entries.filter((w) => w.id !== id));
   };
 
   return (
